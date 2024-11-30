@@ -3,7 +3,7 @@
 @section('title', 'Movimientos')
 
 @section('content_header')
-    <h1>Movimientos de Pago</h1>
+    <h1>Editar movimientos de Pago</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error! </strong>{{  Session::get('Error'); }}
@@ -44,6 +44,7 @@
                     <th scope="col">Estatus Pago</th>
                     <th scope="col">Facturable</th>
                     <th scope="col">Porcentaje</th>
+                    <th scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -58,6 +59,17 @@
                             <td>Sí</td>
                             @endif
                             <td>{{$row->porcentaje}}</td>
+                            <td>
+                                <span class="pull-right">
+                                    <div class="dropdown">
+                                        <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
+                                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
+                                            <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smeditar" onclick="edit({{$row->id}},{{$row->secuencia}},'{{$row->nombre}}','{{$row->estatus_id}}','{{$row->facturable}}',{{$row->porcentaje}})"><i class="icon ion-md-create"></i>Editar</button></li>
+                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
+                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
+                                    </div>
+                                </span>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -148,6 +160,91 @@
                 </div>
             </div>
         </div>
+
+        <!-- Button trigger modal para modificar -->
+        <!-- Modal -->
+        <div class="modal fade" id="smeditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Editar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form class="form p-3" action="/termclie/movimientos/update/{{$id}}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <br>
+                            <h6>Editar Movimiento</h6>
+                            <br>
+                            <div class="row">
+                                <input type="hidden" name="idmov" id="idmov">
+                                <x-adminlte-input name="secuenciamov" id="secuenciamov" placeholder="Secuencia" type="number" fgroup-class="col-md-5"
+                                    igroup-size="sm" min=1 max=1000>
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text bg-light">
+                                            <i class="fas fa-hastag"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input>
+                            </div>
+                            <div class="row">
+                                <x-adminlte-input name="nombremov" id="nombremov" placeholder="Nombre del movimiento" label-class="text-lightblue" 
+                                fgroup-class="col-md-12">
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text">
+                                            <i class="fas fa-user text-lightblue"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input>
+                            </div>
+                            <div class="row">
+                                <x-adminlte-select2 name="estatusmov" id="estatusmov" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                    igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." >
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text bg-gradient-info">
+                                            <i class="far fa-building"></i>
+                                        </div>
+                                    </x-slot>
+                                    <option/>
+                                    @foreach ($estatus as $rowe)
+                                    <option value="{{$rowe->id}}">{{$rowe->nombre}}</option>
+                                    @endforeach
+                                </x-adminlte-select2>
+                            </div>
+                            <div class="row">
+                                <x-adminlte-select2 name="facturablemov" id="facturablemov" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                    igroup-size="sm" data-placeholder="Es facturable?..." >
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text bg-gradient-info">
+                                            <i class="far fa-building"></i>
+                                        </div>
+                                    </x-slot>
+                                    <option/>
+                                    <option value="0">No</option>
+                                    <option value="1">Sí</option>
+                                </x-adminlte-select2>
+                            </div>
+                            <div class="row">
+                                <x-adminlte-input name="porcentajemov" id="porcentajemov" placeholder="Porcentaje" type="number" fgroup-class="col-md-5"
+                                    igroup-size="sm" min=1 max=1000>
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text bg-light">
+                                            <i class="fas fa-percent"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"  id="update">Guardar</button>
+                        </div>
+                    </form> 
+                </div>
+            </div>
+        </div>
 @stop
 
 @section('css')
@@ -201,7 +298,12 @@
     </script>
 
     <script type="text/javascript">
-        function edit(id){
+        function edit(id,sec,nom,est,fact,porc){
+            $('#secuenciamov').val(sec);
+            $('#nombremov').val(nom);
+            $('#estatusmov').val(est);
+            $('#facturablemov').val(fact);
+            $('#porcentajemov').val(porc);
             
         }
     </script>

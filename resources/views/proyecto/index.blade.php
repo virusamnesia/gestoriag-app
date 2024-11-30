@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Terminos')
+@section('title', 'Proyectos')
 
 @section('content_header')
-    <h1>Terminos de pago cliente</h1>
+    <h1>Proyectos</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error! </strong>{{  Session::get('Error'); }}
+        <strong>Error!  </strong>{{  Session::get('Error'); }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -27,30 +27,42 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" id="btnagregar" data-toggle="modal" data-target="#smagregar" onclick="nuevo()"/>
+            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo()"/>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-2">
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Agrupado</th>
+                    <th scope="col">Proyecto</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Año</th>
+                    <th scope="col">Importe</th>
+                    <th scope="col">Saldo</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Lista Precio</th>
+                    <th scope="col">Cotización</th>
+                    <th scope="col">Autorización</th>
+                    <th scope="col">Finalización</th>
+                    <th scope="col">Cancelación</th>
                     <th scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($terminos as $row) {{-- Add here extra stylesheets --}}
+                    @foreach ($proyectos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">{{$row->nombre}}</th>
-                            @if ($row->es_agrupado == False)
-                            <td>No</td>
-                            @else
-                            <td>Sí</td>
-                            @endif
+                            <td>{{$row->cliente}}</td>
+                            <td>{{$row->anio}}</td>
+                            <td>{{$row->importe}}</td>
+                            <td>{{$row->saldo}}</td>
+                            <td>{{$row->estado}}</td>
+                            <td>{{$row->lista}}</td>
+                            <td>{{$row->fecha_cotizacion}}</td>
+                            <td>{{$row->fecha_autorizacion}}</td>
+                            <td>{{$row->fecha_finalizacion}}</td>
+                            <td>{{$row->fecha_cancelacion}}</td>
                             <td>
                                 <span class="pull-right">
                                     <div class="dropdown">
@@ -58,7 +70,7 @@
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
+                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
                                     </div>
                                 </span>
                             </td>
@@ -67,59 +79,7 @@
                 </tbody>
             <table>
         </div>
-        <div class="col-md-2">
-        </div>
     </div>
-
-    <!-- Button trigger modal para procesar -->
-        <!-- Modal -->
-        <div class="modal fade" id="smagregar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Nuevo</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form class="form p-3" action="/termclie/nuevo" method="POST">
-                        @csrf
-                        <div class="modal-body">
-                            <br>
-                            <h6>Nuevo Termino</h6>
-                            <br>
-                            <div class="row">
-                                <x-adminlte-input name="nombre" placeholder="Nombre del termino" label-class="text-lightblue" 
-                                fgroup-class="col-md-12" required>
-                                    <x-slot name="prependSlot">
-                                        <div class="input-group-text">
-                                            <i class="fas fa-user text-lightblue"></i>
-                                        </div>
-                                    </x-slot>
-                                </x-adminlte-input>
-                            </div>
-                            <div class="row">
-                                <x-adminlte-select2 name="agrupado" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                    igroup-size="sm" data-placeholder="Es agrupado?..." required>
-                                    <x-slot name="prependSlot">
-                                        <div class="input-group-text bg-gradient-info">
-                                            <i class="far fa-building"></i>
-                                        </div>
-                                    </x-slot>
-                                    <option/>
-                                    <option value="0">No</option>
-                                    <option value="1">Sí</option>
-                                </x-adminlte-select2>
-                            </div>
-                            <br>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary"  id="guardar">Guardar</button>
-                        </div>
-                    </form> 
-                </div>
-            </div>
-        </div>
 
 @stop
 
@@ -160,20 +120,28 @@
     </script>
 
     <script type="text/javascript">
+        function nuevo(){
+            var base = "<?php echo '/proyectos/nuevo' ?>";
+            var url = base;
+            location.href=url;
+        }
+    </script>
+
+    <script type="text/javascript">
         function edit(id){
-            var base = "<?php echo '/termclie/movimientos/edit/'?>";
+            var base = "<?php echo '/proyectos/lineas/'?>";
             var url = base+id;
             location.href=url;
         }
 
         function view(id){
-            var base = "<?php echo '/termclie/movimientos/show/'?>";
+            var base = "<?php echo '/Proyectos/show/'?>";
             var url = base+id;
             location.href=url;
         }
 
         function municipios(id){
-            var base = "<?php echo '/proveedores/municipios/'?>";
+            var base = "<?php echo '/Proyectos/municipios/'?>";
             var url = base+id;
             location.href=url;
         }

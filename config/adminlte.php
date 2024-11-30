@@ -64,7 +64,7 @@ return [
     */
 
     'logo' => '<b>Gestoria</b> G',
-    'logo_img' => 'vendor/adminlte/dist/img/gestoria_g.png',
+    'logo_img' => 'vendor/adminlte/dist/img/Gestoria_G_corto.jpg',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -113,7 +113,7 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/gestoria_g.png',
+            'path' => 'vendor/adminlte/dist/img/Gestoria_G_corto.jpg',
             'alt' => 'Gestoria G logo Image',
             'effect' => 'animation__shake',
             'width' => 60,
@@ -317,15 +317,17 @@ return [
         ],
         [
             'text' => 'Proyectos',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
+            'url' => 'proyectos',
+            'icon' => 'fas fa-project-diagram',
             'label_color' => 'success',
+            'icon_color' => 'purple',
         ],
         [
             'text' => 'Presupuestos',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label_color' => 'success',
+            'url' => 'presupuestos',
+            'icon' => 'far fa-list-alt',
+            'label_color' => 'warning',
+            'icon_color' => 'orange',
         ],
         ['header' => 'Configuracion de Cuentas'],
         [
@@ -498,6 +500,16 @@ return [
                     'type' => 'css',
                     'asset' => false,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
+                ],
+            ],
+        ],
+        'BootstrapSwitch' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/bootstrap-switch/js/bootstrap-switch.min.js',
                 ],
             ],
         ],

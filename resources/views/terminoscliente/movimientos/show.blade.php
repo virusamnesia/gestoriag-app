@@ -29,7 +29,6 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" id="btnagregar" data-toggle="modal" data-target="#smagregar" onclick="nuevo()"/>
         </div>
     </div>
     <div class="row">
@@ -76,78 +75,7 @@
         </div>
     </div>
 
-    <!-- Button trigger modal para procesar -->
-        <!-- Modal -->
-        <div class="modal fade" id="smagregar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Agregar</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form class="form p-3" action="/termclie/movimientos/{{$id}}" method="POST">
-                        @csrf
-                        <div class="modal-body">
-                            <br>
-                            <h6>Nuevo Movimiento</h6>
-                            <br>
-                            <div class="row">
-                                <x-adminlte-input name="nombre" placeholder="Nombre del movimiento" label-class="text-lightblue" fgroup-class="col-md-12">
-                                    <x-slot name="prependSlot">
-                                        <div class="input-group-text">
-                                            <i class="fas fa-user text-lightblue"></i>
-                                        </div>
-                                    </x-slot>
-                                </x-adminlte-input>
-                            </div>
-                            <div class="row">
-                                <x-adminlte-select2 name="estatus" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                    igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." >
-                                    <x-slot name="prependSlot">
-                                        <div class="input-group-text bg-gradient-info">
-                                            <i class="far fa-building"></i>
-                                        </div>
-                                    </x-slot>
-                                    <option/>
-                                    @foreach ($estatus as $rowe)
-                                    <option value="{{$rowe->id}}">{{$rowe->nombre}}</option>
-                                    @endforeach
-                                </x-adminlte-select2>
-                            </div>
-                            <div class="row">
-                                <x-adminlte-select2 name="facturable" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                    igroup-size="sm" data-placeholder="Es facturable?..." >
-                                    <x-slot name="prependSlot">
-                                        <div class="input-group-text bg-gradient-info">
-                                            <i class="far fa-building"></i>
-                                        </div>
-                                    </x-slot>
-                                    <option/>
-                                    <option value="0">No</option>
-                                    <option value="1">Sí</option>
-                                </x-adminlte-select2>
-                            </div>
-                            <div class="row">
-                                <x-adminlte-input name="porcentaje" placeholder="Porcentaje" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000>
-                                    <x-slot name="appendSlot">
-                                        <div class="input-group-text bg-light">
-                                            <i class="fas fa-percent"></i>
-                                        </div>
-                                    </x-slot>
-                                </x-adminlte-input>
-                            </div>
-                            <br>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary"  id="procesar">Procesar</button>
-                        </div>
-                    </form> 
-                </div>
-            </div>
-        </div>
+    
 @stop
 
 @section('css')

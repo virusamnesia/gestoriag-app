@@ -1,20 +1,20 @@
 @extends('adminlte::page')
 
-@section('title', 'Sucursal')
+@section('title', 'Proveedor')
 
 @section('content_header')
-    <h1>Nueva Sucursal</h1>
+    <h1>Edición del proveedor</h1>
 @stop
 
 @section('content')
-    <h4>Cliente: {{$cliente->nombre}}</h4>
-    <form action="/clientes/sucursales/store/{{$cliente->id}}" method="POST">
+    @foreach ($proveedor as $prov)
+    <h4>Proveedor: {{$prov->nombre}}</h4>
+    <form action="/proveedores/update/{{$prov->id}}" method="POST">
         
         @csrf
 
         <div class="row">
             <div class="col-md-1">
-                <input type="hidden" id="cliente_id" name="cliente_id" value="{{$cliente->id}}">
             </div>
             <div class="col-md-10">
             </div>
@@ -27,7 +27,11 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Nombre de la sucursal" label-class="text-lightblue" fgroup-class="col-md-12">
+                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="5" value="{{$prov->clave}}"
+                        fgroup-class="col-md-3" disable-feedback/>
+                </div>
+                <div class="row">
+                    <x-adminlte-input name="nombre" placeholder="Razón Social del proveedor" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$prov->nombre}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-user text-lightblue"></i>
@@ -36,7 +40,11 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="domicilio" placeholder="Domicilio"  fgroup-class="col-md-12">
+                    <x-adminlte-input name="rfc" placeholder="RFC" size="15" maxlength="13" value="{{$prov->rfc}}"
+                        fgroup-class="col-md-4" disable-feedback/>
+                </div>
+                <div class="row">
+                    <x-adminlte-input name="domicilio" placeholder="Domicilio"  fgroup-class="col-md-12" value="{{$prov->domicilio}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text text-purple">
                                 <i class="fas fa-address-card"></i>
@@ -45,7 +53,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="colonia" placeholder="Colonia" fgroup-class="col-md-12" disable-feedback/>
+                    <x-adminlte-input name="colonia" placeholder="Colonia" fgroup-class="col-md-12" disable-feedback value="{{$prov->colonia}}"/>
                 </div>
                 <div class="row">
                     <x-adminlte-select2 name="municipio" label-class="text-lightblue"  fgroup-class="col-md-12"
@@ -57,12 +65,13 @@
                         </x-slot>
                         <option/>
                         @foreach ($municipios as $rowe)
-                        <option value="{{$rowe->id}}">{{$rowe->nombre}}, {{$rowe->estado}}</option>
+
+                        <option value="{{$rowe->id}}" @php if ($rowe->id == $prov->municipio_contacto_id) { echo "selected";} @endphp>{{$rowe->nombre}}, {{$rowe->estado}}</option>
                         @endforeach
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="cp" placeholder="Código Postal"  fgroup-class="col-md-3"  maxlength="5"
+                    <x-adminlte-input name="cp" placeholder="Código Postal"  fgroup-class="col-md-3"  maxlength="5" value="{{$prov->cp}}"
                         enable-old-support>
                         <x-slot name="prependSlot">
                             <div class="input-group-text text-olive">
@@ -72,7 +81,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="email" placeholder="Correo Eléctronico" label-class="text-lightblue" fgroup-class="col-md-12">
+                    <x-adminlte-input name="email" placeholder="Correo Eléctronico" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$prov->email}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-at text-lightblue"></i>
@@ -81,7 +90,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="telefono" placeholder="Teléfono" label-class="text-lightblue" fgroup-class="col-md-12">
+                    <x-adminlte-input name="telefono" placeholder="Teléfono" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$prov->telefono}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-phone-square-alt text-lightblue"></i>
@@ -90,16 +99,23 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="superficie" placeholder="Superficie" type="number" fgroup-class="col-md-5"
-                        igroup-size="sm" min=1 max=1000 step="0.05">
-                        <x-slot name="appendSlot">
-                            <div class="input-group-text bg-light">
-                                <i class="fas fa-ruler-combined"></i>
+                    <x-adminlte-select2 name="banco" label-class="text-lightblue"  fgroup-class="col-md-12"
+                        igroup-size="sm" data-placeholder="Selecciona un banco...">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="far fa-building"></i>
                             </div>
                         </x-slot>
-                    </x-adminlte-input>
+                        <option/>
+                        @foreach ($bancos as $rowb)
+                        <option value="{{$rowb->id}}" @php if ($rowb->id == $prov->banco_id) { echo "selected";} @endphp >{{$rowb->nombre}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
                 </div>
-                
+                <div class="row">
+                    <x-adminlte-input name="cuenta" placeholder="Cuenta bancaria" size="18" maxlength="18" value="{{$prov->cuenta}}"
+                        fgroup-class="col-md-4" disable-feedback/>
+                </div>
             </div>
             <div class="col-md-3">
             </div>
@@ -107,14 +123,15 @@
     </form>
     <div class="row">
         <div class="col-md-1">
-            <x-adminlte-button label="Municipios" type="button" theme="info" icon="fas fa-map-marked" onclick="municipios({{$cliente->id}})"/>
+            <x-adminlte-button label="Municipios" type="button" theme="info" icon="fas fa-map-marked" onclick="municipios()"/>
         </div>
         <div class="col-md-10">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back({{$cliente->id}})"/>
+            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back()"/>
         </div>
     </div>
+    @endforeach
 
 @stop
 
@@ -157,9 +174,9 @@
     </script>
 
     <script type="text/javascript">
-        function back(id){
-            var base = "<?php echo '/clientes/sucursales/' ?>";
-            var url = base+id;
+        function back(){
+            var base = "<?php echo '/proveedores' ?>";
+            var url = base;
             location.href=url;
         }
     </script>
@@ -167,30 +184,25 @@
     <script type="text/javascript">
     function delete(id){
         var base = "<?php echo '/contable/cobranza/histNotas/' ?>";
-        if (cadena>'0'){
-            cad=cadena;
-        }
-        else{
-            cad='NULL';
-        }
-        var url = base+cad+'/'+nombre+'/0/0/0/1';
+        
+        var url = base;
         location.href=url;
     }
     </script>
 
     <script type="text/javascript">
         function edit(id){
-            $("#idcadc").val(cad);
-            $("#cadc").val(cad);
-            $("#nacadc").val(nombre);
-            $("#ncadc").val(nombre);
+            var base = "<?php echo '/contable/cobranza/histNotas/' ?>";
+        
+            var url = base;
+            location.href=url;
         }
     </script>
 
     <script type="text/javascript">
-        function municipios(id){
-            var base = "<?php echo '/municipios/' ?>";
-            var url = base+id+'/0';
+        function municipios(){
+            var base = "<?php echo '/municipios/-1/0' ?>";
+            var url = base;
             location.href=url;
         }
     </script>

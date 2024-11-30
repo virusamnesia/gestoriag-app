@@ -69,7 +69,11 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
+
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -111,5 +115,9 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+    'aliases' => [
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    ]
 
 ];

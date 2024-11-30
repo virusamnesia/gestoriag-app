@@ -81,9 +81,24 @@ class MovimientosPagoClienteController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function show(top50 $top50)
+    public function show($id)
     {
-        //
+        $termino = DB::table('terminos_pago_clientes')
+            ->where('id',$id)
+            ->first();
+
+        $estatus = EstatusLineaCliente::all();
+        
+        $movimientos = DB::table('movimientos_pago_clientes')
+            ->leftJoin('terminos_pago_clientes', 'terminos_pago_clientes.id', '=', 'movimientos_pago_clientes.terminos_pago_cliente_id')
+            ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
+            ->select('movimientos_pago_clientes.*','terminos_pago_clientes.id as termino_id','terminos_pago_clientes.nombre as termino'
+            ,'estatus_linea_clientes.id as estatus_id','estatus_linea_clientes.nombre as estatus')
+            ->where('terminos_pago_clientes.id',$id)
+            ->orderBy('movimientos_pago_clientes.secuencia')
+            ->get();
+       
+        return view('terminoscliente.movimientos.show', ['estatus' => $estatus,'termino' => $termino, 'movimientos' => $movimientos, 'id' => $id]);
     }
 
     /**
@@ -109,7 +124,7 @@ class MovimientosPagoClienteController extends Controller
             ->orderBy('movimientos_pago_clientes.secuencia')
             ->get();
        
-        return view('terminoscliente.movimientos.index', ['estatus' => $estatus,'termino' => $termino, 'movimientos' => $movimientos, 'id' => $id]);
+        return view('terminoscliente.movimientos.edit', ['estatus' => $estatus,'termino' => $termino, 'movimientos' => $movimientos, 'id' => $id]);
     }
 
     /**

@@ -11,8 +11,13 @@ use App\Http\Controllers\MunicipioContactoController;
 use App\Http\Controllers\MunicipiosProveedorController;
 use App\Http\Controllers\PrecioProductoController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProductosProyectoController;
 use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\ProyectoController;
+use App\Http\Controllers\ProyectoLineaController;
+use App\Http\Controllers\ProyectoSucursalLineaController;
 use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\SucursalesProyectoController;
 use App\Http\Controllers\TerminosPagoClienteController;
 use App\Http\Controllers\TerminosPagoProveedorController;
 use App\Http\Controllers\TiposProductoController;
@@ -20,6 +25,8 @@ use App\Models\CiudadContacto;
 use App\Models\ListasPrecio;
 use App\Models\MovimientosPagoCliente;
 use App\Models\Producto;
+use App\Models\ProyectoLinea;
+use App\Models\ProyectoSucursalLinea;
 use App\Models\TiposProducto;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +59,8 @@ Route::middleware([
     Route::get('/termclie/nuevo', [TerminosPagoClienteController::class, 'create'])->name('new.termclie');
     Route::post('/termclie/nuevo', [TerminosPagoClienteController::class, 'store'])->name('save.termclie');
     Route::get('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'index'])->name('termclie.movimientos');
+    Route::get('/termclie/movimientos/show/{id?}', [MovimientosPagoClienteController::class, 'show'])->name('termclie.show.movimientos');
+    Route::get('/termclie/movimientos/edit/{id?}', [MovimientosPagoClienteController::class, 'edit'])->name('termclie.edit.movimientos');
     Route::post('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'store'])->name('save.termclie.movimientos');
     
     Route::get('/termprov', [TerminosPagoProveedorController::class, 'index'])->name('termprov');
@@ -97,6 +106,31 @@ Route::middleware([
     Route::get('/productos/show/{id?}', [ProductoController::class, 'show'])->name('showproducto');
     Route::get('/productos/{id?}', [ProductoController::class, 'edit'])->name('editproducto');
     Route::post('/productos/update/{id?}', [ProductoController::class, 'update'])->name('upproducto');
+
+    //PROYECTOS
+    Route::get('/proyectos', [ProyectoController::class, 'index'])->name('proyectos');
+    Route::get('/proyectos/nuevo', [ProyectoController::class, 'create'])->name('new.proyectos');
+    Route::post('/proyectos/store', [ProyectoController::class, 'store'])->name('save.proyectos');
+    Route::get('/proyectos/show/{id?}', [ProyectoController::class, 'show'])->name('show.proyectos');
+    Route::get('/proyectos/{id?}', [ProyectoController::class, 'edit'])->name('edit.proyectos');
+    Route::post('/proyectos/update/{id?}', [ProyectoController::class, 'update'])->name('update.proyectos');
+
+    Route::get('/proyectos/sucursales/{idp?}/{idc?}', [SucursalesProyectoController::class, 'index'])->name('proyectos.sucursales');
+    Route::post('/proyectos/sucursales/update/{idp?}/{idc?}', [SucursalesProyectoController::class, 'update'])->name('update.proyectos.sucursales');
+    
+    Route::get('/proyectos/productos/{idp?}/{idc?}', [ProductosProyectoController::class, 'index'])->name('proyectos.productos');
+    Route::post('/proyectos/productos/update/{idp?}/{idc?}', [ProductosProyectoController::class, 'update'])->name('update.proyectos.productos');
+
+    Route::get('/proyectos/lineas/{id?}', [ProyectoLineaController::class, 'index'])->name('proyectos.lineas');
+    Route::get('/proyectos/lineas/nuevo/{id?}', [ProyectoLineaController::class, 'create'])->name('new.proyectos.lineas');
+    Route::post('/proyectos/lineas/store/{id?}', [ProyectoLineaController::class, 'store'])->name('save.proyectos.lineas');
+    Route::get('/proyectos/lineas/sucursales/show/{id?}', [ProyectoSucursalLineaController::class, 'show'])->name('show.proyectos.lineas.sucursales');
+    Route::get('/proyectos/lineas/{idp?}/{idl?}', [ProyectoLineaController::class, 'edit'])->name('edit.proyectos.lineas');
+    Route::post('/proyectos/lineas/update/{idp?}/{idl?}', [ProyectoLineaController::class, 'update'])->name('update.proyectos.lineas');
+    Route::get('/proyectos/lineas/sucursales/nuevo/{idp?}/{idl?}', [ProyectoSucursalLineaController::class, 'create'])->name('new.proyectos.lineas.sucursales');
+    Route::post('/proyectos/lineas/sucursales/store/{idp?}/{idl?}', [ProyectoSucursalLineaController::class, 'store'])->name('save.proyectos.lineas.sucursales');
+    
+
 });
 
 
