@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Partidas')
+@section('title', 'Movimiento')
 
 @section('content_header')
     <h1>Nueva actividad a la sucursal</h1>
@@ -10,10 +10,10 @@
     
     <h5>Proyecto: {{$proyecto->nombre}}</h5>
     <h5>Cliente: {{$cliente->nombre}}</h5>
-    <h5>Sucursal: {{$sucursal->nombre}}</h5>
-    <h5>Producto: {{$producto->nombre}}</h5>
+    <h5>Sucursal: {{$linea->sucursal}}</h5>
+    <h5>Producto: {{$linea->producto}}</h5>
 
-    <form action="/proyectos/lineas/store/{{$proyecto->id}}" method="POST">
+    <form action="/proyectos/lineas/sucursales/store/{{$idp}}/{{$idl}}" method="POST">
         
         @csrf
 
@@ -27,53 +27,54 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="row">
-                    <x-adminlte-select2 name="sucursal" label-class="text-lightblue"  fgroup-class="col-md-10"
-                        igroup-size="sm" data-placeholder="Selecciona una sucursal...">
+                    <input type="hidden" value="{{$next->id}}" name="movimiento"/>
+                    <x-adminlte-input name="accion" label="Acción" placeholder="Acción" label-class="text-lightblue" disabled
+                    value="{{$next->nombre}}">
                         <x-slot name="prependSlot">
-                            <div class="input-group-text bg-gradient-info">
-                                <i class="fas  fa-address-card"></i>
+                            <div class="input-group-text">
+                                <i class="fas fa-user text-lightblue"></i>
                             </div>
                         </x-slot>
-                        <option/>
-                        @foreach ($sucursales as $rows)
-                        <option value="{{$rows->id}}">{{$rows->nombre}}</option>
-                        @endforeach
-                    </x-adminlte-select2>
+                    </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="producto" label-class="text-lightblue"  fgroup-class="col-md-10"
-                        igroup-size="sm" data-placeholder="Selecciona un producto...">
-                        <x-slot name="prependSlot">
-                            <div class="input-group-text bg-gradient-info">
-                                <i class="fas  fa-address-card"></i>
+                    @php
+                    $config = [
+                        'format' => 'YYYY-MM-DD',
+                        'dayViewHeaderFormat' => 'MMM YYYY',
+                        'minDate' => "js:moment().startOf('month')",
+                        'maxDate' => "js:moment().endOf('month')",
+                        'daysOfWeekDisabled' => [0, 6],
+                    ];
+                    @endphp
+                    <x-adminlte-input-date name="fecha" label="Fecha de Regitro" igroup-size="sm"
+                        :config="$config" placeholder="Selecciona la fecha...">
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text bg-dark">
+                                <i class="fas fa-calendar-day"></i>
                             </div>
                         </x-slot>
-                        <option/>
-                        @foreach ($productos as $rowp)
-                        <option value="{{$rowp->id}}">{{$rowp->nombre}}, {{$rowp->tipo}}</option>
-                        @endforeach
-                    </x-adminlte-select2>
+                    </x-adminlte-input-date>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="termino" label-class="text-lightblue"  fgroup-class="col-md-10"
-                        igroup-size="sm" data-placeholder="Selecciona los terminos de pago...">
+                    <x-adminlte-textarea name="observaciones" label="Observaciobes" rows=5 label-class="text-warning"
+                        igroup-size="lg" placeholder="Captura observaciones..."  fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
-                            <div class="input-group-text bg-gradient-info">
-                                <i class="fas  fa-address-card"></i>
+                            <div class="input-group-text bg-dark">
+                                <i class="fas fa-lg fa-file-alt text-warning"></i>
                             </div>
                         </x-slot>
-                        <option/>
-                        @foreach ($terminos as $rowt)
-                        <option value="{{$rowt->id}}">{{$rowt->nombre}}</option>
-                        @endforeach
-                    </x-adminlte-select2>
+                    </x-adminlte-textarea>
                 </div>
+                <div class="row">
+                    <x-adminlte-input name="url" type="url"  fgroup-class="col-md-12" placeholder="URL de la carpeta de registro..."/>
                 </div>
-            <div class="col-md-3">
+            </div>
+            <div class="col-md-2">
             </div>
         </div>
     </form>

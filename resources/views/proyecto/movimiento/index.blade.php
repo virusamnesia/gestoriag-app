@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Proyecto')
+@section('title', 'Historial')
 
 @section('content_header')
-    <h1>Partidas del Proyecto</h1>
+    <h1>Historial de la sucursal</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!  </strong>{{  Session::get('Error'); }}
@@ -25,11 +25,13 @@
 @section('content')
     <h5>Proyecto: {{$proyecto->nombre}}</h5>
     <h5>Cliente: {{$cliente->nombre}}</h5>
+    <h5>Sucursal: {{$linea->sucursal}}</h5>
+    <h5>Producto: {{$linea->producto}}</h5>
     <div class="row">
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo({{$proyecto->id}})"/>
+            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo({{$idp}},{{$idl}})"/>
         </div>
     </div>
     <div class="row">
@@ -37,48 +39,43 @@
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
-                    <th scope="col">Sucursal</th>
-                    <th scope="col">Domicilio</th>
-                    <th scope="col">Municipio</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Producto</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Precio</th>
+                    <th scope="col">Movimiento</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Observaciones</th>
+                    <th scope="col">URL's</th>
+                    <th scope="col">Facturable</th>
+                    <th scope="col">Fecha Factura</th>
+                    <th scope="col">Factura</th>
+                    <th scope="col">Importe</th>
                     <th scope="col">Saldo</th>
-                    <th scope="col">Terminos</th>
-                    <th scope="col">Estatus</th>
-                    <th scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
+                    @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
-                            <th scope="row">{{$row->sucursal}}</th>
-                            <td>{{$row->domicilio}}</td>
-                            <td>{{$row->municipio}}</td>
-                            <td>{{$row->estado}}</td>
-                            <td>{{$row->producto}}</td>
-                            <td>{{$row->tipo}}</td>
-                            <td>{{$row->precio}}</td>
-                            <td>{{$row->saldocliente}}</td>
-                            <td>{{$row->terminos}}</td>
-                            <td>{{$row->estatus}}</td>
-                            <td>
-                                <span class="pull-right">
-                                    <div class="dropdown">
-                                        <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
-                                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                            <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}})"><i class="ion-md-chatboxes"></i>HistorialS</button></li>
-                                            <li><button class="btn align-self-left" id="btnmove" onclick="move({{$proyecto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
-                                    </div>
-                                </span>
-                            </td>
+                            <th scope="row">{{$row->movimiento}}</th>
+                            <td>{{$row->fecha_mov}}</td>
+                            <td>{{$row->observaciones}}</td>
+                            <td><a href="{{$row->url}}">{{$row->url}}</a></td>
+                            <td>{{$row->es_facturable}}</td>
+                            <td>{{$row->fecha_factura}}</td>
+                            <td>{{$row->factura}}</td>
+                            <td>{{$row->importe}}</td>
+                            <td>{{$row->saldo}}</td>
                         </tr>
                     @endforeach
                 </tbody>
             <table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            
+        </div>
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-1">
+            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back({{$proyecto->id}})"/>
         </div>
     </div>
 
@@ -120,31 +117,17 @@
         } );
     </script>
 
-    <script type="text/javascript">
-        function nuevo(id){
-            var base = "<?php echo '/proyectos/lineas/nuevo/' ?>";
-            var url = base+id;
-            location.href=url;
-        }
-    </script>
+<script type="text/javascript">
+    function back(id){
+        var base = "<?php echo '/proyectos/lineas/' ?>";
+        var url = base+idp;
+        location.href=url;
+    }
 
-    <script type="text/javascript">
-        function edit(idp,idl){
-            var base = "<?php echo '/proyectos/lineas/'?>";
-            var url = base+idp+"/"+idl;
-            location.href=url;
-        }
-
-        function view(id){
-            var base = "<?php echo '/proyectos/lineas/sucursales/show/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function move(idp,idl){
+    function nuevo(idp,idl){
             var base = "<?php echo '/proyectos/lineas/sucursales/nuevo/'?>";
             var url = base+idp+"/"+idl;
             location.href=url;
         }
-    </script>
+</script>
 @stop

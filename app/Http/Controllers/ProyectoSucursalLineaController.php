@@ -2,13 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
+use App\Models\MovimientosPagoCliente;
+use App\Models\Proyecto;
+use App\Models\ProyectoLinea;
+use App\Models\ProyectoSucursalLinea;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProyectoSucursalLineaController extends Controller
 {
-    public function index(){
+    public function index($idp,$idl){
         
-        return view('cliente.index');
+        $proyecto = Proyecto::where('proyectos.id','=',$idp)->first();
+
+        $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
+
+        $linea =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+        ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus',
+        'tipos_productos.nombre as tipo')
+        ->where('proyecto_lineas.id','=',$idl)
+        ->first();
+
+        $movimientos =DB::table('proyecto_sucursal_lineas')
+        ->join('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
+        ->leftjoin('clientes_factura_lineas', 'proyecto_sucursal_lineas.id', '=', 'clientes_factura_lineas.proyecto_sucursal_linea_id')
+        ->leftjoin('clientes_facturas', 'clientes_facturas.id', '=', 'clientes_factura_lineas.clientes_factura_id')
+        ->select('proyecto_sucursal_lineas.*','movimientos_pago_clientes.nombre as movimiento','movimientos_pago_clientes.secuencia as secuencia',
+        'clientes_facturas.id as factura')
+        ->where('proyecto_sucursal_lineas.proyecto_linea_id','=',$idl)
+        ->get();
+
+        return view('proyecto.movimiento.index', ['movimientos' => $movimientos,'linea' => $linea,'cliente' => $cliente,'proyecto' => $proyecto,'idp' => $idp,'idl' => $idl]);
     }
 
     /**
@@ -16,9 +53,56 @@ class ProyectoSucursalLineaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($idp,$idl)
     {
-        //
+        $proyecto = Proyecto::where('proyectos.id','=',$idp)->first();
+
+        $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
+
+        $linea =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+        ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.nombre as estatus',
+        'tipos_productos.nombre as tipo')
+        ->where('proyecto_lineas.id','=',$idl)
+        ->first();
+
+        $movimiento =DB::table('proyecto_sucursal_lineas')
+        ->join('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
+        ->select('movimientos_pago_clientes.*')
+        ->where('proyecto_sucursal_lineas.proyecto_linea_id','=',$idl)
+        ->orderBy('movimientos_pago_clientes.secuencia','desc')
+        ->first();
+
+        if($movimiento == null){
+            $secuencia = 0;
+        }
+        else{
+            $secuencia = $movimiento->secuencia;
+        }
+        $next = MovimientosPagoCliente::where('secuencia','=',$secuencia + 1)
+        ->where('terminos_pago_cliente_id','=',$linea->terminos)->first();
+
+        $inf = 1;
+
+        if($next == null){
+            session()->flash('Error','No existen más acciones que agregar...');
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+        }
+        else{
+            return view('proyecto.movimiento.create', ['idp' => $idp,'idl' => $idl,'proyecto' => $proyecto,'cliente' => $cliente,
+            'linea' => $linea,'next' => $next])->with('info',$inf);
+        }
     }
 
     /**
@@ -27,9 +111,89 @@ class ProyectoSucursalLineaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$idp,$idl)
     {
-        //
+        $proyecto = Proyecto::where('proyectos.id','=',$idp)->first();
+
+        $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
+
+        $linea =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+        ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+        'tipos_productos.nombre as tipo')
+        ->where('proyecto_lineas.id','=',$idl)
+        ->first();
+
+        $movimiento = MovimientosPagoCliente::where('id','=',$request->movimiento)->first();
+
+        if($movimiento == null){
+            $inf = 1;
+            session()->flash('Error','No existen más acciones que agregar...');
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+        }
+        else{
+            $importe = 0;
+            $saldo = $linea->saldocliente;
+
+            if($movimiento->facturable == 1){
+                $importe = $linea->precio * ($movimiento->porcentaje / 100);
+                $saldo = $saldo - $importe;
+            }
+            
+
+            $mov =  new ProyectoSucursalLinea();
+
+            $mov->proyecto_linea_id = $idl;
+            $mov->movimientos_pago_cliente_id = $request->movimiento;
+            $mov->movimientos_pago_proveedor_id = 0;
+            $mov->tipos_proceso_id = 1;
+            $mov->es_facturable = $movimiento->facturable;
+            $mov->fecha_mov = $request->fecha;
+            $mov->cliente_id = $cliente->id;
+            $mov->proveedor_id = $linea->proveedor_id;
+            $mov->importe = $importe;
+            $mov->saldo = $saldo;
+            $mov->observaciones = $request->observaciones;
+            $mov->url = $request->url;
+
+            $mov->save();
+
+            $data = [
+                'saldocliente' => $linea->saldocliente - $importe,
+                'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
+            ];
+
+            $proy = DB::table('proyecto_lineas')
+                ->where('id','=',$idl)
+                ->update($data);
+
+            $data = [
+                'saldo' => $proyecto->saldo - $importe,
+            ];
+
+            $proy = DB::table('proyectos')
+                ->where('id','=',$idp)
+                ->update($data);
+            
+            //
+            $inf = 1;
+            session()->flash('Exito','La actualización se agregó con éxito...');
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+        }
+
+        
+
     }
 
     /**
@@ -38,7 +202,7 @@ class ProyectoSucursalLineaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function show(top50 $top50)
+    public function show()
     {
         //
     }
@@ -49,7 +213,7 @@ class ProyectoSucursalLineaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function edit(top50 $top50)
+    public function edit()
     {
         //
     }
@@ -61,7 +225,7 @@ class ProyectoSucursalLineaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, top50 $top50)
+    public function update(Request $request)
     {
         //
     }
@@ -72,7 +236,7 @@ class ProyectoSucursalLineaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function destroy(top50 $top50)
+    public function destroy()
     {
         //
     }

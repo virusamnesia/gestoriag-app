@@ -124,7 +124,7 @@ Route::middleware([
     Route::get('/proyectos/lineas/{id?}', [ProyectoLineaController::class, 'index'])->name('proyectos.lineas');
     Route::get('/proyectos/lineas/nuevo/{id?}', [ProyectoLineaController::class, 'create'])->name('new.proyectos.lineas');
     Route::post('/proyectos/lineas/store/{id?}', [ProyectoLineaController::class, 'store'])->name('save.proyectos.lineas');
-    Route::get('/proyectos/lineas/sucursales/show/{id?}', [ProyectoSucursalLineaController::class, 'show'])->name('show.proyectos.lineas.sucursales');
+    Route::get('/proyectos/lineas/sucursales/{idp?}/{idl?}', [ProyectoSucursalLineaController::class, 'index'])->name('proyectos.lineas.sucursales');
     Route::get('/proyectos/lineas/{idp?}/{idl?}', [ProyectoLineaController::class, 'edit'])->name('edit.proyectos.lineas');
     Route::post('/proyectos/lineas/update/{idp?}/{idl?}', [ProyectoLineaController::class, 'update'])->name('update.proyectos.lineas');
     Route::get('/proyectos/lineas/sucursales/nuevo/{idp?}/{idl?}', [ProyectoSucursalLineaController::class, 'create'])->name('new.proyectos.lineas.sucursales');

@@ -69,7 +69,7 @@
                                         <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
+                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
                                             <li><button class="btn align-self-left" id="btnmove" onclick="move({{$proyecto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
                                             <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
                                     </div>
@@ -135,9 +135,9 @@
             location.href=url;
         }
 
-        function view(id){
-            var base = "<?php echo '/proyectos/lineas/sucursales/show/'?>";
-            var url = base+id;
+        function view(idp,idl){
+            var base = "<?php echo '/proyectos/lineas/sucursales/'?>";
+            var url = base+idp+"/"+idl;
             location.href=url;
         }
 

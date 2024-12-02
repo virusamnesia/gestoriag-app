@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('fecha')->nullable();
             $table->boolean('es_activo');
             $table->boolean('es_factura_odoo');
+            $table->string('factura_odoo');
             $table->timestamps();
         });
     }

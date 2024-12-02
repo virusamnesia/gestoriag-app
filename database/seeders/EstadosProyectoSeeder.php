@@ -14,27 +14,27 @@ class EstadosProyectoSeeder extends Seeder
     public function run(): void
     {
         EstadosProyecto::create([
-            'name' => 'Cotización',
-        ],
+            'nombre' => 'Cotización',
+        ]);
     
-        [
-            'name' => 'Autorizado',
-        ],
+        EstadosProyecto::create([
+            'nombre' => 'Autorizado',
+        ]);
         
-        [
-            'name' => 'Recibido',
-        ],
+        EstadosProyecto::create([
+            'nombre' => 'Recibido',
+        ]);
     
-        [
-            'name' => 'Entregado',
-        ],
+        EstadosProyecto::create([
+            'nombre' => 'Entregado',
+        ]);
     
-        [
-            'name' => 'Finalizado',
-        ],
+        EstadosProyecto::create([
+            'nombre' => 'Finalizado',
+        ]);
     
-        [
-            'name' => 'Cancelado',
+        EstadosProyecto::create([
+            'nombre' => 'Cancelado',
         ]);
     }
 }

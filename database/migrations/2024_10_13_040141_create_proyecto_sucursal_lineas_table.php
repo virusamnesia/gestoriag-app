@@ -34,6 +34,8 @@ return new class extends Migration
             $table->foreignIdFor(ProveedorFactura::class)->nullable();
             $table->float('importe')->nullable();
             $table->float('saldo')->nullable();
+            $table->text('observaciones')->nullable();
+            $table->string('url')->nullable();
             $table->timestamps();
         });
     }

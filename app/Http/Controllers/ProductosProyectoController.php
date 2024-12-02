@@ -121,7 +121,7 @@ class ProductosProyectoController extends Controller
                     $linea->costo = $costo;
                     $linea->saldoproveedor = $costo;
                     $linea->terminos_pago_cliente_id = $prod->terminos;
-                    $linea->estatus_linea_cliente_id = $prod->estatus; 
+                    $linea->estatus_linea_cliente_id = 1; 
 
                     $linea->save();
 
