@@ -61,7 +61,6 @@
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btndetalle" onclick="detalle({{$row->id}})"><i class="icon ion-md-create"></i>Sucursales</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="icon ion-md-chatboxes"></i>Ver</button></li>
-                                            <li><button class="btn align-self-left" id="btnlista" onclick="list({{$row->id}})"><i class="ion ion-md-book"></i>Listas</button></li>
                                             <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
                                     </div>
                                 </span>
@@ -122,12 +121,6 @@
         
         function detalle(id){
             var base = "<?php echo '/clientes/sucursales/' ?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function list(id){
-            var base = "<?php echo '/listas/' ?>";
             var url = base+id;
             location.href=url;
         }

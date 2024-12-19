@@ -59,13 +59,20 @@ class MovimientosPagoClienteController extends Controller
         $movimiento = new MovimientosPagoCliente();
 
         $movimiento->terminos_pago_cliente_id = $id;
-        $movimiento->nombre = $request->nombre;
         $movimiento->secuencia = $secuencia;
         $movimiento->estatus_linea_cliente_id = $request->estatus;
-        if  ($request->facturable){
-            $movimiento->porcentaje = $request->porcentaje;
+        if  ($request->vcliente > 0){
+            $movimiento->valor_cliente = $request->vcliente;
         }
-        $movimiento->facturable = $request->facturable;
+        else{
+            $movimiento->valor_cliente = 0;
+        }
+        if  ($request->vproveedor > 0){
+            $movimiento->valor_proveedor = $request->vproveedor;
+        }
+        else{
+            $movimiento->valor_proveedor = 0;
+        }
 
         $movimiento->save();
         $inf = 1;
@@ -134,9 +141,33 @@ class MovimientosPagoClienteController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, top50 $top50)
+    public function update(Request $request, $id)
     {
-        //
+        if  ($request->evcliente > 0){
+            $cliente = $request->vcliente;
+        }
+        else{
+            $cliente = 0;
+        }
+        if  ($request->evproveedor > 0){
+            $proveedor = $request->vproveedor;
+        }
+        else{
+            $proveedor = 0;
+        }
+        
+        $data = [
+            'valor_cliente' => $cliente,
+            'valor_proveedor' => $proveedor,
+        ];
+        //isset($array('clave'));
+        $mov = DB::table('movimientos_pago_clientes')
+            ->where('id','=',$request->eid)
+            ->update($data);
+
+        $inf = 1;
+        session()->flash('Exito','Se modificó con éxito...');
+        return redirect()->route('termclie.movimientos', ['id' => $id])->with('info',$inf);
     }
 
     /**

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Partidas')
+@section('title', 'Partida')
 
 @section('content_header')
     <h1>Editar partida del Proyecto</h1>
@@ -53,7 +53,6 @@
                         <option value="{{$rowt->id}}" @php if ($rowt->id == $linea->terminos_pago_cliente_id) { echo "selected";} @endphp >{{$rowt->nombre}}</option>
                         @endforeach
                     </x-adminlte-select2>
-                </div>
                 </div>
             <div class="col-md-3">
             </div>

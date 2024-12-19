@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Importacion;
 use App\Models\Producto;
 use App\Models\productos_proyecto;
 use App\Models\Proyecto;
@@ -30,8 +31,9 @@ class SucursalesProyectoController extends Controller
 
         $cliente = Cliente::where('id','=',$idc)->first();
         $proyecto = Proyecto::where('id','=',$idp)->first();
+        $tipos = Importacion::all();
 
-        return view('proyecto.sucursal.index', ['sucursales' => $sucursales,'cliente' => $cliente,'proyecto' => $proyecto,'idp' => $idp,'idc' => $idc]);
+        return view('proyecto.sucursal.index', ['sucursales' => $sucursales,'cliente' => $cliente,'proyecto' => $proyecto,'idp' => $idp,'idc' => $idc,'tipos' => $tipos]);
     }
 
     /**
@@ -62,10 +64,9 @@ class SucursalesProyectoController extends Controller
 
         $productos = DB::table('productos')
             ->leftJoin('terminos_pago_clientes', 'productos.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-            ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'productos.terminos_pago_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('productos.*','terminos_pago_clientes.id as tpc_id','terminos_pago_clientes.nombre as tpc_nombre', 
-            'terminos_pago_proveedors.nombre as tpp_nombre','terminos_pago_proveedors.id as tpp_id','tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
+            'tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
             ->get();
         
             $rev = productos_proyecto::where('proyecto_id', $idp)
@@ -77,6 +78,7 @@ class SucursalesProyectoController extends Controller
                     
                     $producto->proyecto_id = $idp;
                     $producto->producto_id = $prod->id;
+                    $producto->precio = 0;
                     $producto->cotizado = False;
         
                     $producto->save();

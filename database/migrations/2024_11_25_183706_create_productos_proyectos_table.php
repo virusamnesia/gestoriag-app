@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Proyecto::class);
             $table->foreignIdFor(Producto::class);
+            $table->float('precio');
             $table->boolean('cotizado');
             $table->timestamps();
         });

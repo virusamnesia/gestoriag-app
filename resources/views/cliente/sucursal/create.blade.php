@@ -27,6 +27,24 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
+                    <x-adminlte-input name="marca" placeholder="Nombre de la marca" label-class="text-lightblue" fgroup-class="col-md-12">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text">
+                                <i class="fas fa-copyright text-lightblue"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+                <div class="row">
+                    <x-adminlte-input name="idinterno" placeholder="Id interno de la sucursal" label-class="text-lightblue" fgroup-class="col-md-12">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text">
+                                <i class="fas fa-hashtag text-lightblue"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+                <div class="row">
                     <x-adminlte-input name="nombre" placeholder="Nombre de la sucursal" label-class="text-lightblue" fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
@@ -52,7 +70,7 @@
                         igroup-size="sm" data-placeholder="Selecciona un municipio..." >
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
-                                <i class="far fa-building"></i>
+                                <i class="fas fa-location-dot"></i>
                             </div>
                         </x-slot>
                         <option/>

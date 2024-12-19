@@ -24,6 +24,24 @@
         </div>
         <div class="col-md-6">
             <div class="row">
+                <x-adminlte-input name="marca" placeholder="Nombre de la marca" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$suc->marca}}">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text">
+                            <i class="fas fa-copyright text-lightblue"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input>
+            </div>
+            <div class="row">
+                <x-adminlte-input name="idinterno" placeholder="Id interno de la sucursal" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$suc->id_interno}}">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text">
+                            <i class="fas fa-hashtag text-lightblue"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input>
+            </div>
+            <div class="row">
                 <x-adminlte-input name="nombre" placeholder="Razón Social de la sucursal" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$suc->nombre}}" disabled>
                     <x-slot name="prependSlot">
                         <div class="input-group-text">

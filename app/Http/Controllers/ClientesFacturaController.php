@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClientesFacturaController extends Controller
 {
     public function index(){
         
-        return view('cliente.index');
+        $facturas = DB::table('clientes_facturas')
+            ->join('clientes','clientes.id','=','clientes_facturas.cliente_id')
+            ->join('proyectos','proyectos.id','=','clientes_facturas.proyecto_id')
+            ->select('clientes_facturas.*','clientes.nombre as cliente','clientes.rfc as rfc','proyectos.nombre as proyecto')
+            ->groupBy('clientes_facturas.id')
+            ->get();
+
+       
+        return view('factclientes', ['facturas' => $facturas]);
     }
 
     /**
@@ -16,9 +26,16 @@ class ClientesFacturaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
-        //
+        $proyectos = DB::table('proyectos')
+            ->join('clientes','clientes.id','=','proyectos.cliente_id')
+            ->select('proyectos.*','clientes.nombre as cliente','clientes.rfc as rfc')
+            ->where('proyectos.cxc', '>',0)
+            ->groupBy('clientes.id')
+            ->get();
+        
+        return view('factclientes/nuevo', ['proyectos' => $proyectos]);
     }
 
     /**
@@ -29,7 +46,7 @@ class ClientesFacturaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -38,9 +55,9 @@ class ClientesFacturaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function show(top50 $top50)
+    public function show($idc, $idl)
     {
-        //
+        
     }
 
     /**
@@ -49,10 +66,11 @@ class ClientesFacturaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function edit(top50 $top50)
+    public function edit($id)
     {
-        //
+        
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -61,9 +79,9 @@ class ClientesFacturaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, top50 $top50)
+    public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
@@ -72,7 +90,7 @@ class ClientesFacturaController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function destroy(top50 $top50)
+    public function destroy($id)
     {
         //
     }

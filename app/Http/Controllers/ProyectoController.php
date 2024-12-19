@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\EstadosProyecto;
 use App\Models\ListasPrecio;
+use App\Models\MovimientosPagoCliente;
 use App\Models\Proyecto;
+use App\Models\ProyectoSucursalLinea;
 use App\Models\Sucursal;
 use App\Models\sucursales_proyecto;
 use Illuminate\Http\Request;
@@ -18,9 +20,8 @@ class ProyectoController extends Controller
         $proyectos =DB::table('proyectos')
         ->join('clientes', 'clientes.id', '=', 'proyectos.cliente_id')
         ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
-        ->join('listas_precios', 'listas_precios.id', '=', 'proyectos.listas_precio_id')
         ->select('proyectos.*','clientes.nombre as cliente','clientes.id as cliente_id','estados_proyectos.nombre as estado',
-        'estados_proyectos.id as estados_proyecto_id', 'listas_precios.nombre as lista', 'listas_precios.id as lista_id')
+        'estados_proyectos.id as estados_proyecto_id')
         ->orderBy('proyectos.id', 'desc')
         ->get();
 
@@ -34,11 +35,10 @@ class ProyectoController extends Controller
      */
     public function create()
     {
-        $listas = ListasPrecio::all();
         $estados = EstadosProyecto::all();
         $clientes = Cliente::all();
 
-        return view('proyecto.create', ['clientes' => $clientes,'listas' => $listas, 'estados' => $estados]);
+        return view('proyecto.create', ['clientes' => $clientes, 'estados' => $estados]);
     }
 
     /**
@@ -57,10 +57,11 @@ class ProyectoController extends Controller
         $proyecto->cliente_id = $request->cliente;
         $proyecto->importe = 0;
         $proyecto->saldo = 0;
+        $proyecto->cxc = 0;
         $proyecto->estados_proyecto_id = 1;
-        $proyecto->listas_precio_id = $request->lista;
         $proyecto->fecha_cotizacion = today();
         $proyecto->es_agrupado = $request->agrupado;
+        $proyecto->autorizar = 0;
 
         $proyecto->save();
 
@@ -98,28 +99,102 @@ class ProyectoController extends Controller
      * @param  \App\Models\proyecto  $proyecto
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function auth($id)
     {
-        $municipios = DB::table('municipio_contactos')
-            ->join('estado_contactos', 'estado_contactos.id', '=', 'municipio_contactos.estado_contacto_id')
-            ->join('pais_contactos', 'pais_contactos.id', '=', 'estado_contactos.pais_contacto_id')
-            ->join('ciudad_contactos', 'municipio_contactos.id', '=', 'ciudad_contactos.municipio_contacto_id')
-            ->select('municipio_contactos.id','municipio_contactos.nombre','ciudad_contactos.nombre as ciudad','estado_contactos.alias as estado','pais_contactos.alias as pais')
-            ->orderBy('municipio_contactos.nombre')
-            ->get();
-
-        $bancos = Banco::all();
-        
         $proyecto = DB::table('proyectos')
-            ->join('ciudad_contactos', 'ciudad_contactos.id', '=', 'proyectos.ciudad_contacto_id')
-            ->join('municipio_contactos', 'municipio_contactos.id', '=', 'proyectos.municipio_contacto_id')
-            ->join('estado_contactos', 'estado_contactos.id', '=', 'proyectos.estado_contacto_id')
-            ->join('pais_contactos', 'pais_contactos.id', '=', 'proyectos.pais_contacto_id')
-            ->select('proyectos.*')
-            ->where('proyectos.id','=',$id)
-            ->get();
+            ->where('id','=',$id)
+            ->first();
 
-        return view('proyecto.show', ['proyecto' => $proyecto,'municipios' => $municipios, 'bancos' => $bancos]);
+        if($proyecto->autorizar == 1){
+            $proyecto->update([
+                'estados_proyecto_id'=> 2,
+            ]);
+
+            $lineas =DB::table('proyecto_lineas')
+                ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+                ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+                ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
+                ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','sucursals.cliente_id as cliente',
+                'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+                'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+                'tipos_productos.nombre as tipo')
+                ->where('proyecto_lineas.proyecto_id','=',$id)
+                ->get();
+
+            foreach($lineas as $linea){
+                $movimiento = MovimientosPagoCliente::where('terminos_pago_cliente_id','=',$linea->terminos)
+                    ->where('secuencia','=',1)
+                    ->first();
+
+                if($movimiento == null){
+                    $inf = 1;
+                    session()->flash('Error','No existen acciones que agregar: '.$linea->sucursal." . ".$linea->producto);
+                }
+                else{
+                    $importe = 0;
+                    $saldo = $linea->saldocliente;
+
+                    if($movimiento->facturable == 1){
+                        $importe = $linea->precio * ($movimiento->porcentaje / 100);
+                        $saldo = $saldo - $importe;
+                    }
+                    
+
+                    $mov =  new ProyectoSucursalLinea();
+
+                    $mov->proyecto_linea_id = $linea->id;
+                    $mov->movimientos_pago_cliente_id = $movimiento->id;
+                    $mov->movimientos_pago_proveedor_id = 0;
+                    $mov->tipos_proceso_id = 1;
+                    $mov->es_facturable = $movimiento->facturable;
+                    $mov->fecha_mov = today();
+                    $mov->cliente_id = $linea->cliente;
+                    $mov->proveedor_id = $linea->proveedor_id;
+                    $mov->importe = $importe;
+                    $mov->saldo = $saldo;
+                    $mov->observaciones = "Autorización";
+                    $mov->url = "";
+
+                    $mov->save();
+
+                    $data = [
+                        'saldocliente' => $linea->saldocliente - $importe,
+                        'cxc' => $linea->cxc + $importe,
+                        'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
+                    ];
+
+                    $proy = DB::table('proyecto_lineas')
+                        ->where('id','=',$linea->id)
+                        ->update($data);
+
+                    $data = [
+                        'saldo' => $proyecto->saldo - $importe,
+                        'cxc' => $proyecto->cxc + $importe,
+                    ];
+
+                    $proy = DB::table('proyectos')
+                        ->where('id','=',$id)
+                        ->update($data);
+                }
+
+                $inf = 1;
+                session()->flash('Exito','La autorización se realizó con éxito...');
+                return redirect()->route('proyectos')->with('info',$inf);
+            }
+
+        }
+        else{
+            $inf = 1;
+            session()->flash('Error','El proyecto aún no puede ser autorizado...');
+            return redirect()->route('proyectos')->with('info',$inf);
+        }
     }
 
     /**
@@ -130,26 +205,7 @@ class ProyectoController extends Controller
      */
     public function edit($id)
     {
-        $municipios = DB::table('municipio_contactos')
-            ->join('estado_contactos', 'estado_contactos.id', '=', 'municipio_contactos.estado_contacto_id')
-            ->join('pais_contactos', 'pais_contactos.id', '=', 'estado_contactos.pais_contacto_id')
-            ->join('ciudad_contactos', 'municipio_contactos.id', '=', 'ciudad_contactos.municipio_contacto_id')
-            ->select('municipio_contactos.id','municipio_contactos.nombre','ciudad_contactos.nombre as ciudad','estado_contactos.alias as estado','pais_contactos.alias as pais')
-            ->orderBy('municipio_contactos.nombre')
-            ->get();
         
-        $bancos = Banco::all();
-        
-        $proyecto = DB::table('proyectos')
-            ->join('ciudad_contactos', 'ciudad_contactos.id', '=', 'proyectos.ciudad_contacto_id')
-            ->join('municipio_contactos', 'municipio_contactos.id', '=', 'proyectos.municipio_contacto_id')
-            ->join('estado_contactos', 'estado_contactos.id', '=', 'proyectos.estado_contacto_id')
-            ->join('pais_contactos', 'pais_contactos.id', '=', 'proyectos.pais_contacto_id')
-            ->select('proyectos.*')
-            ->where('proyectos.id','=',$id)
-            ->get();
-
-        return view('proyecto.edit', ['proyecto' => $proyecto,'municipios' => $municipios, 'bancos' => $bancos]);
     }
 
     /**
@@ -161,49 +217,7 @@ class ProyectoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $municipios = DB::table('municipio_contactos')
-            ->join('estado_contactos', 'estado_contactos.id', '=', 'municipio_contactos.estado_contacto_id')
-            ->join('pais_contactos', 'pais_contactos.id', '=', 'estado_contactos.pais_contacto_id')
-            ->join('ciudad_contactos', 'municipio_contactos.id', '=', 'ciudad_contactos.municipio_contacto_id')
-            ->select('municipio_contactos.id','municipio_contactos.nombre','ciudad_contactos.id as ciudad','estado_contactos.id as estado','pais_contactos.id as pais')
-            ->where('municipio_contactos.id', $request->municipio)
-            ->orderBy('municipio_contactos.nombre')
-            ->get();
-    
-        foreach ($municipios as $data) {
-            $municipio = $data->id;
-            $estado = $data->estado;
-            $pais = $data->pais;
-            $ciudad = $data->ciudad;
-        }
-
-        $banco = Banco::select('id', 'nombre')
-        ->where('id', $request->banco)
-        ->first();
         
-        $proyecto = DB::table('proyectos')
-            ->where('proyectos.id','=',$id)
-            ->update([
-            'clave'=> $request->clave,
-            'nombre'=> $request->nombre,
-            'rfc'=> $request->rfc,
-            'domicilio'=> $request->domicilio,
-            'colonia'=> $request->colonia,
-            'ciudad_contacto_id'=> $ciudad,
-            'municipio_contacto_id'=> $request->municipio,
-            'estado_contacto_id'=> $estado,
-            'pais_contacto_id'=> $pais,
-            'cp'=> $request->cp,
-            'telefono'=> $request->telefono,
-            'email'=> $request->email,
-            'banco_id' => $banco->id,
-            'cuenta' => $request->cuenta,
-        ]
-        );
-
-        $inf = 1;
-        session()->flash('Exito','El proyecto se modificó con éxito...');
-        return redirect()->route('proyectos')->with('info',$inf);
     }
 
 

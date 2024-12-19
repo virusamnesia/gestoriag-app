@@ -41,7 +41,6 @@
                     <th scope="col">Importe</th>
                     <th scope="col">Saldo</th>
                     <th scope="col">Estado</th>
-                    <th scope="col">Lista Precio</th>
                     <th scope="col">Cotización</th>
                     <th scope="col">Autorización</th>
                     <th scope="col">Finalización</th>
@@ -58,7 +57,6 @@
                             <td>{{$row->importe}}</td>
                             <td>{{$row->saldo}}</td>
                             <td>{{$row->estado}}</td>
-                            <td>{{$row->lista}}</td>
                             <td>{{$row->fecha_cotizacion}}</td>
                             <td>{{$row->fecha_autorizacion}}</td>
                             <td>{{$row->fecha_finalizacion}}</td>
@@ -70,6 +68,9 @@
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
+                                            @if($row->id == 1)
+                                                <li><button class="btn align-self-left" id="btnauth" onclick="auth({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
+                                            @endif
                                             <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
                                     </div>
                                 </span>
@@ -135,13 +136,13 @@
         }
 
         function view(id){
-            var base = "<?php echo '/Proyectos/show/'?>";
+            var base = "<?php echo '/proyectos/show/'?>";
             var url = base+id;
             location.href=url;
         }
 
-        function municipios(id){
-            var base = "<?php echo '/Proyectos/municipios/'?>";
+        function auth(id){
+            var base = "<?php echo '/proyectos/auth/'?>";
             var url = base+id;
             location.href=url;
         }

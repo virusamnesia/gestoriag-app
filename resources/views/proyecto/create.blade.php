@@ -54,20 +54,6 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="lista" label-class="text-lightblue"  fgroup-class="col-md-10"
-                        igroup-size="sm" data-placeholder="Selecciona una lista de precio...">
-                        <x-slot name="prependSlot">
-                            <div class="input-group-text bg-gradient-info">
-                                <i class="fas fa-receipt"></i>
-                            </div>
-                        </x-slot>
-                        <option/>
-                        @foreach ($listas as $rowl)
-                        <option value="{{$rowl->id}}">{{$rowl->nombre}}</option>
-                        @endforeach
-                    </x-adminlte-select2>
-                </div>
-                <div class="row">
                     <x-adminlte-select2 name="agrupado" label-class="text-lightblue"  fgroup-class="col-md-8"
                         igroup-size="sm" data-placeholder="Facturación agrupada...">
                         <x-slot name="prependSlot">

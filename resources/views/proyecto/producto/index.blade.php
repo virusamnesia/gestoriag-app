@@ -45,17 +45,30 @@
                         <th scope="col">Cotizar</th>
                         <th scope="col">Producto</th>
                         <th scope="col">Categoría</th>
+                        <th scope="col">Precio</th>
                     </tr>
                     </thead>
                     <tbody>
                         @foreach ($productos as $row) {{-- Add here extra stylesheets --}}
-                            @php $name = "sel".$row->id; @endphp
+                            @php $name = "sel".$row->id;
+                                $precio = "prec".$row->id; 
+                            @endphp
                             <tr>
                                 <th scope="row">
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger"/>
                                 </th>
                                 <td>{{$row->producto}}</td>
                                 <td>{{$row->tps_nombre}}</td>
+                                <td>
+                                    <x-adminlte-input name="{{$precio}}" id="{{$precio}}" placeholder="$Precio" type="number" fgroup-class="col-md-5"
+                                        igroup-size="sm" min=1 max=1000 value="{{$row->precio}}" step="0.05">
+                                        <x-slot name="appendSlot">
+                                            <div class="input-group-text bg-light">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-input>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

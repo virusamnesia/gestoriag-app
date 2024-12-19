@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ProyectoLineaImport;
 use App\Models\Cliente;
+use App\Models\Importacion;
 use App\Models\Producto;
 use App\Models\Proyecto;
 use App\Models\ProyectoLinea;
@@ -10,6 +12,7 @@ use App\Models\TerminosPagoCliente;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProyectoLineaController extends Controller
 {
@@ -25,14 +28,13 @@ class ProyectoLineaController extends Controller
         $lineas =DB::table('proyecto_lineas')
         ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
         ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-        ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-        ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-        ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-        ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-        ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
-        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
         'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus',
@@ -125,22 +127,6 @@ class ProyectoLineaController extends Controller
             ->first();
 
         if (!$rev){
-            
-            
-            $lista = DB::table('listas_precio_lineas')
-                ->join('proyectos', 'proyectos.listas_precio_id', '=', 'listas_precio_lineas.listas_precio_id')
-                ->select('listas_precio_lineas.*')
-                ->where('proyectos.listas_precio_id','=',$proyecto->listas_precio_id)
-                ->where('listas_precio_lineas.producto_id','=', $request->producto)
-                ->where('listas_precio_lineas.municipio_contacto_id','=', $sucursal->municipio_id)
-                ->get();
-
-            $precio = 0;
-            $costo = 0;
-            foreach ($lista as $l){
-                $precio = $l->precio;
-                $costo = $l->costo;
-            }
 
             $linea = new ProyectoLinea();
 
@@ -148,18 +134,20 @@ class ProyectoLineaController extends Controller
             $linea->cliente_id = $cliente->id;
             $linea->sucursal_id = $request->sucursal;
             $linea->producto_id = $request->producto;
-            $linea->precio = $precio;
-            $linea->saldocliente = $precio;
-            $linea->costo = $costo;
-            $linea->saldoproveedor = $costo;
+            $linea->precio = $request->precio;
+            $linea->saldocliente = $request->precio;
+            $linea->costo = 0;
+            $linea->cxc = 0;
+            $linea->cxp = 0;
+            $linea->saldoproveedor = 0;
             $linea->terminos_pago_cliente_id = $terminos->id;
             $linea->estatus_linea_cliente_id = $terminos->estatus; 
 
             $linea->save();
 
             $data = [
-                'importe' => $proyecto->importe + $precio,
-                'saldo' => $proyecto->saldo + $precio,
+                'importe' => $proyecto->importe + $request->precio,
+                'saldo' => $proyecto->saldo + $request->precio,
             ];
             
             $proy = DB::table('proyectos')
@@ -274,6 +262,37 @@ class ProyectoLineaController extends Controller
         $inf = 1;
         session()->flash('Exito','Las sucursales se agregaron con éxito...');
         return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+    }
+
+    public function import(Request $request,$idp,$idc){
+        $request->validate([
+            'importfile' => 'required',
+            'tipoimport' => 'required',
+        ]);
+
+        $file = $request->file('importfile');
+        $tipoimport = $request->tipoimport;
+
+        //$path = $request->importfile->extension();
+
+
+        //$file->move('C:\xampp');
+        //return $file->getRealPath();
+
+        //Excel::import(new ProyectoLineaImport)->import($file, null, \Maatwebsite\Excel\Excel::XLSX);
+        //$collection = Excel::toCollection(new ProyectoLineaImport, $file);
+        Importacion::create([
+            'proyecto_id' => $idp,
+            'cliente_id' => $idc,
+            'importacion_proyecto_id' => $tipoimport,
+            'fecha' => today(),
+            'file' => $file->getRealPath(),
+        ]);
+        
+        Excel::import(new ProyectoLineaImport, $file);
+
+        session()->flash('Exito','El proyecto se importó con éxito...');
+        return redirect()->route('proyectos.lineas', ['id' => $idp]);
     }
     
 }

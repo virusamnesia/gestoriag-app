@@ -17,10 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(TerminosPagoCliente::class);
             $table->integer('secuencia');
-            $table->string('nombre');
             $table->foreignIdFor(EstatusLineaCliente::class);
-            $table->boolean('facturable');
-            $table->float('porcentaje');
+            $table->float('valor_cliente')->nullable();
+            $table->float('valor_proveedor')->nullable();
             $table->timestamps();
         });
     }

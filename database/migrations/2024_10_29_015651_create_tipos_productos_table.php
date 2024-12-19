@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tipos_productos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('alias', 5);
+            $table->string('alias', 5)->nullable();
             $table->boolean('es_activo');
             $table->timestamps();
         });

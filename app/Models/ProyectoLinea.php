@@ -9,4 +9,7 @@ class ProyectoLinea extends Model
 {
     /** @use HasFactory<\Database\Factories\ProyectoLineaFactory> */
     use HasFactory;
+
+    
+    protected $guarded = [];  
 }

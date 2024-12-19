@@ -30,7 +30,6 @@ return new class extends Migration
             $table->string('cp', 5);
             $table->string('email')->nullable();
             $table->string('telefono')->nullable();
-            $table->foreignIdFor(ListasPrecio::class);
             $table->boolean('es_detalle');
             $table->timestamps();
         });

@@ -38,6 +38,8 @@
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
+                    <th scope="col">Marca</th>
+                    <th scope="col">Id Interno</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Municipio</th>
                     <th scope="col">Estado</th>
@@ -50,6 +52,8 @@
                 <tbody>
                     @foreach ($sucursales as $row) {{-- Add here extra stylesheets --}}
                         <tr>
+                            <td>{{$row->marca}}</td>
+                            <td>{{$row->id_interno}}</td>
                             <th scope="row">{{$row->nombre}}</th>
                             <td>{{$row->municipio}}</td>
                             <td>{{$row->estado}}</td>

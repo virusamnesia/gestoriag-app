@@ -43,12 +43,14 @@ class ProductosProyectoController extends Controller
 
         foreach ($productos as $row){
             $sel = "sel".$row->id;
+            $prec = "prec".$row->id;
             if ($request->$sel){$cotizado = 1;}
             else {$cotizado = 0;}
             $sucursal = DB::table('productos_proyectos')
                 ->where('productos_proyectos.id','=',$row->id)
                 ->update([
                     'cotizado'=> $cotizado,
+                    'precio'=> $row->$prec,
                 ]
             );
         };
@@ -61,7 +63,7 @@ class ProductosProyectoController extends Controller
             ->join('sucursals', 'sucursals.id', '=', 'sucursales_proyectos.sucursal_id')
             ->select('sucursales_proyectos.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
             'clientes.nombre as cliente','clientes.id as cliente_id','sucursals.municipio_contacto_id as municipio_id',
-            'proyectos.id as proyecto_id','proyectos.listas_precio_id')
+            'proyectos.id as proyecto_id')
             ->where('proyectos.id','=',$idp)
             ->where('sucursales_proyectos.cotizado','=',true)
             ->orderBy('sucursals.nombre')
@@ -90,42 +92,28 @@ class ProductosProyectoController extends Controller
             foreach ($productos as $prod){
                 
                 $rev = ProyectoLinea::where('sucursal_id','=',$suc->id)
-                ->where('producto_id','=', $prod->id)
-                ->where('proyecto_id','=', $suc->proyecto_id)
-                ->first();
+                    ->where('producto_id','=', $prod->id)
+                    ->where('proyecto_id','=', $suc->proyecto_id)
+                    ->first();
 
-                if (!$rev){
-                    $lista = DB::table('listas_precio_lineas')
-                        ->join('proyectos', 'proyectos.listas_precio_id', '=', 'listas_precio_lineas.listas_precio_id')
-                        ->select('listas_precio_lineas.*')
-                        ->where('proyectos.listas_precio_id','=',$suc->listas_precio_id)
-                        ->where('listas_precio_lineas.producto_id','=', $prod->id)
-                        ->where('listas_precio_lineas.municipio_contacto_id','=', $suc->municipio_id)
-                        ->get();
-
-                    $precio = 0;
-                    $costo = 0;
-                    foreach ($lista as $l){
-                        $precio = $l->precio;
-                        $costo = $l->costo;
-                    }
+                if ($rev == null){
 
                     $linea = new ProyectoLinea();
 
                     $linea->proyecto_id = $idp;
                     $linea->cliente_id = $idc;
                     $linea->sucursal_id = $suc->id;
-                    $linea->producto_id = $prod->id;
-                    $linea->precio = $precio;
-                    $linea->saldocliente = $precio;
-                    $linea->costo = $costo;
-                    $linea->saldoproveedor = $costo;
+                    $linea->producto_id = $prod->producto_id;
+                    $linea->precio = $prod->precio;
+                    $linea->saldocliente = $prod->precio;
+                    $linea->costo = 0;
+                    $linea->saldoproveedor = 0;
                     $linea->terminos_pago_cliente_id = $prod->terminos;
                     $linea->estatus_linea_cliente_id = 1; 
 
                     $linea->save();
 
-                    $importe += $precio;
+                    $importe += $prod->precio;
                 };
             };
         };

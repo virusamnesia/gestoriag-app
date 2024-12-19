@@ -22,8 +22,7 @@ return new class extends Migration
         Schema::create('proyecto_sucursal_lineas', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(ProyectoLinea::class)->index();
-            $table->foreignIdfor(MovimientosPagoCliente::class);
-            $table->foreignIdfor(MovimientosPagoProveedor::class);
+            $table->foreignIdfor(MovimientosPagoCliente::class)->nullable();
             $table->foreignIdFor(TiposProceso::class);
             $table->boolean('es_facturable');
             $table->timestamp('fecha_mov');
@@ -32,8 +31,10 @@ return new class extends Migration
             $table->timestamp('fecha_factura')->nullable();
             $table->foreignIdFor(ClientesFactura::class)->nullable();
             $table->foreignIdFor(ProveedorFactura::class)->nullable();
-            $table->float('importe')->nullable();
-            $table->float('saldo')->nullable();
+            $table->float('importe_cliente')->nullable();
+            $table->float('saldo_cliente')->nullable();
+            $table->float('importe_proveedor')->nullable();
+            $table->float('saldo_proveedor')->nullable();
             $table->text('observaciones')->nullable();
             $table->string('url')->nullable();
             $table->timestamps();

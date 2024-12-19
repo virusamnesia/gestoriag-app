@@ -20,7 +20,8 @@ return new class extends Migration
             $table->float('total');
             $table->timestamp('fecha')->nullable();
             $table->boolean('es_activo');
-            $table->boolean('es_factura_odoo');
+            $table->boolean('es_factura_odoo')->nullable();
+            $table->string('factura_odoo')->nullable();
             $table->timestamps();
         });
     }

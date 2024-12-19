@@ -120,7 +120,7 @@
 <script type="text/javascript">
     function back(id){
         var base = "<?php echo '/proyectos/lineas/' ?>";
-        var url = base+idp;
+        var url = base+id;
         location.href=url;
     }
 

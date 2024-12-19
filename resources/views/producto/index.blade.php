@@ -23,7 +23,7 @@
                 <tr>
                     <th scope="col">Clave</th>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Terminos Cliente</th>
+                    <th scope="col">Terminos Pago</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">Activo</th>
                     <th scope="col">Acciones</th>

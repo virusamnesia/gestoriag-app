@@ -10,6 +10,7 @@ use App\Http\Controllers\MovimientosPagoProveedorController;
 use App\Http\Controllers\MunicipioContactoController;
 use App\Http\Controllers\MunicipiosProveedorController;
 use App\Http\Controllers\PrecioProductoController;
+use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProductosProyectoController;
 use App\Http\Controllers\ProveedorController;
@@ -22,9 +23,15 @@ use App\Http\Controllers\TerminosPagoClienteController;
 use App\Http\Controllers\TerminosPagoProveedorController;
 use App\Http\Controllers\TiposProductoController;
 use App\Models\CiudadContacto;
+use App\Models\ClientesFactura;
+use App\Models\ClientesFacturaLinea;
+use App\Models\ImportacionProyecto;
+use App\Models\ImportacionProyectoProducto;
 use App\Models\ListasPrecio;
 use App\Models\MovimientosPagoCliente;
 use App\Models\Producto;
+use App\Models\ProveedorFactura;
+use App\Models\ProveedorFacturaLinea;
 use App\Models\ProyectoLinea;
 use App\Models\ProyectoSucursalLinea;
 use App\Models\TiposProducto;
@@ -49,9 +56,12 @@ Route::middleware([
     Route::get('/ciudades', [CiudadContactoController::class, 'index'])->name('ciudades');
     Route::post('/ciudades/store', [CiudadContactoController::class, 'store'])->name('saveciudades');
 
-    Route::get('/listas/{id?}', [ListasPrecioController::class, 'index'])->name('listas');
-    Route::get('/listas/nuevo/{id?}', [ListasPrecioController::class, 'create'])->name('newlista');
-    Route::get('/listas/productos/{idc?}/{idl?}', [ListasPrecioLineaController::class, 'index'])->name('listas.productos');
+    Route::get('/importaciones', [ImportacionProyecto::class, 'index'])->name('importaciones');
+    Route::post('/importaciones/nuevo', [ImportacionProyecto::class, 'store'])->name('nuevo.importaciones');
+    Route::post('/importaciones/{id?}', [ImportacionProyecto::class, 'update'])->name('edit.importaciones');
+    Route::get('/importaciones/productos/{id?}', [ImportacionProyectoProducto::class, 'index'])->name('importaciones.productos');
+    Route::post('/importaciones/productos/nuevo/{id?}', [ImportacionProyectoProducto::class, 'store'])->name('nuevo.importaciones');
+    Route::post('/importaciones/productos/del/{idi?}/{idp?}', [ImportacionProyectoProducto::class, 'destroy'])->name('del.importaciones');
     
     Route::get('/tipos', [TiposProductoController::class, 'index'])->name('tipos');
     
@@ -61,16 +71,10 @@ Route::middleware([
     Route::get('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'index'])->name('termclie.movimientos');
     Route::get('/termclie/movimientos/show/{id?}', [MovimientosPagoClienteController::class, 'show'])->name('termclie.show.movimientos');
     Route::get('/termclie/movimientos/edit/{id?}', [MovimientosPagoClienteController::class, 'edit'])->name('termclie.edit.movimientos');
-    Route::post('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'store'])->name('save.termclie.movimientos');
+    Route::post('/termclie/movimientos/nuevo/{id?}', [MovimientosPagoClienteController::class, 'store'])->name('save.termclie.movimientos');
+    Route::post('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'update'])->name('update.termclie.movimientos');
     
-    Route::get('/termprov', [TerminosPagoProveedorController::class, 'index'])->name('termprov');
-    Route::get('/termprov/nuevo', [TerminosPagoProveedorController::class, 'create'])->name('new.termprov');
-    Route::post('/termprov/nuevo', [TerminosPagoProveedorController::class, 'store'])->name('save.termprov');
-    Route::get('/termprov/movimientos/{id?}', [MovimientosPagoProveedorController::class, 'index'])->name('termprov.movimientos');
-    Route::get('/termprov/movimientos/edit/{id?}', [MovimientosPagoProveedorController::class, 'edit'])->name('edit.termprov.movimientos');
-    Route::get('/termprov/movimientos/show/{id?}', [MovimientosPagoProveedorController::class, 'show'])->name('show.termprov.movimientos');
-    Route::post('/termprov/movimientos/{id?}', [MovimientosPagoProveedorController::class, 'store'])->name('save.termprov.movimientos');
-
+   
     //USUARIOS
     Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios');
     
@@ -114,6 +118,7 @@ Route::middleware([
     Route::get('/proyectos/show/{id?}', [ProyectoController::class, 'show'])->name('show.proyectos');
     Route::get('/proyectos/{id?}', [ProyectoController::class, 'edit'])->name('edit.proyectos');
     Route::post('/proyectos/update/{id?}', [ProyectoController::class, 'update'])->name('update.proyectos');
+    Route::get('/proyectos/auth/{id?}', [ProyectoController::class, 'auth'])->name('auth.proyectos');
 
     Route::get('/proyectos/sucursales/{idp?}/{idc?}', [SucursalesProyectoController::class, 'index'])->name('proyectos.sucursales');
     Route::post('/proyectos/sucursales/update/{idp?}/{idc?}', [SucursalesProyectoController::class, 'update'])->name('update.proyectos.sucursales');
@@ -129,7 +134,30 @@ Route::middleware([
     Route::post('/proyectos/lineas/update/{idp?}/{idl?}', [ProyectoLineaController::class, 'update'])->name('update.proyectos.lineas');
     Route::get('/proyectos/lineas/sucursales/nuevo/{idp?}/{idl?}', [ProyectoSucursalLineaController::class, 'create'])->name('new.proyectos.lineas.sucursales');
     Route::post('/proyectos/lineas/sucursales/store/{idp?}/{idl?}', [ProyectoSucursalLineaController::class, 'store'])->name('save.proyectos.lineas.sucursales');
-    
+    Route::post('/proyectos/lineas/import/{idp?}/{idc?}', [ProyectoLineaController::class, 'import'])->name('import.proyectos.lineas');
+
+    Route::get('/factclientes', [ClientesFactura::class, 'index'])->name('factcleintes');
+    Route::get('/factclientes/lineas/{id?}', [ClientesFacturaLinea::class, 'index'])->name('factclientes.lineas');
+    Route::post('/factclientes/lineas/store/{idf?}/{idp?}', [ClientesFacturaLinea::class, 'store'])->name('save.factclientes.lineas');
+
+    //Presupuestos
+    Route::get('/presupuestos', [PresupuestoController::class, 'index'])->name('presupuestos');
+    Route::get('/presupuestos/nuevo', [PresupuestoController::class, 'create'])->name('new.presupuestos');
+    Route::post('/presupuestos/store', [PresupuestoController::class, 'store'])->name('save.presupuestos');
+    Route::post('/presupuestos/lineas/store/{id?}', [PresupuestoController::class, 'storeLineas'])->name('save.presupuestos.lineas');
+    Route::get('/presupuestos/{id?}', [PresupuestoController::class, 'edit'])->name('edit.presupuestos');
+    Route::post('/presupuestos/update/{id?}', [PresupuestoController::class, 'update'])->name('update.presupuestos');
+    Route::get('/presupuestos/auth/{id?}', [PresupuestoController::class, 'auth'])->name('auth.presupuestos');
+    Route::post('/presupuestos/lineas/update/{id?}', [PresupuestoController::class, 'updatePrice'])->name('updateprice.presupuestos.lineas');
+    Route::get('/presupuestos/lineas/show/{id?}', [PresupuestoController::class, 'show'])->name('show.presupuestos');
+    Route::post('/presupuestos/lineas/costo/{id?}', [PresupuestoController::class, 'updatecosto'])->name('update.presupuestos.lineas');
+    Route::get('/presupuestos/lineas/sucursales/{idp?}/{idl?}', [PresupuestoController::class, 'indexmov'])->name('proyectos.lineas.sucursales');
+    Route::get('/presupuestos/lineas/sucursales/nuevo/{idp?}/{idl?}', [PresupuestoController::class, 'createmov'])->name('new.proyectos.lineas.sucursales');
+    Route::post('/presupuestos/lineas/sucursales/store/{idp?}/{idl?}', [PresupuestoController::class, 'storemov'])->name('save.proyectos.lineas.sucursales');
+
+    Route::get('/factproveedores', [ProveedorFactura::class, 'index'])->name('factproveedores');
+    Route::get('/factproveedores/lineas/{id?}', [ProveedorFacturaLinea::class, 'index'])->name('factproveedores.lineas');
+    Route::post('/factproveedores/lineas/store/{idf?}/{idp?}', [ProveedorFacturaLinea::class, 'store'])->name('save.factproveedores.lineas');
 
 });
 

@@ -14,8 +14,8 @@ class EstatusLineaClienteSeeder extends Seeder
     public function run(): void
     {
         EstatusLineaCliente::create([
-            'nombre' => 'Autorizado',
-            'alias' => 'AUT',
+            'nombre' => 'Cotizado',
+            'alias' => 'COT',
         ]);
         EstatusLineaCliente::create([
             'nombre' => 'Anticipo',

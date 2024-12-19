@@ -19,6 +19,8 @@ return new class extends Migration
         Schema::create('sucursals', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Cliente::class)->index();
+            $table->string('id_interno')->nullable();
+            $table->string('marca');
             $table->string('nombre');
             $table->string('domicilio');
             $table->string('colonia')->nullable();
@@ -29,7 +31,7 @@ return new class extends Migration
             $table->string('cp', 5);
             $table->string('email')->nullable();
             $table->string('telefono')->nullable();
-            $table->float('superficie');
+            $table->float('superficie')->nullable();
             $table->timestamps();
         });
     }

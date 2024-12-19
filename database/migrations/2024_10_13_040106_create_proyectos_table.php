@@ -21,13 +21,14 @@ return new class extends Migration
             $table->foreignIdFor(Cliente::class)->index();
             $table->float('importe');
             $table->float('saldo');
-            $table->foreignIdFor(EstadosProyecto::class);
-            $table->foreignIdfor(ListasPrecio::class);
+            $table->float('cxc');
+            $table->foreignIdFor(EstadosProyecto::class)->nullable();
             $table->timestamp('fecha_cotizacion')->nullable();
             $table->timestamp('fecha_autorizacion')->nullable();
             $table->timestamp('fecha_finalizacion')->nullable();
             $table->timestamp('fecha_cancelacion')->nullable();
             $table->boolean('es_agrupado');
+            $table->boolean('autorizar');
             $table->timestamps();
         });
     }

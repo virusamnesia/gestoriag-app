@@ -32,12 +32,12 @@ return new class extends Migration
             $table->foreignIdFor(Presupuesto::class)->nullable();
             $table->float('precio');
             $table->float('saldocliente');
-            $table->float('costo');
-            $table->float('saldoproveedor');
+            $table->float('cxc');
+            $table->float('costo')->nullable();
+            $table->float('saldoproveedor')->nullable();
+            $table->float('cxp');
             $table->foreignIdFor(TerminosPagoCliente::class)->nullable();
-            $table->foreignIdFor(EstatusLineaCliente::class);
-            $table->foreignIdFor(TerminosPagoProveedor::class)->nullable();
-            $table->foreignIdFor(EstatusLineaProveedor::class)->nullable();
+            $table->foreignIdFor(EstatusLineaCliente::class)->nullable();
             $table->foreignIdFor(ProyectoSucursalLinea::class)->nullable();
             $table->timestamps();
         });

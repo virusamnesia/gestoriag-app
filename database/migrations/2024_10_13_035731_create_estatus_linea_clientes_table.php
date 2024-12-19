@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('estatus_linea_clientes', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('alias', 5);
+            $table->string('alias', 5)->nullable();
             $table->timestamps();
         });
     }

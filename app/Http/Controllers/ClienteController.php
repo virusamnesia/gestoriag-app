@@ -178,8 +178,7 @@ class ClienteController extends Controller
             'cp'=> $request->cp,
             'telefono'=> $request->telefono,
             'email'=> $request->email,
-        ]
-        );
+        ]);
 
         $inf = 1;
         session()->flash('Exito','El cliente se modificó con éxito...');

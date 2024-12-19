@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Cliente;
+use App\Models\Proyecto;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('clientes_facturas', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Cliente::class)->index();
+            $table->foreignIdFor(Proyecto::class)->index();
+            $table->foreignIdFor(Cliente::class);
             $table->float('subtotal');
             $table->float('impuestos');
             $table->float('total');
             $table->timestamp('fecha')->nullable();
             $table->boolean('es_activo');
-            $table->boolean('es_factura_odoo');
-            $table->string('factura_odoo');
+            $table->string('factura_odoo')->nullable();
             $table->timestamps();
         });
     }

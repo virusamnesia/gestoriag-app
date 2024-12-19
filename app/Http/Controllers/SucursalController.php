@@ -74,6 +74,8 @@ class SucursalController extends Controller
         $sucursal = new Sucursal();
 
         $sucursal->cliente_id = $id;
+        $sucursal->marca = $request->marca;
+        $sucursal->id_interno = $request->idinterno;
         $sucursal->nombre = $request->nombre;
         $sucursal->domicilio = $request->domicilio;
         $sucursal->colonia = $request->colonia;
@@ -180,6 +182,8 @@ class SucursalController extends Controller
             ->where('sucursals.id','=',$ids)
             ->update([
             'cliente_id'=> $idc,
+            'marca' => $request->marca,
+            'id_interno' => $request->idinterno,
             'nombre'=> $request->nombre,
             'domicilio'=> $request->domicilio,
             'colonia'=> $request->colonia,

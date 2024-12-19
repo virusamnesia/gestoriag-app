@@ -358,15 +358,20 @@ return [
                         [
                             'text' => 'Municipios',
                             'url' => '/municipios/0/0',
-                            'icon' => 'fas fa-map-marked'
+                            'icon' => 'fas fa-map-marked',
+                            'icon_color' => 'green',
                         ],
                         [
                             'text' => 'Terminos Clientes',
                             'url' => '/termclie',
+                            'icon' => 'fas fa-list-ol',
+                            'icon_color' => 'red',
                         ],
                         [
                             'text' => 'Terminos Proveedores',
                             'url' => '/termprov',
+                            'icon' => 'fas fa-list-ol',
+                            'icon_color' => 'blue',
                         ],
                         [
                             'text' => 'level_two',
@@ -432,19 +437,24 @@ return [
         ],
         ['header' => 'Reportes'],
         [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
-        ],
-        [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
             'text' => 'information',
             'icon_color' => 'cyan',
             'url' => '#',
+        ],
+        ['header' => 'Facturación'],
+        [
+            'text' => 'Facturación Clientes',
+            'icon' => 'fas fa-project-diagram',
+            'label_color' => 'success',
+            'icon_color' => 'purple',
+            'url' => '/factclientes',
+        ],
+        [
+            'text' => 'Facturación Proveedores',
+            'icon' => 'far fa-list-alt',
+            'label_color' => 'warning',
+            'icon_color' => 'orange',
+            'url' => '/factproveedores',
         ],
     ],
 

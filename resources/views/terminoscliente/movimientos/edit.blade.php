@@ -44,7 +44,6 @@
                     <th scope="col">Estatus Pago</th>
                     <th scope="col">Facturable</th>
                     <th scope="col">Porcentaje</th>
-                    <th scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,23 +52,8 @@
                             <th scope="row">{{$row->secuencia}}</th>
                             <td>{{$row->nombre}}</td>
                             <td>{{$row->estatus}}</td>
-                            @if ($row->facturable == False)
-                            <td>No</td>
-                            @else
-                            <td>Sí</td>
-                            @endif
-                            <td>{{$row->porcentaje}}</td>
-                            <td>
-                                <span class="pull-right">
-                                    <div class="dropdown">
-                                        <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
-                                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                            <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smeditar" onclick="edit({{$row->id}},{{$row->secuencia}},'{{$row->nombre}}','{{$row->estatus_id}}','{{$row->facturable}}',{{$row->porcentaje}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
-                                    </div>
-                                </span>
-                            </td>
+                            <td>@php if ($row->facturable){ echo 'Sí';}else{echo 'No';} @endphp </td>
+                            <td>{{$row->porcentaje}}%</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -91,7 +75,7 @@
     <!-- Button trigger modal para procesar -->
         <!-- Modal -->
         <div class="modal fade" id="smagregar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Agregar</h5>
@@ -119,7 +103,7 @@
                                     igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." >
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-gradient-info">
-                                            <i class="far fa-building"></i>
+                                            <i class="far fa-bullseye"></i>
                                         </div>
                                     </x-slot>
                                     <option/>
@@ -133,7 +117,7 @@
                                     igroup-size="sm" data-placeholder="Es facturable?..." >
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-gradient-info">
-                                            <i class="far fa-building"></i>
+                                            <i class="far fa-dollar-sign"></i>
                                         </div>
                                     </x-slot>
                                     <option/>
@@ -164,7 +148,7 @@
         <!-- Button trigger modal para modificar -->
         <!-- Modal -->
         <div class="modal fade" id="smeditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Editar</h5>
@@ -200,7 +184,7 @@
                                 </x-adminlte-input>
                             </div>
                             <div class="row">
-                                <x-adminlte-select2 name="estatusmov" id="estatusmov" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                <x-adminlte-select2 name="estatusmov" id="estatusmove" label-class="text-lightblue"  fgroup-class="col-md-12"
                                     igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." >
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-gradient-info">
@@ -214,7 +198,7 @@
                                 </x-adminlte-select2>
                             </div>
                             <div class="row">
-                                <x-adminlte-select2 name="facturablemov" id="facturablemov" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                <x-adminlte-select2 name="facturablemov" id="facturablemove" label-class="text-lightblue"  fgroup-class="col-md-12"
                                     igroup-size="sm" data-placeholder="Es facturable?..." >
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-gradient-info">
@@ -245,6 +229,17 @@
                 </div>
             </div>
         </div>
+        
+        <script>
+            function edit(id,sec,nom,est,fact,porc){
+                $('#secuenciamov').val(sec);
+                $('#nombremov').val(nom);
+                $('#porcentajemov').val(porc);
+                document.getElementById("estatusmove").value = "2";
+                document.getElementById("facturablemove").value = "1";
+                
+            }
+        </script>
 @stop
 
 @section('css')
@@ -297,14 +292,5 @@
     }
     </script>
 
-    <script type="text/javascript">
-        function edit(id,sec,nom,est,fact,porc){
-            $('#secuenciamov').val(sec);
-            $('#nombremov').val(nom);
-            $('#estatusmov').val(est);
-            $('#facturablemov').val(fact);
-            $('#porcentajemov').val(porc);
-            
-        }
-    </script>
+    
 @stop

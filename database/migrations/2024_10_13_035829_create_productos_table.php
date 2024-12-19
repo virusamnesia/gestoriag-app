@@ -17,9 +17,8 @@ return new class extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('alias', 5);
+            $table->string('alias', 5)->nullable();
             $table->foreignIdFor(TerminosPagoCliente::class)->nullable();
-            $table->foreignIdFor(TerminosPagoProveedor::class)->nullable();
             $table->foreignIdFor(TiposProducto::class);
             $table->boolean('es_activo');
             $table->timestamps();

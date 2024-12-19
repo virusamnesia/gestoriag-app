@@ -26,7 +26,6 @@ class ProyectoSucursalLineaController extends Controller
         ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
         ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-        ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
@@ -67,7 +66,6 @@ class ProyectoSucursalLineaController extends Controller
         ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
         ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-        ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
@@ -125,7 +123,6 @@ class ProyectoSucursalLineaController extends Controller
         ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
         ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-        ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
@@ -143,12 +140,16 @@ class ProyectoSucursalLineaController extends Controller
             return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
         }
         else{
-            $importe = 0;
-            $saldo = $linea->saldocliente;
+            $importec = 0;
+            $saldoc = $linea->saldocliente;
+            $importep = 0;
+            $saldop = $linea->saldoproveedor;
 
             if($movimiento->facturable == 1){
-                $importe = $linea->precio * ($movimiento->porcentaje / 100);
-                $saldo = $saldo - $importe;
+                $importec = $linea->precio * ($movimiento->valor_cliente / 100);
+                $saldoc = $saldoc - $importec;
+                $importep = $linea->costo * ($movimiento->valor_proveedor / 100);
+                $saldop = $saldop - $importep;
             }
             
 
@@ -162,15 +163,20 @@ class ProyectoSucursalLineaController extends Controller
             $mov->fecha_mov = $request->fecha;
             $mov->cliente_id = $cliente->id;
             $mov->proveedor_id = $linea->proveedor_id;
-            $mov->importe = $importe;
-            $mov->saldo = $saldo;
+            $mov->importe_cliente = $importec;
+            $mov->saldo_cliente = $saldoc;
+            $mov->importe_proveedor = $importep;
+            $mov->saldo_proveedor = $saldop;
             $mov->observaciones = $request->observaciones;
             $mov->url = $request->url;
 
             $mov->save();
 
             $data = [
-                'saldocliente' => $linea->saldocliente - $importe,
+                'saldocliente' => $linea->saldocliente - $importec,
+                'cxc' => $linea->cxc + $importec,
+                'saldoproveedor' => $linea->saldoproveedor - $importep,
+                'cxp' => $linea->cxc + $importep,
                 'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
             ];
 
@@ -179,7 +185,8 @@ class ProyectoSucursalLineaController extends Controller
                 ->update($data);
 
             $data = [
-                'saldo' => $proyecto->saldo - $importe,
+                'saldo' => $proyecto->saldo - $importec,
+                'cxc' => $proyecto->cxc + $importec,
             ];
 
             $proy = DB::table('proyectos')

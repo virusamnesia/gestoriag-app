@@ -20,9 +20,11 @@ return new class extends Migration
             $table->foreignIdFor(Proveedor::class)->index();
             $table->float('importe');
             $table->float('saldo');
-            $table->foreignIdFor(EstadosPresupuesto::class);
+            $table->float('cxp');
+            $table->foreignIdFor(EstadosPresupuesto::class)->nullable();
             $table->timestamp('fecha_cotizacion')->nullable();
             $table->timestamp('fecha_autorizacion')->nullable();
+            $table->boolean('autorizar');
             $table->timestamps();
         });
     }

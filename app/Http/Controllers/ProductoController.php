@@ -15,10 +15,9 @@ class ProductoController extends Controller
         
         $productos = DB::table('productos')
             ->leftJoin('terminos_pago_clientes', 'productos.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-            ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'productos.terminos_pago_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('productos.*','terminos_pago_clientes.id as tpc_id','terminos_pago_clientes.nombre as tpc_nombre', 
-            'terminos_pago_proveedors.nombre as tpp_nombre','terminos_pago_proveedors.id as tpp_id','tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
+            'tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
             ->get();
 
         return view('producto.index', ['productos' => $productos]);
@@ -54,10 +53,6 @@ class ProductoController extends Controller
         if ($request->termclie){
             $producto->terminos_pago_cliente_id = $request->termclie;
         }
-        if ($request->termprov){
-            $producto->terminos_pago_cliente_id = $request->termprov;
-        }
-        
         $producto->tipos_producto_id = $request->tipos;
 
         $producto->save();
@@ -81,10 +76,9 @@ class ProductoController extends Controller
 
         $producto = DB::table('productos')
             ->leftJoin('terminos_pago_clientes', 'productos.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-            ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'productos.terminos_pago_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('productos.*','terminos_pago_clientes.id as tpc_id','terminos_pago_clientes.nombre as tpc_nombre', 
-            'terminos_pago_proveedors.nombre as tpp_nombre','terminos_pago_proveedors.id as tpp_id','tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
+            'tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
             ->where('productos.id',$id)
             ->orderBy('productos.nombre')
             ->get();
@@ -106,10 +100,9 @@ class ProductoController extends Controller
 
         $producto = DB::table('productos')
             ->leftJoin('terminos_pago_clientes', 'productos.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-            ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'productos.terminos_pago_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('productos.*','terminos_pago_clientes.id as tpc_id','terminos_pago_clientes.nombre as tpc_nombre', 
-            'terminos_pago_proveedors.nombre as tpp_nombre','terminos_pago_proveedors.id as tpp_id','tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
+            'tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre')
             ->where('productos.id',$id)
             ->orderBy('productos.nombre')
             ->get();
@@ -139,9 +132,7 @@ class ProductoController extends Controller
         if ($request->termclie){
             $data['terminos_pago_cliente_id'] = $request->termclie;
         }
-        if ($request->termprov){
-            $data['terminos_pago_proveedor_id'] = $request->termprov;
-        }
+        
 
         $producto = DB::table('productos')
             ->where('productos.id','=',$id)

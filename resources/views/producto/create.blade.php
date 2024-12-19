@@ -54,7 +54,7 @@
                 </div>
                 <div class="row">
                     <x-adminlte-select2 name="termclie" label-class="text-lightblue"  fgroup-class="col-md-12"
-                        igroup-size="sm" data-placeholder="Selecciona un termino de pago de cliente..">
+                        igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
                                 <i class="far fa-building"></i>
@@ -63,20 +63,6 @@
                         <option/>
                         @foreach ($termclie as $rowc)
                         <option value="{{$rowc->id}}">{{$rowc->nombre}}</option>
-                        @endforeach
-                    </x-adminlte-select2>
-                </div>
-                <div class="row">
-                    <x-adminlte-select2 name="termprov" label-class="text-lightblue"  fgroup-class="col-md-12"
-                        igroup-size="sm" data-placeholder="Selecciona un termino de pago de proveedor...">
-                        <x-slot name="prependSlot">
-                            <div class="input-group-text bg-gradient-info">
-                                <i class="far fa-building"></i>
-                            </div>
-                        </x-slot>
-                        <option/>
-                        @foreach ($termprov as $rowp)
-                        <option value="{{$rowp->id}}">{{$rowp->nombre}}</option>
                         @endforeach
                     </x-adminlte-select2>
                 </div>

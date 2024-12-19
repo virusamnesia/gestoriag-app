@@ -59,7 +59,7 @@
                         igroup-size="sm" data-placeholder="Selecciona un municipio...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
-                                <i class="far fa-building"></i>
+                                <i class="fas fa-location-dot"></i>
                             </div>
                         </x-slot>
                         <option/>

@@ -40,24 +40,20 @@
                 <thead class="bg-dark text-white">
                 <tr>
                     <th scope="col">Secuencia</th>
-                    <th scope="col">Nombre</th>
                     <th scope="col">Estatus Pago</th>
-                    <th scope="col">Facturable</th>
-                    <th scope="col">Porcentaje</th>
+                    <th scope="col">Porcentaje Cliente</th>
+                    <th scope="col">Porcentaje Proveedor</th>
+                    <th scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                     @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">{{$row->secuencia}}</th>
-                            <td>{{$row->nombre}}</td>
                             <td>{{$row->estatus}}</td>
-                            @if ($row->facturable == False)
-                            <td>No</td>
-                            @else
-                            <td>Sí</td>
-                            @endif
-                            <td>{{$row->porcentaje}}</td>
+                            <td>{{$row->valor_cliente}}</td>
+                            <td>{{$row->valor_proveedor}}</td>
+                            <x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" data-toggle="modal" data-target="#smeditar" onclick="edit({{$row->id}},{{$row->valor_cliente}},{{$row->valor_proveedor}})"/>
                         </tr>
                     @endforeach
                 </tbody>
@@ -87,21 +83,12 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form class="form p-3" action="/termclie/movimientos/{{$id}}" method="POST">
+                    <form class="form p-3" action="/termclie/movimientos/nuevo/{{$id}}" method="POST">
                         @csrf
                         <div class="modal-body">
                             <br>
                             <h6>Nuevo Movimiento</h6>
                             <br>
-                            <div class="row">
-                                <x-adminlte-input name="nombre" placeholder="Nombre del movimiento" label-class="text-lightblue" fgroup-class="col-md-12">
-                                    <x-slot name="prependSlot">
-                                        <div class="input-group-text">
-                                            <i class="fas fa-user text-lightblue"></i>
-                                        </div>
-                                    </x-slot>
-                                </x-adminlte-input>
-                            </div>
                             <div class="row">
                                 <x-adminlte-select2 name="estatus" label-class="text-lightblue"  fgroup-class="col-md-12"
                                     igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." >
@@ -116,21 +103,66 @@
                                     @endforeach
                                 </x-adminlte-select2>
                             </div>
-                            <div class="row">
-                                <x-adminlte-select2 name="facturable" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                    igroup-size="sm" data-placeholder="Es facturable?..." >
-                                    <x-slot name="prependSlot">
-                                        <div class="input-group-text bg-gradient-info">
-                                            <i class="far fa-building"></i>
+                           <div class="row">
+                                <x-adminlte-input name="vcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
+                                    igroup-size="sm" min=1 max=1000>
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text bg-light">
+                                            <i class="fas fa-percent"></i>
                                         </div>
                                     </x-slot>
-                                    <option/>
-                                    <option value="0">No</option>
-                                    <option value="1">Sí</option>
-                                </x-adminlte-select2>
+                                </x-adminlte-input>
                             </div>
                             <div class="row">
-                                <x-adminlte-input name="porcentaje" placeholder="Porcentaje" type="number" fgroup-class="col-md-5"
+                                <x-adminlte-input name="vproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
+                                    igroup-size="sm" min=1 max=1000>
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text bg-light">
+                                            <i class="fas fa-percent"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"  id="procesar">Procesar</button>
+                        </div>
+                    </form> 
+                </div>
+            </div>
+        </div>
+
+    <!-- Button trigger modal para editar -->
+        <!-- Modal -->
+        <div class="modal fade" id="smeditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Editar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form class="form p-3" action="/termclie/movimientos/{{$id}}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <br>
+                            <h6>Editar Movimiento</h6>
+                            <br>
+                            <div class="row">
+                                <input type="hidden" name="eid" id="eid">
+                                <x-adminlte-input name="evcliente" id="evcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
+                                    igroup-size="sm" min=1 max=1000>
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text bg-light">
+                                            <i class="fas fa-percent"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input>
+                            </div>
+                            <div class="row">
+                                <x-adminlte-input name="evproveedor" id="evproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
                                     igroup-size="sm" min=1 max=1000>
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
@@ -201,8 +233,10 @@
     </script>
 
     <script type="text/javascript">
-        function edit(id){
-            
+        function edit(id,clie,prov){
+            $("#eid").value(id);
+            $("#evcliente").value(clie);
+            $("#evproveedor").value(prov);
         }
     </script>
 @stop

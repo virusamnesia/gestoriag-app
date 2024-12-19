@@ -23,18 +23,47 @@
 @stop
 
 @section('content')
-
-    <form action="/proyectos/sucursales/update/{{$idp}}/{{$idc}}" method="POST">
-            
+    <div class="row">
+        <div class="col-md-11">
+            <h5>Proyecto: {{$proyecto->nombre}}</h5>
+            <h5>Cliente: {{$cliente->nombre}}</h5>
+        </div>
+        <div class="col-md-1">
+        </div>
+    </div>
+    </br>
+    <form method="POST" action="{{ route('import.proyectos.lineas',['idp' => $idp,'idc' => $idc]) }}" enctype="multipart/form-data">
+                
         @csrf
+
         <div class="row">
-            <div class="col-md-11">
-                <h5>Proyecto: {{$proyecto->nombre}}</h5>
-                <h5>Cliente: {{$cliente->nombre}}</h5>
+            <div class="col-md-6">
+                <input type="file" name="importfile" required />
+                <div class="row">
+                    <x-adminlte-select2 name="tipoimport" label-class="text-lightblue"  fgroup-class="col-md-8" required
+                        igroup-size="sm" data-placeholder="Tipo de importación...">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="far fa-file-import"></i>
+                            </div>
+                        </x-slot>
+                        <option/>
+                        @foreach ($tipos as $row)
+                        <option value="{{$row->id}}">{{$row->nombre}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-6">
+                <x-adminlte-button class="btn-flat" name="btnimport" type="submit" label="Importar Proyecto" theme="info" icon="fas fa-lg fa-save"/>
             </div>
         </div>
+    </form>
+    </br>
+    <form method="POST" action="{{ route('proyectos.productos',['idp' => $idp,'idc' => $idc]) }}" >
+            
+        @csrf
+        <h5>Seleccionar manualmente las sucursales...</h5>
         <div class="row">
             <div class="col-md-1">
             </div>
@@ -43,6 +72,8 @@
                     <thead class="bg-dark text-white">
                     <tr>
                         <th scope="col">Cotizar</th>
+                        <th scope="col">Marca</th>
+                        <th scope="col">Id Interno</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Domicilio</th>
                         <th scope="col">Municipio</th>
@@ -56,6 +87,8 @@
                                 <th scope="row">
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" checked/>
                                 </th>
+                                <td>{{$row->marca}}</td>
+                                <td>{{$row->id_interno}}</td>
                                 <td>{{$row->sucursal}}</td>
                                 <td>{{$row->domicilio}}</td>
                                 <td>{{$row->municipio}}</td>
@@ -74,11 +107,11 @@
             <div class="col-md-10">
             </div>
             <div class="col-md-1">
-                <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
+                <x-adminlte-button class="btn-flat" name="confirmar" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
             </div>
         </div>
     </form>
-
+    
 @stop
 
 @section('plugins.BootstrapSwitch', true)
