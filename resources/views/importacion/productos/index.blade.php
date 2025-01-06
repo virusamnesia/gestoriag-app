@@ -24,14 +24,14 @@
 
 @section('content')
     <h4>Importación: {{$import->nombre}}</h4>
-
-    <form action="/importaciones/productos/store/{{$id}}" method="POST">
+    </br>
+    <form action="/importaciones/productos/nuevo/{{$import->id}}" method="POST">
             
         @csrf
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-7">
                 <div class="row">
-                    <x-adminlte-select2 name="producto" label-class="text-lightblue"  fgroup-class="col-md-5"
+                    <x-adminlte-select2 name="producto" label-class="text-lightblue"  fgroup-class="col-md-8"
                         igroup-size="sm" data-placeholder="Selecciona un producto...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -40,16 +40,19 @@
                         </x-slot>
                         <option/>
                         @foreach ($productos_all as $rowp)
-                        <option value="{{$rowp->id}}">{{$rowp->nombre}}, {{$rowp->cat}}</option>
+                        <option value="{{$rowp->id}}">{{$rowp->nombre}}, {{$rowp->tipo}}</option>
                         @endforeach
                     </x-adminlte-select2>
                 </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <x-adminlte-button label="Nuevo" type="submit" theme="info" icon="fas fa-info-circle"/>
+            </div>
+            <div class="col-md-3">
             </div>
         </div>
     </form>
+    </br>
     <div class="row">
         <div class="col-md-2">
         </div>
@@ -67,7 +70,7 @@
                         <tr>
                             <th scope="row">{{$row->producto}}</th>
                             <td>{{$row->tipo}}</td>
-                            <td><a href= "/importaciones/productos/del/{{$id}}/{{$row->id}}">Borrar</a></td>
+                            <td><a href= "/importaciones/productos/del/{{$import->id}}/{{$row->id}}">Borrar</a></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -78,7 +81,7 @@
     </div>
     <div class="row">
         <div class="col-md-1">
-            <x-adminlte-button label="Regresar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back()"/>
+            <x-adminlte-button label="Regresar" type="button" theme="danger" icon="far fa-hand-point-left" onclick="back()"/>
         </div>
         <div class="col-md-10">
         </div>

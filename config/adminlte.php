@@ -374,15 +374,15 @@ return [
                             'icon_color' => 'blue',
                         ],
                         [
-                            'text' => 'level_two',
+                            'text' => 'Importaciones',
                             'url' => '#',
                             'submenu' => [
                                 [
-                                    'text' => 'level_three',
-                                    'url' => '#',
+                                    'text' => 'Configuración',
+                                    'url' => '/importaciones',
                                 ],
                                 [
-                                    'text' => 'level_three',
+                                    'text' => 'Ejecuciones',
                                     'url' => '#',
                                 ],
                             ],

@@ -45,8 +45,8 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                 ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                 ->select('sucursals.*','clientes.nombre as cliente')
                 ->where('sucursals.marca','=',$row['marca'])
-                ->where('sucursals.id_interno','=',$row['id_interno'])
-                ->where('sucursals.nombre','=',$row['sucursal'])
+                ->where('sucursals.id_interno','=',$row['id'])
+                ->where('sucursals.nombre','=',$row['tienda'])
                 ->where('sucursals.cliente_id','=',$importacion->cliente_id)
                 ->first();
 
@@ -54,12 +54,10 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
             $saldo = $proyecto->saldo;
             
             if($sucursal == null){
-                $mensaje = $row['id_interno']."-".$row['marca']."-".$row['sucursal']."no existentes";
+                $mensaje = $row['id']."-".$row['marca']."-".$row['tienda']." tienda no existente";
                 
                 ImportacionError::create([
                     'importacion_id' => $importacion->id,
-                    'proyecto_id' => $proyecto->id,
-                    'cliente_id' => $proyecto->cliente_id,
                     'mensaje' => $mensaje,
                     'fecha' => today(),
                 ]);
@@ -114,12 +112,10 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     } 
                     catch (Exception $e) {
                         echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-                        $mensaje = $row['id_interno']."-".$row['marca']."-".$row['sucursal']."-".$prod."no existente";
+                        $mensaje = $row['id']."-".$row['marca']."-".$row['tienda']."-".$prod." producto no existente";
                 
                         ImportacionError::create([
                             'importacion_id' => $importacion->id,
-                            'proyecto_id' => $proyecto->id,
-                            'cliente_id' => $proyecto->cliente_id,
                             'mensaje' => $mensaje,
                             'fecha' => today(),
                         ]);

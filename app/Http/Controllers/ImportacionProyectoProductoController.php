@@ -13,16 +13,20 @@ class ImportacionProyectoProductoController extends Controller
     public function index($id){
         
         $import = ImportacionProyecto::where('id',$id)->first();
-        $productos = Producto::where('es_activo','=',1)->get();
+        $productos_all =  DB::table('productos')
+        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('productos.*','tipos_productos.nombre as tipo')
+        ->where('productos.es_activo','=',1)
+        ->get();
 
-        $productos_all = DB::table('importacion_proyecto_productos')
-        ->join('produtos', 'productos.id','=','importacion_proyecto_productos.producto_id')
+        $productos = DB::table('importacion_proyecto_productos')
+        ->join('productos', 'productos.id','=','importacion_proyecto_productos.producto_id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('importacion_proyecto_productos.*','productos.nombre as producto','tipos_productos.nombre as tipo')
         ->where('importacion_proyecto_productos.importacion_proyecto_id','=',$id)
         ->get();
        
-        return view('importaciones/productos', ['import' => $import,'productos_all' => $productos_all,'productos' => $productos]);
+        return view('importacion.productos.index', ['import' => $import,'productos_all' => $productos_all,'productos' => $productos]);
     }
 
     /**
@@ -46,7 +50,7 @@ class ImportacionProyectoProductoController extends Controller
         
         $producto = ImportacionProyectoProducto::where('importacion_proyecto_id','=',$id)->where('producto_id','=',$request->producto)->first();
 
-        if($producto){
+        if($producto == null){
             $import = new ImportacionProyectoProducto();
 
             $import->importacion_proyecto_id = $id;

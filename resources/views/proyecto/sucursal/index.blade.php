@@ -37,10 +37,10 @@
         @csrf
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <input type="file" name="importfile" required />
                 <div class="row">
-                    <x-adminlte-select2 name="tipoimport" label-class="text-lightblue"  fgroup-class="col-md-8" required
+                    <x-adminlte-select2 name="tipoimport" label-class="text-lightblue"  fgroup-class="col-sm-8" required
                         igroup-size="sm" data-placeholder="Tipo de importación...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -54,7 +54,7 @@
                     </x-adminlte-select2>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <x-adminlte-button class="btn-flat" name="btnimport" type="submit" label="Importar Proyecto" theme="info" icon="fas fa-lg fa-save"/>
             </div>
         </div>
@@ -96,7 +96,7 @@
                             </tr>
                         @endforeach
                     </tbody>
-                <table>
+                </table>
             </div>
             <div class="col-md-1">
             </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AgrupadorFactura;
 use App\Models\TerminosPagoCliente;
 use App\Models\TerminosPagoProveedor;
 use App\Models\TiposProducto;
@@ -17,9 +18,10 @@ return new class extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('alias', 5)->nullable();
+            $table->string('alias', 10)->nullable();
             $table->foreignIdFor(TerminosPagoCliente::class)->nullable();
             $table->foreignIdFor(TiposProducto::class);
+            $table->foreignIdFor(AgrupadorFactura::class);
             $table->boolean('es_activo');
             $table->timestamps();
         });

@@ -65,6 +65,20 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
+                    <x-adminlte-select2 name="agrupador" label-class="text-lightblue"  fgroup-class="col-md-12"
+                        igroup-size="sm" data-placeholder="Selecciona un agrupador para facturación..." disabled>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="fa fa-link"></i>
+                            </div>
+                        </x-slot>
+                        <option/>
+                        @foreach ($agrupadores as $rowa)
+                        <option value="{{$rowa->id}}" @php if ($prod->agrupador_factura_id == $rowa->id) { echo "selected";} @endphp>{{$rowa->nombre}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
+                <div class="row">
                     <x-adminlte-select name="activo" disabled>
                         <option value=0 @php if ($prod->es_activo == False) { echo "selected";} @endphp>Inactivo</option>
                         <option value=1 @php if ($prod->es_activo == True) { echo "selected";} @endphp>Activo</option>

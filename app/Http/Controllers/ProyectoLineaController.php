@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\ProyectoLineaImport;
 use App\Models\Cliente;
 use App\Models\Importacion;
+use App\Models\ImportacionError;
 use App\Models\Producto;
 use App\Models\Proyecto;
 use App\Models\ProyectoLinea;
@@ -43,9 +44,21 @@ class ProyectoLineaController extends Controller
         ->orderBy('sucursals.nombre')
         ->get();
 
+        $importacion = DB::table('importacions')
+            ->join('importacion_errores', 'importacions.id', '=', 'importacion_errores.importacion_id')
+            ->where('importacions.proyecto_id','=',$id)
+            ->select('importacions.*')
+            ->first();
+        if($importacion == null){
+            $import = 0;
+        }
+        else{
+            $import = $importacion->id;
+        }
+
         
 
-        return view('proyecto.linea.index', ['lineas' => $lineas,'cliente' => $cliente,'proyecto' => $proyecto,'id' => $id]);
+        return view('proyecto.linea.index', ['lineas' => $lineas,'cliente' => $cliente,'proyecto' => $proyecto,'id' => $id, 'import' => $import]);
     }
 
     /**
@@ -281,18 +294,52 @@ class ProyectoLineaController extends Controller
 
         //Excel::import(new ProyectoLineaImport)->import($file, null, \Maatwebsite\Excel\Excel::XLSX);
         //$collection = Excel::toCollection(new ProyectoLineaImport, $file);
-        Importacion::create([
-            'proyecto_id' => $idp,
-            'cliente_id' => $idc,
-            'importacion_proyecto_id' => $tipoimport,
-            'fecha' => today(),
-            'file' => $file->getRealPath(),
-        ]);
+        $importacion = new Importacion();
+        $importacion->proyecto_id = $idp;
+        $importacion->cliente_id = $idc;
+        $importacion->importacion_proyecto_id = $tipoimport;
+        $importacion->fecha = today();
+        $importacion->es_procesado = 0;
+        $importacion->file = $file->getClientOriginalName();
+        $importacion->save();
         
         Excel::import(new ProyectoLineaImport, $file);
 
-        session()->flash('Exito','El proyecto se importó con éxito...');
-        return redirect()->route('proyectos.lineas', ['id' => $idp]);
+        $errors = ImportacionError::where('importacion_id','=',$importacion->id)
+        ->get();
+
+        if($errors == null){
+            $inf = 0;
+            session()->flash('Exito','El proyecto se importó con éxito...');
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);;
+        }
+        else{
+            $inf = $importacion->id;
+            session()->flash('Error','El proyecto se importó con errores...');
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+        }
     }
-    
+
+    public function errors($id){
+        
+        $importacion = Importacion::where('id','=',$id)
+            ->first();
+
+        $errores = DB::table('importacions')
+            ->join('importacion_errores', 'importacions.id', '=', 'importacion_errores.importacion_id')
+            ->where('importacions.id','=',$id)
+            ->select('importacion_errores.*')
+            ->get();
+        
+        
+        $proyecto = DB::table('proyectos')
+        ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
+        ->select('proyectos.*','estados_proyectos.nombre as estado')
+        ->where('proyectos.id','=',$importacion->proyecto_id)
+        ->first();
+
+        $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
+        
+        return view('proyecto.linea.errors', ['errores' => $errores,'cliente' => $cliente,'proyecto' => $proyecto,'import' => $id,'importacion' => $importacion]);
+    }
 }

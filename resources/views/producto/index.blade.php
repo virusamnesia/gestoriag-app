@@ -25,6 +25,7 @@
                     <th scope="col">Nombre</th>
                     <th scope="col">Terminos Pago</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Agrupador</th>
                     <th scope="col">Activo</th>
                     <th scope="col">Acciones</th>
                 </tr>
@@ -36,6 +37,7 @@
                             <td>{{$row->nombre}}</td>
                             <td>{{$row->tpc_nombre}}</td>
                             <td>{{$row->tps_nombre}}</td>
+                            <td>{{$row->agrupador}}</td>
                             <td>@php if ($row->es_activo){ echo 'Activo';}else{echo 'Inactivo';} @endphp </td>
                             <td>
                                 <span class="pull-right">

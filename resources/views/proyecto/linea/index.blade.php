@@ -6,7 +6,7 @@
     <h1>Partidas del Proyecto</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error!  </strong>{{  Session::get('Error'); }}
+        <strong>Error!  </strong>{{  Session::get('Error'); }} @php if ($import > 0) echo '<a href="/proyectos/lineas/errores/'.$import.'">Ver erores</a>'; @endphp
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>

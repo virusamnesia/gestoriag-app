@@ -54,6 +54,7 @@
                         <th scope="col">Porcentaje aplicado</th>
                         <th scope="col">Fecha aplicación</th>
                         <th scope="col">Importe</th>
+                        <th scope="col">Agrupador</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -68,6 +69,7 @@
                                 <td>{{$row->porcentaje}}</td>
                                 <td>{{$row->fecha}}</td>
                                 <td>{{$row->cxc}}</td>
+                                <td>{{$row->agrupador}}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -9,4 +9,6 @@ class Importacion extends Model
 {
     /** @use HasFactory<\Database\Factories\ImportacionFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }

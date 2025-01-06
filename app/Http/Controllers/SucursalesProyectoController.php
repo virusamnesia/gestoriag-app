@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Importacion;
+use App\Models\ImportacionProyecto;
 use App\Models\Producto;
 use App\Models\productos_proyecto;
 use App\Models\Proyecto;
@@ -17,21 +18,22 @@ class SucursalesProyectoController extends Controller
         
         $sucursales =DB::table('sucursales_proyectos')
         ->join('proyectos', 'proyectos.id', '=', 'sucursales_proyectos.proyecto_id')
-        ->join('clientes', 'clientes.id', '=', 'sucursales_proyectos.cliente_id')
-        ->join('sucursals', 'sucursals.id', '=', 'sucursales_proyectos.sucursal_id')
-        ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-        ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-        ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('clientes', 'clientes.id', '=', 'sucursales_proyectos.cliente_id')
+        ->leftjoin('sucursals', 'sucursals.id', '=', 'sucursales_proyectos.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
         ->select('sucursales_proyectos.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'clientes.nombre as cliente','clientes.id as cliente_id','municipio_contactos.nombre as municipio',
-        'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id')
+        'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'sucursals.id_interno as id_interno','sucursals.marca as marca')
         ->where('proyectos.id','=',$idp)
         ->orderBy('sucursals.nombre')
         ->get();
 
         $cliente = Cliente::where('id','=',$idc)->first();
         $proyecto = Proyecto::where('id','=',$idp)->first();
-        $tipos = Importacion::all();
+        $tipos = ImportacionProyecto::all();
 
         return view('proyecto.sucursal.index', ['sucursales' => $sucursales,'cliente' => $cliente,'proyecto' => $proyecto,'idp' => $idp,'idc' => $idc,'tipos' => $tipos]);
     }

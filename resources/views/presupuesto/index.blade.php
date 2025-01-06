@@ -47,7 +47,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($proyectos as $row) {{-- Add here extra stylesheets --}}
+                    @foreach ($presupuestos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">{{$row->nombre}}</th>
                             <td>{{$row->proveedor}}</td>

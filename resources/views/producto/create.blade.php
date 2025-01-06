@@ -66,6 +66,20 @@
                         @endforeach
                     </x-adminlte-select2>
                 </div>
+                <div class="row">
+                    <x-adminlte-select2 name="agrupador" label-class="text-lightblue"  fgroup-class="col-md-12"
+                        igroup-size="sm" data-placeholder="Selecciona un agrupador para facturación...">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="fa fa-link"></i>
+                            </div>
+                        </x-slot>
+                        <option/>
+                        @foreach ($agrupadores as $rowa)
+                        <option value="{{$rowa->id}}">{{$rowa->nombre}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
             </div>
         </div>
     </form>

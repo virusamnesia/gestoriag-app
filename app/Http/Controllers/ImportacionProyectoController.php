@@ -13,7 +13,7 @@ class ImportacionProyectoController extends Controller
         
         $imports = ImportacionProyecto::all();
        
-        return view('importaciones', ['imports' => $imports]);
+        return view('importacion.index', ['imports' => $imports]);
     }
 
     /**
