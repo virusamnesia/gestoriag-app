@@ -113,9 +113,9 @@ class ImportacionProyectoProductoController extends Controller
      */
     public function destroy($idi,$idp)
     {
-        $import = DB::table('impotacion_proyecto_productos')
+        $import = DB::table('importacion_proyecto_productos')
             ->where('id','=',$idp)
-            ->where('impotacion_proyecto_id','=',$idi)
+            ->where('importacion_proyecto_id','=',$idi)
             ->delete();
 
         $inf = 1;

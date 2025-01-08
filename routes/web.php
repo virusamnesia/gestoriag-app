@@ -62,10 +62,10 @@ Route::middleware([
 
     Route::get('/importaciones', [ImportacionProyectoController::class, 'index'])->name('importaciones');
     Route::post('/importaciones/nuevo', [ImportacionProyectoController::class, 'store'])->name('nuevo.importaciones');
-    Route::post('/importaciones/{id?}', [ImportacionProyectoController::class, 'update'])->name('edit.importaciones');
+    Route::post('/importaciones/edit', [ImportacionProyectoController::class, 'update'])->name('edit.importaciones');
     Route::get('/importaciones/productos/{id?}', [ImportacionProyectoProductoController::class, 'index'])->name('importaciones.productos');
     Route::post('/importaciones/productos/nuevo/{id?}', [ImportacionProyectoProductoController::class, 'store'])->name('nuevo.importaciones');
-    Route::post('/importaciones/productos/del/{idi?}/{idp?}', [ImportacionProyectoProductoController::class, 'destroy'])->name('del.importaciones');
+    Route::get('/importaciones/productos/del/{idi?}/{idp?}', [ImportacionProyectoProductoController::class, 'destroy'])->name('del.importaciones');
     
     Route::get('/tipos', [TiposProductoController::class, 'index'])->name('tipos');
     

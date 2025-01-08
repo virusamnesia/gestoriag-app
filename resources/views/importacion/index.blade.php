@@ -52,7 +52,7 @@
                                     <div class="dropdown">
                                         <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                            <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smedit"  onclick="edit({{$row->id}},'{{$row->nombre}}','{{$row->descrip}}')"><i class="icon ion-md-create"></i>Editar</button></li>
+                                            <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smedit"  onclick="edit({{$row->id}},'{{$row->nombre}}','{{$row->descripcion}}')"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btndetalle" onclick="productos({{$row->id}})"><i class="icon ion-md-create"></i>Productos</button></li>
                                             <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
                                     </div>
@@ -125,7 +125,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form class="form p-3" action="/importaciones/nuevo" method="POST">
+                <form class="form p-3" action="/importaciones/edit" method="POST">
                     @csrf
                     <div class="modal-body">
                         <br>
@@ -220,7 +220,7 @@
         }
 
         function productos(id){
-            var base = "<?php echo '/impotaciones/productos' ?>";
+            var base = "<?php echo '/importaciones/productos/' ?>";
             var url = base+id;
             location.href=url;
         }

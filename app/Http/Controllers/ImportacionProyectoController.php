@@ -79,15 +79,15 @@ class ImportacionProyectoController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $data = [
             'nombre' => $request->enombre,
             'descripcion' => $request->edescrip,
         ];
 
-        $import = DB::table('impotacion_proyectos')
-            ->where('id','=',$id)
+        $import = DB::table('importacion_proyectos')
+            ->where('id','=',$request->eid)
             ->update($data);
 
         $inf = 1;

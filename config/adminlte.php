@@ -376,13 +376,17 @@ return [
                         [
                             'text' => 'Importaciones',
                             'url' => '#',
+                            'icon' => 'fas fa-file-import',
+                            'icon_color' => 'purple',
                             'submenu' => [
                                 [
                                     'text' => 'Configuración',
                                     'url' => '/importaciones',
+                                    'icon' => 'fa-solid fa-file-arrow-up',
                                 ],
                                 [
                                     'text' => 'Ejecuciones',
+                                    'icon' => 'fa fa-triangle-exclamation',
                                     'url' => '#',
                                 ],
                             ],
