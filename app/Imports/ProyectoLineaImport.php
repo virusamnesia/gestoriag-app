@@ -128,6 +128,6 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
 
     public function headingRow(): int
     {
-        return 1;
+        return 4;
     }
 }
