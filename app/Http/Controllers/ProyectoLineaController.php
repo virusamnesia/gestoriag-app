@@ -45,9 +45,10 @@ class ProyectoLineaController extends Controller
         ->get();
 
         $importacion = DB::table('importacions')
-            ->join('importacion_errores', 'importacions.id', '=', 'importacion_errores.importacion_id')
+            ->join('importacion_errors', 'importacions.id', '=', 'importacion_errors.importacion_id')
             ->where('importacions.proyecto_id','=',$id)
             ->select('importacions.*')
+            ->orderBy('importacions.id','desc')
             ->first();
         if($importacion == null){
             $import = 0;
@@ -294,6 +295,8 @@ class ProyectoLineaController extends Controller
 
         //Excel::import(new ProyectoLineaImport)->import($file, null, \Maatwebsite\Excel\Excel::XLSX);
         //$collection = Excel::toCollection(new ProyectoLineaImport, $file);
+        //return $collection;
+
         $importacion = new Importacion();
         $importacion->proyecto_id = $idp;
         $importacion->cliente_id = $idc;
@@ -320,15 +323,15 @@ class ProyectoLineaController extends Controller
         }
     }
 
-    public function errors($id){
+    public function errores($id){
         
         $importacion = Importacion::where('id','=',$id)
             ->first();
 
         $errores = DB::table('importacions')
-            ->join('importacion_errores', 'importacions.id', '=', 'importacion_errores.importacion_id')
+            ->join('importacion_errors', 'importacions.id', '=', 'importacion_errors.importacion_id')
             ->where('importacions.id','=',$id)
-            ->select('importacion_errores.*')
+            ->select('importacion_errors.*')
             ->get();
         
         

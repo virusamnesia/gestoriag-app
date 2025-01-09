@@ -55,16 +55,17 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
             
             if($sucursal == null){
                 $mensaje = $row['id']."-".$row['marca']."-".$row['tienda']." tienda no existente";
-                
-                ImportacionError::create([
-                    'importacion_id' => $importacion->id,
-                    'mensaje' => $mensaje,
-                    'fecha' => today(),
-                ]);
-                
-            }else{
-                    
-                
+
+                if ($mensaje != '-- tienda no existente'){
+                    ImportacionError::create([
+                        'importacion_id' => $importacion->id,
+                        'mensaje' => $mensaje,
+                        'fecha' => now(),
+                    ]);
+                }
+            }
+            else{
+
                 $productos =DB::table('importacion_proyecto_productos')
                     ->join('productos', 'productos.id', '=', 'importacion_proyecto_productos.producto_id')
                     ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
@@ -77,48 +78,42 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     'terminos_pago_clientes.id as terminos','movimientos_pago_clientes.estatus_linea_cliente_id as estatus')
                     ->where('productos.es_activo','=',1)
                     ->where('importacion_proyecto_productos.importacion_proyecto_id','=',$importacion->importacion_proyecto_id)
-                    ->first();
+                    ->get();
                 
                 foreach ($productos as $producto){
                     $prod = str_replace(' ', '_', strtolower($producto->nombre));
-                    try {
-                        if($row[$prod] > 0){
-                            ProyectoLinea::create([
-                                'proyecto_id' => $proyecto->id,
-                                'cliente_id' => $sucursal->cliente_id,
-                                'sucursal_id' => $sucursal->id,
-                                'producto_id' => $producto->id,
-                                'precio' => $row['prod'],
-                                'saldocliente' => $row['prod'],
-                                'costo' => 0,
-                                'cxc' => 0,
-                                'cxp' => 0,
-                                'saldoproveedor' => 0,
-                                'terminos_pago_cliente_id' => $producto->terminos,
-                                'estatus_linea_cliente_id' => 1,
-                            ]);
-
-                            $importe += $row['prod'];
-                            $saldo += $row['prod'];
-                            $data = [
-                                'importe' => $importe,
-                                'saldo' => $saldo,
-                            ];
-                            
-                            $proy = DB::table('proyectos')
-                                ->where('id','=',$proyecto->id)
-                                ->update($data);
-                        }
-                    } 
-                    catch (Exception $e) {
-                        echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-                        $mensaje = $row['id']."-".$row['marca']."-".$row['tienda']."-".$prod." producto no existente";
-                
-                        ImportacionError::create([
-                            'importacion_id' => $importacion->id,
-                            'mensaje' => $mensaje,
-                            'fecha' => today(),
+                    $prod = str_replace('á', 'a', $prod);
+                    $prod = str_replace('é', 'e', $prod);
+                    $prod = str_replace('í', 'a', $prod);
+                    $prod = str_replace('ó', 'o', $prod);
+                    $prod = str_replace('ú', 'u', $prod);
+                    $prod = str_replace('.', '', $prod);
+                    if($row[$prod] > 0){
+                        ProyectoLinea::create([
+                            'proyecto_id' => $proyecto->id,
+                            'cliente_id' => $sucursal->cliente_id,
+                            'sucursal_id' => $sucursal->id,
+                            'producto_id' => $producto->id,
+                            'precio' => $row[$prod],
+                            'saldocliente' => $row[$prod],
+                            'costo' => 0,
+                            'cxc' => 0,
+                            'cxp' => 0,
+                            'saldoproveedor' => 0,
+                            'terminos_pago_cliente_id' => $producto->terminos,
+                            'estatus_linea_cliente_id' => 1,
                         ]);
+
+                        $importe += $row[$prod];
+                        $saldo += $row[$prod];
+                        $data = [
+                            'importe' => $importe,
+                            'saldo' => $saldo,
+                        ];
+                        
+                        $proy = DB::table('proyectos')
+                            ->where('id','=',$proyecto->id)
+                            ->update($data);
                     }
                 };
             };    
@@ -128,6 +123,6 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
 
     public function headingRow(): int
     {
-        return 4;
+        return 3;
     }
 }

@@ -63,7 +63,7 @@
                         </x-slot>
                         <option/>
                         <option value="0">No</option>
-                        <option value="1">sí</option>
+                        <option value="1">Sí</option>
                     </x-adminlte-select2>
                 </div>
             </div>
