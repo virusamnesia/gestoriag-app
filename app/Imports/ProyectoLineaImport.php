@@ -46,7 +46,7 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                 ->select('sucursals.*','clientes.nombre as cliente')
                 ->where('sucursals.marca','=',$row['marca'])
                 ->where('sucursals.id_interno','=',$row['id'])
-                ->where('sucursals.nombre','=',$row['tienda'])
+                ->where('sucursals.nombre','=',$row['sucursal'])
                 ->where('sucursals.cliente_id','=',$importacion->cliente_id)
                 ->first();
 
@@ -54,9 +54,9 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
             $saldo = $proyecto->saldo;
             
             if($sucursal == null){
-                $mensaje = $row['id']."-".$row['marca']."-".$row['tienda']." tienda no existente";
+                $mensaje = $row['id']."-".$row['marca']."-".$row['sucursal']." sucursal no existente";
 
-                if ($mensaje != '-- tienda no existente'){
+                if ($mensaje != '-- sucursal no existente'){
                     ImportacionError::create([
                         'importacion_id' => $importacion->id,
                         'mensaje' => $mensaje,
