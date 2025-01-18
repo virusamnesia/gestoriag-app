@@ -312,12 +312,13 @@ class ProyectoLineaController extends Controller
 
         $errors = DB::table('importacions')
             ->leftjoin('importacion_errors', 'importacions.id', '=', 'importacion_errors.importacion_id')
-            ->select('importacions.id','count(importacion_errors.id) as errores')
+            ->select('importacions.id','importacion_errors.id as errores')
             ->where('importacions.id','=',$importacion->id)
-            ->groupBy('importacions.id')
-            ->first();
+            ->get();
 
-        if($errors->errores == 0){
+        $numerrores = $errors->count();
+
+        if($numerrores == 0){
             $inf = 0;
             session()->flash('Exito','El proyecto se importó con éxito...');
             return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);;
