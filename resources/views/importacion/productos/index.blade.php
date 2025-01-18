@@ -32,7 +32,7 @@
             <div class="col-md-7">
                 <div class="row">
                     <x-adminlte-select2 name="producto" label-class="text-lightblue"  fgroup-class="col-md-8"
-                        igroup-size="sm" data-placeholder="Selecciona un producto...">
+                        igroup-size="sm" data-placeholder="Selecciona un producto..." required>
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
                                 <i class="fab fa-product-hunt"></i>

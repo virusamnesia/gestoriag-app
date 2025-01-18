@@ -234,7 +234,6 @@ class ProyectoLineaController extends Controller
      */
     public function update(Request $request,$idp,$idl)
     {
-        
         $proyecto = DB::table('proyectos')
             ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
             ->select('proyectos.*','estados_proyectos.nombre as estado','estados_proyectos.id as estado_id')
@@ -308,10 +307,17 @@ class ProyectoLineaController extends Controller
         
         Excel::import(new ProyectoLineaImport, $file);
 
-        $errors = ImportacionError::where('importacion_id','=',$importacion->id)
-        ->get();
+        //$errors = ImportacionError::where('importacion_id','=',$importacion->id)
+        //->first();
 
-        if($errors == null){
+        $errors = DB::table('importacions')
+            ->leftjoin('importacion_errors', 'importacions.id', '=', 'importacion_errors.importacion_id')
+            ->select('importacions.id','count(importacion_errors.id) as errores')
+            ->where('importacions.id','=',$importacion->id)
+            ->groupBy('importacions.id')
+            ->first();
+
+        if($errors->errores == 0){
             $inf = 0;
             session()->flash('Exito','El proyecto se importó con éxito...');
             return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);;
