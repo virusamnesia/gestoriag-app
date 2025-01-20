@@ -24,7 +24,7 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="5" value="{{$prod->alias}}" disabled
+                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="10" value="{{$prod->alias}}" disabled
                         fgroup-class="col-md-3" disable-feedback/>
                 </div>
                 <div class="row">
