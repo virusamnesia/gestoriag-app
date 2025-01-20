@@ -45,7 +45,7 @@ class ProyectoLineaController extends Controller
         ->get();
 
         $importacion = DB::table('importacions')
-            ->join('importacion_errors', 'importacions.id', '=', 'importacion_errors.importacion_id')
+            ->leftjoin('importacion_errors', 'importacions.id', '=', 'importacion_errors.importacion_id')
             ->where('importacions.proyecto_id','=',$id)
             ->select('importacions.*')
             ->orderBy('importacions.id','desc')
