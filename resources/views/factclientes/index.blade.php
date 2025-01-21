@@ -55,7 +55,7 @@
                             <td>{{$row->cliente}}</td>
                             <td>{{$row->rfc}}</td>
                             <td>{{$row->proyecto}}</td>
-                            <td>{{$row->subtotal}}</td>
+                            <td>${{number_format($row->subtotal,2)}}</td>
                             <td>{{$row->fecha}}</td>
                             <td>{{$row->es_activo}}</td>
                             <td>{{$row->factura_odoo}}</td>

@@ -27,7 +27,7 @@
     <h4>Cliente: {{$factura->cliente}}</h4>
     <h4>Proyecto: {{$factura->proyecto}}</h4>
     <h4>Fecha: {{$factura->fecha}}</h4>
-    <h4>Subtotal: {{$factura->subtotal}}</h4>
+    <h4>Subtotal: ${{number_format($factura->subtotal,2)}}</h4>
 
     <form action="/factclientes/lineas/store/{{$factura->proyecto}}" method="POST">
             

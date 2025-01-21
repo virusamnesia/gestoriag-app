@@ -54,8 +54,8 @@
                             <th scope="row">{{$row->nombre}}</th>
                             <td>{{$row->cliente}}</td>
                             <td>{{$row->anio}}</td>
-                            <td>{{$row->importe}}</td>
-                            <td>{{$row->saldo}}</td>
+                            <td>{{${{number_format($row->importe, 2)}}</td>
+                            <td>{{${{number_format($row->saldo, 2)}}</td>
                             <td>{{$row->estado}}</td>
                             <td>{{$row->fecha_cotizacion}}</td>
                             <td>{{$row->fecha_autorizacion}}</td>

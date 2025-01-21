@@ -59,8 +59,8 @@
                             <td>{{$row->estado}}</td>
                             <td>{{$row->producto}}</td>
                             <td>{{$row->tipo}}</td>
-                            <td>${{number_format($row->precio, 2, '.', '')}}</td>
-                            <td>${{number_format($row->saldocliente, 2, '.', '')}}</td>
+                            <td>${{number_format($row->precio, 2)}}</td>
+                            <td>${{number_format($row->saldocliente, 2)}}</td>
                             <td>{{$row->terminos}}</td>
                             <td>{{$row->estatus}}</td>
                             <td>
