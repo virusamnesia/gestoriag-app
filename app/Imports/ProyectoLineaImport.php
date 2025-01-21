@@ -84,7 +84,7 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     $prod = str_replace(' ', '_', strtolower($producto->nombre));
                     $prod = str_replace('á', 'a', $prod);
                     $prod = str_replace('é', 'e', $prod);
-                    $prod = str_replace('í', 'a', $prod);
+                    $prod = str_replace('í', 'i', $prod);
                     $prod = str_replace('ó', 'o', $prod);
                     $prod = str_replace('ú', 'u', $prod);
                     $prod = str_replace('.', '', $prod);
