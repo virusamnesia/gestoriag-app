@@ -293,8 +293,8 @@ class ProyectoLineaController extends Controller
         //return $file->getRealPath();
 
         //Excel::import(new ProyectoLineaImport)->import($file, null, \Maatwebsite\Excel\Excel::XLSX);
-        $collection = Excel::toCollection(new ProyectoLineaImport, $file);
-        return $collection;
+        //$collection = Excel::toCollection(new ProyectoLineaImport, $file);
+        //return $collection;
 
         $importacion = new Importacion();
         $importacion->proyecto_id = $idp;

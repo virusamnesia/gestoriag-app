@@ -88,6 +88,7 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     $prod = str_replace('ó', 'o', $prod);
                     $prod = str_replace('ú', 'u', $prod);
                     $prod = str_replace('.', '', $prod);
+                    $prod = str_replace('ñ', 'n', $prod);
                     if($row[$prod] > 0){
                         ProyectoLinea::create([
                             'proyecto_id' => $proyecto->id,
