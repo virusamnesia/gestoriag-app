@@ -59,7 +59,7 @@
                             <td>{{$row->estado}}</td>
                             <td>{{$row->producto}}</td>
                             <td>{{$row->tipo}}</td>
-                            <td>$@php number_format($row->precio, 2, '.', ','); @endphp</td>
+                            <td>${{number_format($row->precio, 2, '.', '')}}</td>
                             <td>{{$row->saldocliente}}</td>
                             <td>{{$row->terminos}}</td>
                             <td>{{$row->estatus}}</td>
