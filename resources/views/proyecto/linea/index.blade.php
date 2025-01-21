@@ -59,7 +59,7 @@
                             <td>{{$row->estado}}</td>
                             <td>{{$row->producto}}</td>
                             <td>{{$row->tipo}}</td>
-                            <td>{{money_format('%(#10n',$row->precio)}}</td>
+                            <td>@php money_format('%(#10n',$row->precio); @endphp</td>
                             <td>{{$row->saldocliente}}</td>
                             <td>{{$row->terminos}}</td>
                             <td>{{$row->estatus}}</td>
