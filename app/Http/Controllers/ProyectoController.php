@@ -121,7 +121,6 @@ class ProyectoController extends Controller
                 ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                 ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
                 ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-                ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
                 ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
                 ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','sucursals.cliente_id as cliente',
