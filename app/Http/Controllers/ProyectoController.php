@@ -106,9 +106,12 @@ class ProyectoController extends Controller
             ->first();
 
         if($proyecto->autorizar == 0){
-            $proyecto->update([
+            
+            $proy = DB::table('proyectos')
+                ->where('id','=',$id)
+                ->update([
                 'estados_proyecto_id'=> 2,
-            ]);
+                ]);
 
             $lineas =DB::table('proyecto_lineas')
                 ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
