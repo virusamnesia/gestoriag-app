@@ -105,7 +105,7 @@ class ProyectoController extends Controller
             ->where('id','=',$id)
             ->first();
 
-        if($proyecto->autorizar == 1){
+        if($proyecto->autorizar == 0){
             $proyecto->update([
                 'estados_proyecto_id'=> 2,
             ]);
@@ -192,7 +192,7 @@ class ProyectoController extends Controller
         }
         else{
             $inf = 1;
-            session()->flash('Error','El proyecto aún no puede ser autorizado...');
+            session()->flash('Error','Proyecto previamente autorizado...');
             return redirect()->route('proyectos')->with('info',$inf);
         }
     }
