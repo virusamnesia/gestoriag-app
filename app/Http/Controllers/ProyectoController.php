@@ -186,11 +186,11 @@ class ProyectoController extends Controller
                         ->where('id','=',$id)
                         ->update($data);
                 }
-
-                $inf = 1;
-                session()->flash('Exito','La autorización se realizó con éxito...');
-                return redirect()->route('proyectos')->with('info',$inf);
             }
+            
+            $inf = 1;
+            session()->flash('Exito','La autorización se realizó con éxito...');
+            return redirect()->route('proyectos')->with('info',$inf);
 
         }
         else{
