@@ -110,7 +110,8 @@ class ProyectoController extends Controller
             $proy = DB::table('proyectos')
                 ->where('id','=',$id)
                 ->update([
-                'estados_proyecto_id'=> 2,
+                'estados_proyecto_id' => 2,
+                'fecha_autorizacion' => now(),
                 ]);
 
             $lineas =DB::table('proyecto_lineas')
