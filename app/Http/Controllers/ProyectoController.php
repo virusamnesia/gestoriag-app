@@ -223,8 +223,8 @@ class ProyectoController extends Controller
                 ->select('proyectos.id as proyecto_id','productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos_id','terminos_pago_clientes.nombre as terminos',
                 'tipos_productos.nombre as tipo')
                 ->where('proyecto_lineas.proyecto_id','=',$id)
-                ->groupBy('proyectos.id as proyecto_id','productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos_id','terminos_pago_clientes.nombre as terminos',
-                'tipos_productos.nombre as tipo')
+                ->groupBy('proyectos.id','productos.id', 'productos.nombre', 'terminos_pago_clientes.id','terminos_pago_clientes.nombre',
+                'tipos_productos.nombre')
                 ->get();
             
             $terminos = DB::table('terminos_pago_clientes')
