@@ -53,7 +53,7 @@
                             <td>{{$row->estatus}}</td>
                             <td>{{$row->valor_cliente}}</td>
                             <td>{{$row->valor_proveedor}}</td>
-                            <x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" data-toggle="modal" data-target="#smeditar" onclick="edit({{$row->id}},{{$row->valor_cliente}},{{$row->valor_proveedor}})"/>
+                            <td><x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" data-toggle="modal" data-target="#smeditar" onclick="edit({{$row->id}},'{{$row->secuencia}}',{{$row->estatus}},{{$row->valor_cliente}},{{$row->valor_proveedor}})"/></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -90,8 +90,8 @@
                             <h6>Nuevo Movimiento</h6>
                             <br>
                             <div class="row">
-                                <x-adminlte-select2 name="estatus" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                    igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." >
+                                <x-adminlte-select2 name="estatus" label-class="text-lightblue"  fgroup-class="col-md-12" label="Estatus"
+                                    igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." label-class="text-lightblue">
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-gradient-info">
                                             <i class="far fa-building"></i>
@@ -105,7 +105,7 @@
                             </div>
                            <div class="row">
                                 <x-adminlte-input name="vcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000>
+                                    igroup-size="sm" min=1 max=1000 label="% Cliente" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -115,7 +115,7 @@
                             </div>
                             <div class="row">
                                 <x-adminlte-input name="vproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000>
+                                    igroup-size="sm" min=1 max=1000 label="% Proveedor" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -126,7 +126,7 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary"  id="procesar">Procesar</button>
+                            <button type="submit" class="btn btn-primary"  id="procesar">Guardar</button>
                         </div>
                     </form> 
                 </div>
@@ -151,9 +151,17 @@
                             <h6>Editar Movimiento</h6>
                             <br>
                             <div class="row">
+                                <x-adminlte-input name="esecuencia" id="esecuencia" placeholder="Secuencia" disabled label="Secuencia" label-class="text-lightblue"
+                                    fgroup-class="col-md-8" disable-feedback/>
+                            </div>
+                            <div class="row">
+                                <x-adminlte-input name="estatus" id="estatus" placeholder="Estado" disabled label="Estatus" label-class="text-lightblue"
+                                    fgroup-class="col-md-8" disable-feedback/>
+                            </div>
+                            <div class="row">
                                 <input type="hidden" name="eid" id="eid">
                                 <x-adminlte-input name="evcliente" id="evcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000>
+                                    igroup-size="sm" min=1 max=1000 label="% Cliente" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -163,7 +171,7 @@
                             </div>
                             <div class="row">
                                 <x-adminlte-input name="evproveedor" id="evproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000>
+                                    igroup-size="sm" min=1 max=1000 label="% Proveedor" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -174,7 +182,7 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary"  id="procesar">Procesar</button>
+                            <button type="submit" class="btn btn-primary"  id="procesar">Guardar</button>
                         </div>
                     </form> 
                 </div>
@@ -233,8 +241,10 @@
     </script>
 
     <script type="text/javascript">
-        function edit(id,clie,prov){
+        function edit(id,sec,edo,clie,prov){
             $("#eid").value(id);
+            $("#esecuencia").value(sec);
+            $("#estatus").value(edo);
             $("#evcliente").value(clie);
             $("#evproveedor").value(prov);
         }

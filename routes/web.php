@@ -77,7 +77,7 @@ Route::middleware([
     Route::get('/termclie/movimientos/edit/{id?}', [MovimientosPagoClienteController::class, 'edit'])->name('termclie.edit.movimientos');
     Route::post('/termclie/movimientos/nuevo/{id?}', [MovimientosPagoClienteController::class, 'store'])->name('save.termclie.movimientos');
     Route::post('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'update'])->name('update.termclie.movimientos');
-    
+        
    
     //USUARIOS
     Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios');
@@ -123,6 +123,8 @@ Route::middleware([
     Route::get('/proyectos/{id?}', [ProyectoController::class, 'edit'])->name('edit.proyectos');
     Route::post('/proyectos/update/{id?}', [ProyectoController::class, 'update'])->name('update.proyectos');
     Route::get('/proyectos/auth/{id?}', [ProyectoController::class, 'auth'])->name('auth.proyectos');
+    Route::get('/proyectos/terminos/{id?}', [ProyectoController::class, 'terminos'])->name('terminos.proyectos');
+    Route::get('/proyectos/terminos/update/{id?}/{idp?}', [ProyectoController::class, 'termupdate'])->name('update.terminos.proyectos');
 
     Route::get('/proyectos/sucursales/{idp?}/{idc?}', [SucursalesProyectoController::class, 'index'])->name('proyectos.sucursales');
     Route::post('/proyectos/sucursales/update/{idp?}/{idc?}', [SucursalesProyectoController::class, 'update'])->name('update.proyectos.sucursales');

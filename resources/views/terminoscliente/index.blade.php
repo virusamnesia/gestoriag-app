@@ -161,7 +161,7 @@
 
     <script type="text/javascript">
         function edit(id){
-            var base = "<?php echo '/termclie/movimientos/edit/'?>";
+            var base = "<?php echo '/termclie/movimientos/'?>";
             var url = base+id;
             location.href=url;
         }

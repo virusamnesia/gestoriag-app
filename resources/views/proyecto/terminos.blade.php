@@ -4,6 +4,7 @@
 
 @section('content_header')
     <h1>Proyectos</h1>
+    <h3>Terminos de Pago</h3>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!  </strong>{{  Session::get('Error'); }}
@@ -25,9 +26,10 @@
 @section('content')
     <div class="row">
         <div class="col-md-11">
+            <h5>Proyecto: {{$proyecto->nombre}}</h5>
+            <h5>Cliente: {{$cliente->nombre}}</h5>
         </div>
         <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo()"/>
         </div>
     </div>
     <div class="row">
@@ -35,51 +37,46 @@
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
-                    <th scope="col">Proyecto</th>
-                    <th scope="col">Cliente</th>
-                    <th scope="col">Año</th>
-                    <th scope="col">Importe</th>
-                    <th scope="col">Saldo</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Cotización</th>
-                    <th scope="col">Autorización</th>
-                    <th scope="col">Finalización</th>
-                    <th scope="col">Cancelación</th>
+                    <th scope="col">Clave</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Termino de Pago</th>
                     <th scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($proyectos as $row) {{-- Add here extra stylesheets --}}
+                    @foreach ($productos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
-                            <th scope="row">{{$row->nombre}}</th>
-                            <td>{{$row->cliente}}</td>
-                            <td>{{$row->anio}}</td>
-                            <td>${{number_format($row->importe, 2)}}</td>
-                            <td>${{number_format($row->saldo, 2)}}</td>
-                            <td>{{$row->estado}}</td>
-                            <td>{{$row->fecha_cotizacion}}</td>
-                            <td>{{$row->fecha_autorizacion}}</td>
-                            <td>{{$row->fecha_finalizacion}}</td>
-                            <td>{{$row->fecha_cancelacion}}</td>
-                            <td>
-                                <span class="pull-right">
-                                    <div class="dropdown">
-                                        <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
-                                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                            <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
-                                            @if($row->autorizar == 0)
-                                                <li><button class="btn align-self-left" id="btnauth" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
-                                                <li><button class="btn align-self-left" id="btnterm" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Terminos de Pago</button></li>
-                                            @endif
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                            <th scope="row">{{$row->alias}}</th>
+                            <td>{{$row->nombre}}</td>
+                            <td><x-adminlte-select2 name="est{{$row->id}}" id="est{{$row->id}}" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text bg-gradient-info">
+                                        <i class="far fa-building"></i>
                                     </div>
-                                </span>
+                                </x-slot>
+                                <option/>
+                                @foreach ($terminos as $rowc)
+                                <option value="{{$rowc->id}}" @php if ($row->terminos_id == $rowc->id) { echo "selected";} @endphp>{{$rowc->nombre}}</option>
+                                @endforeach
+                            </x-adminlte-select2></td>
+                            <td>
+                                <x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" onclick="edit({{$id}},{{$row->id}})"/>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             <table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            <x-adminlte-button class="btn-sm" type="button" label="Regresar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back()"/>
+        </div>
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-1">
+            <x-adminlte-button class="btn-flat" type="button" label="Autorizar" theme="info" icon="fas fa-lg fa-save" onclick="auth({{$id}})"/>
         </div>
     </div>
 
@@ -122,34 +119,16 @@
     </script>
 
     <script type="text/javascript">
-        function nuevo(){
-            var base = "<?php echo '/proyectos/nuevo' ?>";
-            var url = base;
-            location.href=url;
-        }
-    </script>
-
-    <script type="text/javascript">
-        function edit(id){
-            var base = "<?php echo '/proyectos/lineas/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function view(id){
-            var base = "<?php echo '/proyectos/show/'?>";
-            var url = base+id;
+        function edit(id,idp){
+            var estatus = "#est"+idp
+            var term = $(estatus).value();
+            var base = "<?php echo '/proyectos/termnos/update/'?>";
+            var url = base+id+"/"+idp+"/"+term;
             location.href=url;
         }
 
         function auth(id){
             var base = "<?php echo '/proyectos/auth/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function term(id){
-            var base = "<?php echo '/proyectos/terminos/'?>";
             var url = base+id;
             location.href=url;
         }

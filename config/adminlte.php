@@ -368,12 +368,6 @@ return [
                             'icon_color' => 'red',
                         ],
                         [
-                            'text' => 'Terminos Proveedores',
-                            'url' => '/termprov',
-                            'icon' => 'fas fa-list-ol',
-                            'icon_color' => 'blue',
-                        ],
-                        [
                             'text' => 'Importaciones',
                             'url' => '#',
                             'icon' => 'fas fa-file-import',
@@ -403,11 +397,6 @@ return [
                             'text' => 'Clientes',
                             'url' => '/clientes',
                             'icon' => 'fas fa-users'
-                        ],
-                        [
-                            'text' => 'Listas de Precio',
-                            'url' => '/listas/0',
-                            'icon' => 'fas fa-list-alt'
                         ],
                     ],
                 ],
