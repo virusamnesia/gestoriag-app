@@ -231,7 +231,7 @@ class ProyectoController extends Controller
                 ->select('terminos_pago_clientes.*')
                 ->get();
             $inf = 1;
-            return view('proyecto.terminos',['cliente' => $cliente,'productos' => $productos, 'id' => $id,'terminos' => $terminos])->with('info',$inf);
+            return view('proyecto.terminos',['proyecto' => $proyecto,'cliente' => $cliente,'productos' => $productos, 'id' => $id,'terminos' => $terminos])->with('info',$inf);
 
         }
         else{
