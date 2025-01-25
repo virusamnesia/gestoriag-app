@@ -61,7 +61,7 @@
                                 @endforeach
                             </x-adminlte-select2></td>
                             <td>
-                                <x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" onclick="edit({{$id}},{{$row->id}})"/>
+                                <x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" onclick="edit({{$id}},{{$row->producto_id}})"/>
                             </td>
                         </tr>
                     @endforeach
