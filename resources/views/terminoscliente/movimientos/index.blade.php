@@ -53,7 +53,7 @@
                             <td>{{$row->estatus}}</td>
                             <td>{{$row->valor_cliente}}</td>
                             <td>{{$row->valor_proveedor}}</td>
-                            <td><x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" data-toggle="modal" data-target="#smeditar" onclick="edit({{$row->id}},'{{$row->secuencia}}',{{$row->estatus}},{{$row->valor_cliente}},{{$row->valor_proveedor}})"/></td>
+                            <td><x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" data-toggle="modal" data-target="#smeditar" onclick="edit('{{$row->id}}','{{$row->secuencia}}','{{$row->estatus}}','{{$row->valor_cliente}}','{{$row->valor_proveedor}}')"/></td>
                         </tr>
                     @endforeach
                 </tbody>

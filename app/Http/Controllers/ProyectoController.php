@@ -205,7 +205,7 @@ class ProyectoController extends Controller
      *  Permite cambiar los terminos de pago de los productos del proyecto
      * @param  \App\Models\proyecto  $proyecto
      */
-    public function term($id)
+    public function terminos($id)
     {
         $proyecto = DB::table('proyectos')
             ->where('id','=',$id)
