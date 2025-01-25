@@ -221,10 +221,10 @@ class ProyectoController extends Controller
                 ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
                 ->select('proyectos.id as proyecto_id','productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos_id','terminos_pago_clientes.nombre as terminos',
-                'tipos_productos.nombre as tipo')
+                'tipos_productos.nombre as tipo','productos.alias')
                 ->where('proyecto_lineas.proyecto_id','=',$id)
                 ->groupBy('proyectos.id','productos.id', 'productos.nombre', 'terminos_pago_clientes.id','terminos_pago_clientes.nombre',
-                'tipos_productos.nombre')
+                'tipos_productos.nombre','productos.alias')
                 ->get();
             
             $terminos = DB::table('terminos_pago_clientes')
