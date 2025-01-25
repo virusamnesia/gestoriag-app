@@ -48,7 +48,7 @@
                         <tr>
                             <th scope="row">{{$row->alias}}</th>
                             <td>{{$row->producto}}</td>
-                            <td><x-adminlte-select2 name="est{{$row->id}}" id="est{{$row->id}}" label-class="text-lightblue"  fgroup-class="col-md-12"
+                            <td><x-adminlte-select2 name="est{{$row->producto_id}}" id="est{{$row->producto_id}}" label-class="text-lightblue"  fgroup-class="col-md-12"
                                 igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text bg-gradient-info">
