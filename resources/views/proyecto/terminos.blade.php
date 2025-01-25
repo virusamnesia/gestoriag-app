@@ -47,7 +47,7 @@
                     @foreach ($productos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">{{$row->alias}}</th>
-                            <td>{{$row->nombre}}</td>
+                            <td>{{$row->producto}}</td>
                             <td><x-adminlte-select2 name="est{{$row->id}}" id="est{{$row->id}}" label-class="text-lightblue"  fgroup-class="col-md-12"
                                 igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
                                 <x-slot name="prependSlot">
