@@ -362,7 +362,7 @@ return [
                             'icon_color' => 'green',
                         ],
                         [
-                            'text' => 'Terminos Clientes',
+                            'text' => 'Terminos de Pago',
                             'url' => '/termclie',
                             'icon' => 'fas fa-list-ol',
                             'icon_color' => 'red',

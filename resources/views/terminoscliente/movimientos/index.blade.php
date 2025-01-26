@@ -75,7 +75,7 @@
     <!-- Button trigger modal para procesar -->
         <!-- Modal -->
         <div class="modal fade" id="smagregar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Agregar</h5>
@@ -105,7 +105,7 @@
                             </div>
                            <div class="row">
                                 <x-adminlte-input name="vcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000 label="% Cliente" label-class="text-lightblue">
+                                    igroup-size="sm" min=0 max=1000 label="% Cliente" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -115,7 +115,7 @@
                             </div>
                             <div class="row">
                                 <x-adminlte-input name="vproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000 label="% Proveedor" label-class="text-lightblue">
+                                    igroup-size="sm" min=0 max=1000 label="% Proveedor" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -136,7 +136,7 @@
     <!-- Button trigger modal para editar -->
         <!-- Modal -->
         <div class="modal fade" id="smeditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Editar</h5>
@@ -161,7 +161,7 @@
                             <div class="row">
                                 <input type="hidden" name="eid" id="eid">
                                 <x-adminlte-input name="evcliente" id="evcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000 label="% Cliente" label-class="text-lightblue">
+                                    igroup-size="sm" min=0 max=1000 label="% Cliente" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -171,7 +171,7 @@
                             </div>
                             <div class="row">
                                 <x-adminlte-input name="evproveedor" id="evproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=1 max=1000 label="% Proveedor" label-class="text-lightblue">
+                                    igroup-size="sm" min=0 max=1000 label="% Proveedor" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>

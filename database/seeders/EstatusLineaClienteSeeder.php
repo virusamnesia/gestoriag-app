@@ -22,12 +22,20 @@ class EstatusLineaClienteSeeder extends Seeder
             'alias' => 'ANT',
         ]);
         EstatusLineaCliente::create([
-            'nombre' => 'Recibido',
-            'alias' => 'REC',
+            'nombre' => 'Finiquito',
+            'alias' => 'FIN',
         ]);
         EstatusLineaCliente::create([
-            'nombre' => 'Entregado',
-            'alias' => 'ENT',
+            'nombre' => 'Total',
+            'alias' => 'TOT',
+        ]);
+        EstatusLineaCliente::create([
+            'nombre' => 'Avance 1',
+            'alias' => 'AV1',
+        ]);
+        EstatusLineaCliente::create([
+            'nombre' => 'Avance 2',
+            'alias' => 'AV2',
         ]);
     }
 }
