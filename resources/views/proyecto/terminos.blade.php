@@ -121,8 +121,9 @@
     <script type="text/javascript">
         function edit(id,idp){
             var estatus = "#est"+idp
+            var term = $(estatus).value();
             var base = "<?php echo '/proyectos/termnos/update/'?>";
-            var url = base+id+"/"+idp+"/"+estatus;
+            var url = base+id+"/"+idp+"/"+term;
             location.href=url;
         }
 
