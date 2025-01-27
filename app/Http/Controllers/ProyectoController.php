@@ -246,7 +246,7 @@ class ProyectoController extends Controller
      *  
      * @param  \App\Models\proyecto  $proyecto
      */
-    public function termupdate($id)
+    public function termupdate($id,$idp,$term)
     {
         $proyecto = DB::table('proyectos')
             ->where('id','=',$id)
@@ -254,96 +254,24 @@ class ProyectoController extends Controller
 
         if($proyecto->autorizar == 0){
             
-            $proy = DB::table('proyectos')
-                ->where('id','=',$id)
-                ->update([
-                'estados_proyecto_id' => 2,
-                'fecha_autorizacion' => now(),
-                ]);
+            $data = [
+                'terminos_pago_cliente_id' => $term,
+            ];
 
-            $lineas =DB::table('proyecto_lineas')
-                ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
-                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-                ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-                ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-                ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-                ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
-                ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-                ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
-                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','sucursals.cliente_id as cliente',
-                'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
-                'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
-                'tipos_productos.nombre as tipo')
-                ->where('proyecto_lineas.proyecto_id','=',$id)
-                ->get();
-
-            foreach($lineas as $linea){
-                $movimiento = MovimientosPagoCliente::where('terminos_pago_cliente_id','=',$linea->terminos)
-                    ->where('secuencia','=',1)
-                    ->first();
-
-                if($movimiento == null){
-                    $inf = 1;
-                    session()->flash('Error','No existen acciones que agregar: '.$linea->sucursal." . ".$linea->producto);
-                }
-                else{
-                    $importe = 0;
-                    $saldo = $linea->saldocliente;
-
-                    if($movimiento->facturable == 1){
-                        $importe = $linea->precio * ($movimiento->porcentaje / 100);
-                        $saldo = $saldo - $importe;
-                    }
-                    
-
-                    $mov =  new ProyectoSucursalLinea();
-
-                    $mov->proyecto_linea_id = $linea->id;
-                    $mov->movimientos_pago_cliente_id = $movimiento->id;
-                    $mov->movimientos_pago_proveedor_id = 0;
-                    $mov->tipos_proceso_id = 1;
-                    $mov->es_facturable = $movimiento->facturable;
-                    $mov->fecha_mov = today();
-                    $mov->cliente_id = $linea->cliente;
-                    $mov->proveedor_id = $linea->proveedor_id;
-                    $mov->importe = $importe;
-                    $mov->saldo = $saldo;
-                    $mov->observaciones = "Autorización";
-                    $mov->url = "";
-
-                    $mov->save();
-
-                    $data = [
-                        'saldocliente' => $linea->saldocliente - $importe,
-                        'cxc' => $linea->cxc + $importe,
-                        'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
-                    ];
-
-                    $proy = DB::table('proyecto_lineas')
-                        ->where('id','=',$linea->id)
-                        ->update($data);
-
-                    $data = [
-                        'saldo' => $proyecto->saldo - $importe,
-                        'cxc' => $proyecto->cxc + $importe,
-                    ];
-
-                    $proy = DB::table('proyectos')
-                        ->where('id','=',$id)
-                        ->update($data);
-                }
-            }
+            $proy = DB::table('proyecto_lineas')
+                ->where('proyecto_id','=',$id)
+                ->where('producto_id','=',$idp)
+                ->update($data);
             
             $inf = 1;
-            session()->flash('Exito','La autorización se realizó con éxito...');
-            return redirect()->route('proyectos')->with('info',$inf);
+            session()->flash('Exito','La actualización se realizó con éxito...');
+            return redirect()->route('terminos.proyectos',['id' => $id])->with('info',$inf);
 
         }
         else{
             $inf = 1;
-            session()->flash('Error','Proyecto previamente autorizado...');
-            return redirect()->route('proyectos')->with('info',$inf);
+            session()->flash('Error','Actualización no realizada...');
+            return redirect()->route('terminos.proyectos',['id' => $id])->with('info',$inf);
         }
     }
 

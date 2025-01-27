@@ -124,7 +124,7 @@ Route::middleware([
     Route::post('/proyectos/update/{id?}', [ProyectoController::class, 'update'])->name('update.proyectos');
     Route::get('/proyectos/auth/{id?}', [ProyectoController::class, 'auth'])->name('auth.proyectos');
     Route::get('/proyectos/terminos/{id?}', [ProyectoController::class, 'terminos'])->name('terminos.proyectos');
-    Route::get('/proyectos/terminos/update/{id?}/{idp?}', [ProyectoController::class, 'termupdate'])->name('update.terminos.proyectos');
+    Route::get('/proyectos/terminos/update/{id?}/{idp?}/{term?}', [ProyectoController::class, 'termupdate'])->name('update.terminos.proyectos');
 
     Route::get('/proyectos/sucursales/{idp?}/{idc?}', [SucursalesProyectoController::class, 'index'])->name('proyectos.sucursales');
     Route::post('/proyectos/sucursales/update/{idp?}/{idc?}', [SucursalesProyectoController::class, 'update'])->name('update.proyectos.sucursales');

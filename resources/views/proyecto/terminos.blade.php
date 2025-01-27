@@ -46,9 +46,11 @@
                 <tbody>
                     @foreach ($productos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
+                            @php $name = "term".$row->producto_id;
+                            @endphp
                             <th scope="row">{{$row->alias}}</th>
                             <td>{{$row->producto}}</td>
-                            <td><x-adminlte-select2 name="est{{$row->producto_id}}" id="est{{$row->producto_id}}" label-class="text-lightblue"  fgroup-class="col-md-12"
+                            <td><x-adminlte-select2 name="{{$name}}" id="{{$name}}" label-class="text-lightblue"  fgroup-class="col-md-12"
                                 igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text bg-gradient-info">
@@ -120,8 +122,8 @@
 
     <script type="text/javascript">
         function edit(id,idp){
-            var estatus = "#est"+idp;
-            var term = $("#est52").value();
+            var tname = "#term"+idp;
+            var term = $(tname).value();
             var base = "<?php echo '/proyectos/termnos/update/'?>";
             var url = base+id+"/"+idp+"/"+term;
             location.href=url;
