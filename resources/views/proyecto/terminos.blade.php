@@ -123,9 +123,9 @@
     <script type="text/javascript">
         function edit(id,idp){
             var tname = "#term"+idp;
-            var term = $(tname).value();
+            //var term = $(tname).value();
             var base = "<?php echo '/proyectos/termnos/update/'?>";
-            var url = base+id+"/"+idp+"/"+term;
+            var url = base+id+"/"+idp+"/"+tname;
             location.href=url;
         }
 
