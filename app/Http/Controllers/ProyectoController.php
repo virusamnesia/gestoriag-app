@@ -150,6 +150,11 @@ class ProyectoController extends Controller
                     $saldo_cliente = $saldo_cliente - $importe_cliente;
                     $importe_proveedor = $linea->precio * ($movimiento->valor_proveedor / 100);
                     $saldo_proveedor = $saldo_cliente - $importe_proveedor;
+
+                    $facturable = 0;
+                    if ($importe_cliente >  0 or $importe_proveedor > 0 ){
+                        $facturable = 1;
+                    }
                     
 
                     $mov =  new ProyectoSucursalLinea();
@@ -157,7 +162,7 @@ class ProyectoController extends Controller
                     $mov->proyecto_linea_id = $linea->id;
                     $mov->movimientos_pago_cliente_id = $movimiento->id;
                     $mov->tipos_proceso_id = 1;
-                    $mov->es_facturable = $movimiento->facturable;
+                    $mov->es_facturable = $facturable;
                     $mov->fecha_mov = now();
                     $mov->cliente_id = $linea->cliente;
                     $mov->proveedor_id = $linea->proveedor_id;
