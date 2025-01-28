@@ -131,7 +131,11 @@ class ProyectoController extends Controller
                 ->where('proyecto_lineas.proyecto_id','=',$id)
                 ->get();
 
+            $total_cliente = 0;
+            $total_proveedor = 0;
+
             foreach($lineas as $linea){
+                
                 $movimiento = MovimientosPagoCliente::where('terminos_pago_cliente_id','=',$linea->terminos)
                     ->where('secuencia','=',1)
                     ->first();
@@ -150,6 +154,9 @@ class ProyectoController extends Controller
                     $saldo_cliente = $saldo_cliente - $importe_cliente;
                     $importe_proveedor = $linea->precio * ($movimiento->valor_proveedor / 100);
                     $saldo_proveedor = $saldo_cliente - $importe_proveedor;
+
+                    $total_cliente += $importe_cliente;
+                    $total_proveedor += $importe_proveedor;
 
                     $facturable = 0;
                     if ($importe_cliente >  0 or $importe_proveedor > 0 ){
@@ -188,16 +195,19 @@ class ProyectoController extends Controller
                         ->where('id','=',$linea->id)
                         ->update($data);
 
-                    $data = [
-                        'saldo' => $proyecto->saldo - $importe_cliente,
-                        'cxc' => $proyecto->cxc + $importe_cliente,
-                    ];
-
-                    $proy = DB::table('proyectos')
-                        ->where('id','=',$id)
-                        ->update($data);
                 }
+
             }
+
+            $data = [
+                'saldo' => $proyecto->saldo - $total_cliente,
+                'cxc' => $proyecto->cxc + $total_cliente,
+                'autorizar' => 1,
+            ];
+
+            $proy = DB::table('proyectos')
+                ->where('id','=',$id)
+                ->update($data);
             
             $inf = 1;
             session()->flash('Exito','La autorización se realizó con éxito...');
