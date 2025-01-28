@@ -51,7 +51,6 @@
                             <th scope="row">{{$row->alias}}</th>
                             <td>{{$row->producto}}</td>
                             <td><select name="{{$name}}" id="{{$name}}">
-                                <option>{{$name}}</option>
                                 @foreach ($terminos as $rowc)
                                 <option value="{{$rowc->id}}" @php if ($row->terminos_id == $rowc->id) { echo "selected";} @endphp>{{$rowc->nombre}}</option>
                                 @endforeach
@@ -120,7 +119,7 @@
             //var term = $(tname).value();
             selectElement = document.querySelector(tname);
             term = selectElement.value;
-            var base = "<?php echo '/proyectos/termnos/update/'?>";
+            var base = "<?php echo '/proyectos/terminos/update/'?>";
             var url = base+id+"/"+idp+"/"+term;
             location.href=url;
         }
