@@ -142,13 +142,13 @@ class ProyectoController extends Controller
                 }
                 else{
                     $importe_cliente = 0;
-                    $saldo_cliente = $linea->saldo_cliente;
+                    $saldo_cliente = $linea->saldocliente;
                     $importe_proveedor = 0;
-                    $saldo_proveedor = $linea->saldo_proveedor;
+                    $saldo_proveedor = $linea->saldoproveedor;
 
-                    $importe_cliente = $linea->precio * ($movimiento->porcentaje_cliente / 100);
+                    $importe_cliente = $linea->precio * ($movimiento->valor_cliente / 100);
                     $saldo_cliente = $saldo_cliente - $importe_cliente;
-                    $importe_proveedor = $linea->precio * ($movimiento->porcentaje_proveedor / 100);
+                    $importe_proveedor = $linea->precio * ($movimiento->valor_proveedor / 100);
                     $saldo_proveedor = $saldo_cliente - $importe_proveedor;
                     
 
