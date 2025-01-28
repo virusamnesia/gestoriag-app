@@ -176,9 +176,12 @@ class ProyectoController extends Controller
                     $mov->save();
 
                     $data = [
-                        'saldocliente' => $linea->saldocliente - $importe,
-                        'cxc' => $linea->cxc + $importe,
+                        'saldocliente' => $linea->saldocliente - $importe_cliente,
+                        'cxc' => $linea->cxc + $importe_cliente,
                         'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
+                        'saldoproveedor' => $linea->saldoproveedor - $importe_proveedor,
+                        'cxp' => $linea->cxp + $importe_proveedor,
+                        'proyecto_sucursal_linea_id' => $mov->id,
                     ];
 
                     $proy = DB::table('proyecto_lineas')
@@ -186,8 +189,8 @@ class ProyectoController extends Controller
                         ->update($data);
 
                     $data = [
-                        'saldo' => $proyecto->saldo - $importe,
-                        'cxc' => $proyecto->cxc + $importe,
+                        'saldo' => $proyecto->saldo - $importe_cliente,
+                        'cxc' => $proyecto->cxc + $importe_cliente,
                     ];
 
                     $proy = DB::table('proyectos')
