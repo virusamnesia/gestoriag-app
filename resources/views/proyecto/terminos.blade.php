@@ -118,7 +118,10 @@
         function edit(id,idp){
             var tname = "term"+idp;
             //var term = $(tname).value();
-            const term = document.getElementById(tname);
+            const selectElement = document.getElementById(tname);
+            selectElement.addEventListener('change', (event) => {
+            const term = event.target.value;
+            });
             var base = "<?php echo '/proyectos/termnos/update/'?>";
             var url = base+id+"/"+idp+"/"+term;
             location.href=url;
