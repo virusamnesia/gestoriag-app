@@ -50,18 +50,12 @@
                             @endphp
                             <th scope="row">{{$row->alias}}</th>
                             <td>{{$row->producto}}</td>
-                            <td><x-adminlte-select2 name="{{$name}}" id="{{$name}}" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text bg-gradient-info">
-                                        <i class="far fa-building"></i>
-                                    </div>
-                                </x-slot>
+                            <td><select name="{{$name}}" id="{{$name}}">
                                 <option>{{$name}}</option>
                                 @foreach ($terminos as $rowc)
                                 <option value="{{$rowc->id}}" @php if ($row->terminos_id == $rowc->id) { echo "selected";} @endphp>{{$rowc->nombre}}</option>
                                 @endforeach
-                            </x-adminlte-select2></td>
+                            </select></td>
                             <td>
                                 <x-adminlte-button label="Modificar" theme="warning" icon="fas fa-info-circle" id="btneditar" onclick="edit('{{$id}}','{{$row->producto_id}}')"/>
                             </td>
