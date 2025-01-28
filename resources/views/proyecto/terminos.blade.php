@@ -116,12 +116,10 @@
 
     <script type="text/javascript">
         function edit(id,idp){
-            var tname = "term"+idp;
+            var tname = "#term"+idp;
             //var term = $(tname).value();
-            const selectElement = document.getElementById(tname);
-            selectElement.addEventListener('change', (event) => {
-            const term = event.target.value;
-            });
+            selectElement = document.querySelector(tname);
+            term = selectElement.value;
             var base = "<?php echo '/proyectos/termnos/update/'?>";
             var url = base+id+"/"+idp+"/"+term;
             location.href=url;
