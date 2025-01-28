@@ -116,8 +116,9 @@
 
     <script type="text/javascript">
         function edit(id,idp){
-            var tname = "#term"+idp;
-            var term = $(tname).value();
+            var tname = "term"+idp;
+            //var term = $(tname).value();
+            const term = document.getElementById(tname);
             var base = "<?php echo '/proyectos/termnos/update/'?>";
             var url = base+id+"/"+idp+"/"+term;
             location.href=url;
