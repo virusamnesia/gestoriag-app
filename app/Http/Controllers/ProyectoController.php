@@ -141,13 +141,15 @@ class ProyectoController extends Controller
                     session()->flash('Error','No existen acciones que agregar: '.$linea->sucursal." . ".$linea->producto);
                 }
                 else{
-                    $importe = 0;
-                    $saldo = $linea->saldocliente;
+                    $importe_cliente = 0;
+                    $saldo_cliente = $linea->saldo_cliente;
+                    $importe_proveedor = 0;
+                    $saldo_proveedor = $linea->saldo_proveedor;
 
-                    if($movimiento->facturable == 1){
-                        $importe = $linea->precio * ($movimiento->porcentaje / 100);
-                        $saldo = $saldo - $importe;
-                    }
+                    $importe_cliente = $linea->precio * ($movimiento->porcentaje_cliente / 100);
+                    $saldo_cliente = $saldo_cliente - $importe_cliente;
+                    $importe_proveedor = $linea->precio * ($movimiento->porcentaje_proveedor / 100);
+                    $saldo_proveedor = $saldo_cliente - $importe_proveedor;
                     
 
                     $mov =  new ProyectoSucursalLinea();
@@ -156,11 +158,13 @@ class ProyectoController extends Controller
                     $mov->movimientos_pago_cliente_id = $movimiento->id;
                     $mov->tipos_proceso_id = 1;
                     $mov->es_facturable = $movimiento->facturable;
-                    $mov->fecha_mov = today();
+                    $mov->fecha_mov = now();
                     $mov->cliente_id = $linea->cliente;
                     $mov->proveedor_id = $linea->proveedor_id;
-                    $mov->importe = $importe;
-                    $mov->saldo = $saldo;
+                    $mov->importe_cliente = $importe_cliente;
+                    $mov->saldo_cliente = $saldo_cliente;
+                    $mov->importe_proveedor = $importe_proveedor;
+                    $mov->saldo_proveedor = $saldo_proveedor;
                     $mov->observaciones = "Autorización";
                     $mov->url = "";
 
