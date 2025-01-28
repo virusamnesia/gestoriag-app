@@ -57,7 +57,7 @@
                                         <i class="far fa-building"></i>
                                     </div>
                                 </x-slot>
-                                <option/>
+                                <option>{{$name}}</option>
                                 @foreach ($terminos as $rowc)
                                 <option value="{{$rowc->id}}" @php if ($row->terminos_id == $rowc->id) { echo "selected";} @endphp>{{$rowc->nombre}}</option>
                                 @endforeach
@@ -123,9 +123,9 @@
     <script type="text/javascript">
         function edit(id,idp){
             var tname = "#term"+idp;
-            //var term = $(tname).value();
+            var term = $(tname).value();
             var base = "<?php echo '/proyectos/termnos/update/'?>";
-            var url = base+id+"/"+idp+"/"+tname;
+            var url = base+id+"/"+idp+"/"+term;
             location.href=url;
         }
 
