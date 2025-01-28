@@ -129,5 +129,11 @@
             var url = base+id;
             location.href=url;
         }
+
+        function back(){
+            var base = "<?php echo '/proyectos'?>";
+            var url = base;
+            location.href=url;
+        }
     </script>
 @stop

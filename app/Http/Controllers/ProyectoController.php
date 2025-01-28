@@ -154,7 +154,6 @@ class ProyectoController extends Controller
 
                     $mov->proyecto_linea_id = $linea->id;
                     $mov->movimientos_pago_cliente_id = $movimiento->id;
-                    $mov->movimientos_pago_proveedor_id = 0;
                     $mov->tipos_proceso_id = 1;
                     $mov->es_facturable = $movimiento->facturable;
                     $mov->fecha_mov = today();
