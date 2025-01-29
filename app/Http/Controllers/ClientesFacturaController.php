@@ -34,7 +34,7 @@ class ClientesFacturaController extends Controller
             ->where('proyectos.cxc', '>',0)
             ->get();
         
-        return view('factclientes/nuevo', ['proyectos' => $proyectos]);
+        return view('factclientes.create', ['proyectos' => $proyectos]);
     }
 
     /**
