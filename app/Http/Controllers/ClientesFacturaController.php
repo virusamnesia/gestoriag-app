@@ -31,7 +31,7 @@ class ClientesFacturaController extends Controller
         $proyectos = DB::table('proyectos')
             ->join('clientes','clientes.id','=','proyectos.cliente_id')
             ->select('proyectos.*','clientes.nombre as cliente','clientes.rfc as rfc')
-            ->where('proyectos.cxc', '>',0)}
+            ->where('proyectos.cxc', '>',0)
             ->get();
         
         return view('factclientes/nuevo', ['proyectos' => $proyectos]);

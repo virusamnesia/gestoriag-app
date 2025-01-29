@@ -33,7 +33,7 @@
                 <div class="row">
                     <input type="hidden" value="{{$next->id}}" name="movimiento"/>
                     <x-adminlte-input name="accion" label="Acción" placeholder="Acción" label-class="text-lightblue" disabled
-                    value="Prueba">
+                    value="{{$next->nombre}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-user text-lightblue"></i>
