@@ -46,7 +46,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($facturas as $row) {{-- Add here extra stylesheets --}}
+                    @foreach ($proyectos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">{{$row->id}}</th>
                             <td>{{$row->cliente}}</td>
@@ -54,7 +54,7 @@
                             <td>{{$row->nombre}}</td>
                             <td>{{$row->anio}}</td>
                             <td>{{$row->cxc}}</td>
-                            <td><td><a href= "/factclientes/lineas/{{$row->id}}">Revisar</a></td></td>
+                            <td><a href= "/factclientes/lineas/{{$row->id}}">Revisar</a></td>
                         </tr>
                     @endforeach
                 </tbody>
