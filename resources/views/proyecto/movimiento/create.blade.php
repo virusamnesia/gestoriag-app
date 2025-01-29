@@ -32,7 +32,7 @@
             <div class="col-md-8">
                 <div class="row">
                     <input type="hidden" value="{{$next->id}}" name="movimiento"/>
-                    <x-adminlte-input name="accion" label="Acción" placeholder="Acción" label-class="text-lightblue" disabled
+                    <x-adminlte-input name="accion" label="Acción" placeholder="{{$next->nombre}}" label-class="text-lightblue" disabled
                     value="{{$next->nombre}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">

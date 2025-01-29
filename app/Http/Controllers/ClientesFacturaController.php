@@ -18,7 +18,7 @@ class ClientesFacturaController extends Controller
             ->get();
 
        
-        return view('factclientes', ['facturas' => $facturas]);
+        return view('factclientes.index', ['facturas' => $facturas]);
     }
 
     /**
