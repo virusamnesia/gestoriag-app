@@ -88,8 +88,12 @@ class ProyectoSucursalLineaController extends Controller
         else{
             $secuencia = $movimiento->secuencia;
         }
-        $next = MovimientosPagoCliente::where('secuencia','=',$secuencia + 1)
-        ->where('terminos_pago_cliente_id','=',$linea->terminos)->first();
+        $next =DB::table('movimientos_pago_clientes')
+            ->join('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
+            ->select('movimientos_pago_clientes.*','estatus_linea_clientes.nombre')
+            ->where('movimientos_pago_clientes.secuencia','=',$secuencia + 1)
+            ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
+            ->first();
 
         $inf = 1;
 
