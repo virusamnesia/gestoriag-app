@@ -14,7 +14,7 @@ class ClientesFacturaController extends Controller
             ->join('clientes','clientes.id','=','clientes_facturas.cliente_id')
             ->join('proyectos','proyectos.id','=','clientes_facturas.proyecto_id')
             ->select('clientes_facturas.*','clientes.nombre as cliente','clientes.rfc as rfc','proyectos.nombre as proyecto')
-            ->groupBy('clientes_facturas.id')
+            ->orderBy('clientes_facturas.id')
             ->get();
 
        
@@ -31,8 +31,7 @@ class ClientesFacturaController extends Controller
         $proyectos = DB::table('proyectos')
             ->join('clientes','clientes.id','=','proyectos.cliente_id')
             ->select('proyectos.*','clientes.nombre as cliente','clientes.rfc as rfc')
-            ->where('proyectos.cxc', '>',0)
-            ->groupBy('clientes.id')
+            ->where('proyectos.cxc', '>',0)}
             ->get();
         
         return view('factclientes/nuevo', ['proyectos' => $proyectos]);

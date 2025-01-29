@@ -145,11 +145,14 @@ class ProyectoSucursalLineaController extends Controller
             $importep = 0;
             $saldop = $linea->saldoproveedor;
 
-            if($movimiento->facturable == 1){
-                $importec = $linea->precio * ($movimiento->valor_cliente / 100);
-                $saldoc = $saldoc - $importec;
-                $importep = $linea->costo * ($movimiento->valor_proveedor / 100);
-                $saldop = $saldop - $importep;
+            $importec = $linea->precio * ($movimiento->valor_cliente / 100);
+            $saldoc = $saldoc - $importec;
+            $importep = $linea->costo * ($movimiento->valor_proveedor / 100);
+            $saldop = $saldop - $importep;
+
+            $facturable = 0;
+            if ($importec >  0 or $importep > 0 ){
+                $facturable = 1;
             }
             
 
@@ -157,9 +160,8 @@ class ProyectoSucursalLineaController extends Controller
 
             $mov->proyecto_linea_id = $idl;
             $mov->movimientos_pago_cliente_id = $request->movimiento;
-            $mov->movimientos_pago_proveedor_id = 0;
             $mov->tipos_proceso_id = 1;
-            $mov->es_facturable = $movimiento->facturable;
+            $mov->es_facturable = $facturable;
             $mov->fecha_mov = $request->fecha;
             $mov->cliente_id = $cliente->id;
             $mov->proveedor_id = $linea->proveedor_id;

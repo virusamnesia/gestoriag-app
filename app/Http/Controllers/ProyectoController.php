@@ -155,8 +155,8 @@ class ProyectoController extends Controller
                     $importe_proveedor = $linea->precio * ($movimiento->valor_proveedor / 100);
                     $saldo_proveedor = $saldo_cliente - $importe_proveedor;
 
-                    $total_cliente += $importe_cliente;
-                    $total_proveedor += $importe_proveedor;
+                    $total_cliente = $total_cliente + $importe_cliente;
+                    $total_proveedor = $total_proveedor + $importe_proveedor;
 
                     $facturable = 0;
                     if ($importe_cliente >  0 or $importe_proveedor > 0 ){
