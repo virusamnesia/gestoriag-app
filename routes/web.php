@@ -4,6 +4,7 @@ use App\Http\Controllers\backend\UserController;
 use App\Http\Controllers\CiudadContactoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClientesFacturaController;
+use App\Http\Controllers\ClientesFacturaLineaController;
 use App\Http\Controllers\ImportacionProyectoController;
 use App\Http\Controllers\ImportacionProyectoProductoController;
 use App\Http\Controllers\ListasPrecioController;
@@ -143,9 +144,10 @@ Route::middleware([
     Route::post('/proyectos/lineas/import/{idp?}/{idc?}', [ProyectoLineaController::class, 'import'])->name('import.proyectos.lineas');
     Route::get('/proyectos/errores/{id?}', [ProyectoLineaController::class, 'errores'])->name('errores.proyectos');
 
-    Route::get('/factclientes', [ClientesFacturaController::class, 'index'])->name('factcleintes');
-    Route::get('/factclientes/lineas/{id?}', [ClientesFacturaController::class, 'index'])->name('factclientes.lineas');
-    Route::post('/factclientes/lineas/store/{idf?}/{idp?}', [ClientesFacturaController::class, 'store'])->name('save.factclientes.lineas');
+    Route::get('/factclientes', [ClientesFacturaController::class, 'index'])->name('factclientes');
+    Route::get('/factclientes/nuevo', [ClientesFacturaController::class, 'create'])->name('new.factclientes');
+    Route::get('/factclientes/lineas/{id?}', [ClientesFacturaLineaController::class, 'index'])->name('factclientes.lineas');
+    Route::post('/factclientes/lineas/store/{idf?}/{idp?}', [ClientesFacturaLineaController::class, 'store'])->name('save.factclientes.lineas');
 
     //Presupuestos
     Route::get('/presupuestos', [PresupuestoController::class, 'index'])->name('presupuestos');
