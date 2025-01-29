@@ -26,7 +26,7 @@ class ClientesFacturaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create()
     {
         $proyectos = DB::table('proyectos')
             ->join('clientes','clientes.id','=','proyectos.cliente_id')
