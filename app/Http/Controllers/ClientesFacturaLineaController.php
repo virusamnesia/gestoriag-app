@@ -31,7 +31,6 @@ class ClientesFacturaLineaController extends Controller
             'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
             ->where('proyectos.id', '=',$id)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
-            ->where('proyecto_sucursal_lineas.clientes_factura_id', '<', 0)
             ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
             ->get();
 
