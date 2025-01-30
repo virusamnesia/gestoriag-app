@@ -149,15 +149,15 @@
             var subtotal = $("#subtotal").value();
             var elemento = "#".nombre;
             
-            if($(elemento).value()){
-                subtotal = subtotal + importe;
-            }
+            //if($(elemento).value()){
+                //subtotal = subtotal + importe;
+            //}
 
-            else{
-                subtotal = subtotal - importe;
-            }
+            //else{
+                //subtotal = subtotal - importe;
+            //}
             
-            $("#subtotal").value(subtotal);
+            $("#subtotal").value(subtotal + 1000);
         }
     </script>
 
