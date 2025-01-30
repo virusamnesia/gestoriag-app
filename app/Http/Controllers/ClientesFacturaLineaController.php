@@ -26,16 +26,40 @@ class ClientesFacturaLineaController extends Controller
             ->join('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','clientes.id as cliente_id','clientes.nombre as cliente',
             'clientes.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
-            'proyectos.id as proyecto_id', 'productos.id as producto_id', 'productos.nombre as producto', 
+            'proyectos.id as proyecto_id','proyectos.nombre as proyecto', 'productos.id as producto_id', 'productos.nombre as producto', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo',
             'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
             ->where('proyectos.id', '=',$id)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
-            ->where('proyecto_sucursal_lineas.clientes_factura_id', '!=', NULL)
-            ->where('proyecto_sucursal_lineas.tipos_proceso_id', '=', 1)
+            ->where('proyecto_sucursal_lineas.clientes_factura_id', '<', 0)
             ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
             ->get();
 
+        $cliente = "";
+        $proyecto = "";
+        $cliente_id = "";
+        $proyecto_id = "";
+        $subtotal = 0;
+        foreach ($movimientos as $mov){
+            $cliente_id = $mov->cliente_id;
+            $proyecto_id = $mov->proyecto_id;
+            $cliente = $mov->cliente;
+            $proyecto = $mov->proyecto;
+            $subtotal += $mov->cxc;
+        }
+
+        $inf = 1;
+        session()->flash('Exito','Selecciona las partidas a facturar...');
+        return redirect()->route('proyectos.lineas', ['cliente' => $cliente,'proyecto' => $proyecto,'cliente_id' => $cliente_id,'proyecto_id' => $proyecto_id,'subtotal' => $subtotal,'movimientos' => $movimientos])->with('info',$inf);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
         $fact = new ClientesFactura();
         $cliente = "";
         $proyecto = "";
@@ -65,20 +89,6 @@ class ClientesFacturaLineaController extends Controller
             'proyectos.nombre as proyecto','clientes.nombre as cliente')
             ->where('proyectos.id', '=',$fact->id)
             ->first();
-
-        $inf = 1;
-        session()->flash('Exito','Selecciona las partidas a facturar...');
-        return redirect()->route('proyectos.lineas', ['id' => $fact->id,'factura' => $factura,'movimientos' => $movimientos])->with('info',$inf);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -87,7 +97,7 @@ class ClientesFacturaLineaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$idf,$idp)
+    public function store(Request $request,$idp,$idc)
     {
         $movimientos = DB::table('proyectos')
             ->join('clientes','clientes.id','=','proyectos.cliente_id')
@@ -118,11 +128,21 @@ class ClientesFacturaLineaController extends Controller
         $impuestos = 0;
         $total = 0;
 
+        $fact = new ClientesFactura();
+        $fact->cliente_id = $idc;
+        $fact->proyecto_id = $idp;
+        $fact->fecha = now();
+        $fact->subtotal = $subtotal;
+        $fact->impuestos = 0;
+        $fact->total = $subtotal;
+        $fact->es_activo = 1;
+        $fact->save();
+
         foreach ($movimientos as $row){
             $sel = "sel".$row->mov_id;
             if ($request->$sel){
                 $linea = new ClientesFacturaLinea();
-                $linea->cliente_factura_id = $idf;
+                $linea->cliente_factura_id = $fact->id;
                 $linea->proyecto_sucursal_linea_id = $row->mov_id;
                 $linea->subtotal = $row->cxc;
                 $linea->impuestos = 0;
@@ -136,7 +156,7 @@ class ClientesFacturaLineaController extends Controller
         };
 
         $factura = DB::table('cliente_facturas')
-            ->where('id','=',$idf)
+            ->where('id','=',$fact->id)
             ->update([
             'subtotal'=> $subtotal,
             'impuestos'=> $impuestos,

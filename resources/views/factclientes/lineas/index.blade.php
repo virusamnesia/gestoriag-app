@@ -23,19 +23,17 @@
 @stop
 
 @section('content')
-    <h4>Factura No: {{$factura->id}}</h4>
-    <h4>Cliente: {{$factura->cliente}}</h4>
-    <h4>Proyecto: {{$factura->proyecto}}</h4>
-    <h4>Fecha: {{$factura->fecha}}</h4>
-    <h4>Subtotal: ${{number_format($factura->subtotal,2)}}</h4>
+    <h4>Cliente: {{$cliente}}</h4>
+    <h4>Proyecto: {{$proyecto}}</h4>
+    <h4>Subtotal: ${{number_format($subtotal,2)}}</h4>
 
-    <form action="/factclientes/lineas/store/{{$factura->proyecto}}" method="POST">
+    <form action="/factclientes/lineas/store/{{$proyecto_id}}/{{$cliente_id}}" method="POST">
             
         @csrf
         <div class="row">
             <div class="col-md-11">
                 <x-adminlte-input name="subtotal" id=="subtotal" placeholder="Subbtotal" label="Subtotal"
-                        fgroup-class="col-md-8" disable-feedback value="{{$factura->subtotal}}"/>
+                        fgroup-class="col-md-8" disable-feedback value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
                 <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
