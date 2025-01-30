@@ -29,7 +29,7 @@
     <x-adminlte-input name="subtotal" id=="subtotal"  value="{{$subtotal}}"
                         fgroup-class="col-md-8" disable-feedback/>
     
-    <x-adminlte-input  placeholder="Subtotal" label="Subtotal"
+    <x-adminlte-input  name="subtotali" id=="subtotali" placeholder="Subtotal" label="Subtotal"
     fgroup-class="col-md-8" disable-feedback value="{{$subtotal}}"/>
 
 
