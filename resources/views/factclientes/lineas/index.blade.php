@@ -65,7 +65,7 @@
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" onchange="recalcular('{{$name}}',{{$row->importe}})"/>
                                 </th>
                                 <td>{{$row->producto}}</td>
-                                <td>{{$row->movimiento}}</td>
+                                <td>{{$row->estatus}}</td>
                                 <td>{{$row->porcentaje}}</td>
                                 <td>{{$row->fecha}}</td>
                                 <td>{{$row->cxc}}</td>
