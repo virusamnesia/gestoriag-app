@@ -21,7 +21,6 @@ class ClientesFacturaLineaController extends Controller
             ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
             ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
             ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-            ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->join('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
@@ -30,7 +29,7 @@ class ClientesFacturaLineaController extends Controller
             'proyectos.id as proyecto_id', 'productos.id as producto_id', 'productos.nombre as producto', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo',
             'movimientos_pago_clientes.nombre as movimiento','movimientos_pago_clientes.secuencia as secuencia','clientes_facturas.id as factura',
-            'proyecto_sucursal_lineas.importe as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.porcentaje as porcentaje')
+            'proyecto_sucursal_lineas.importe as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
             ->where('proyectos.id', '=',$id)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
             ->where('proyecto_sucursal_lineas.clientes_factura_id', '!=', NULL)
@@ -103,7 +102,6 @@ class ClientesFacturaLineaController extends Controller
             ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
             ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
             ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-            ->leftJoin('terminos_pago_proveedors', 'terminos_pago_proveedors.id', '=', 'proyecto_lineas.terminos_pago_proveedor_id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->join('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
@@ -111,7 +109,7 @@ class ClientesFacturaLineaController extends Controller
             'clientes.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'proyectos.id as proyecto_id', 'productos.id as producto_id', 'productos.nombre as producto', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo',
-            'movimientos_pago_clientes.nombre as movimiento','movimientos_pago_clientes.secuencia as secuencia','clientes_facturas.id as factura',
+            'estatus_linea_clientes.nombre as movimiento','movimientos_pago_clientes.secuencia as secuencia','clientes_facturas.id as factura',
             'proyecto_sucursal_lineas.importe as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.porcentaje as porcentaje',
             'agrupador_facturas.nombre as agrupador')
             ->where('proyectos.id', '=',$idp)
