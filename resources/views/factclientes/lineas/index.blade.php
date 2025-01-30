@@ -26,7 +26,7 @@
     <h4>Cliente: {{$cliente}}</h4>
     <h4>Proyecto: {{$proyecto}}</h4>
     <h4>Subtotal: ${{number_format($subtotal,2)}}</h4>
-    <x-adminlte-input name="nombre" placeholder="Nombre del presupuesto"
+    <x-adminlte-input name="nombre" placeholder="Nombre del presupuesto" value="{{$subtotal}}"
                         fgroup-class="col-md-8" disable-feedback/>
     
     <x-adminlte-input name="subtotal" id=="subtotal" placeholder="Subtotal" label="Subtotal"
