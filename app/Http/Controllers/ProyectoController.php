@@ -61,7 +61,7 @@ class ProyectoController extends Controller
         $proyecto->estados_proyecto_id = 1;
         $proyecto->fecha_cotizacion = today();
         $proyecto->es_agrupado = $request->agrupado;
-        $proyecto->autorizar = 1;
+        $proyecto->autorizar = 0;
 
         $proyecto->save();
 
