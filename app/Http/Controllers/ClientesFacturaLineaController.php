@@ -28,12 +28,12 @@ class ClientesFacturaLineaController extends Controller
             'clientes.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'proyectos.id as proyecto_id', 'productos.id as producto_id', 'productos.nombre as producto', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo',
-            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.cxc as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
+            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
             ->where('proyectos.id', '=',$id)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
             ->where('proyecto_sucursal_lineas.clientes_factura_id', '!=', NULL)
             ->where('proyecto_sucursal_lineas.tipos_proceso_id', '=', 1)
-            ->where('proyecto_sucursal_lineas.cxc', '>', 0)
+            ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
             ->groupBy('clientes.id')
             ->get();
 
@@ -107,12 +107,12 @@ class ClientesFacturaLineaController extends Controller
             'clientes.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'proyectos.id as proyecto_id', 'productos.id as producto_id', 'productos.nombre as producto', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo',
-            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.cxc as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
+            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
             ->where('proyectos.id', '=',$idp)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
             ->where('proyecto_sucursal_lineas.clientes_factura_id', '!=', NULL)
             ->where('proyecto_sucursal_lineas.tipos_proceso_id', '=', 1)
-            ->where('proyecto_sucursal_lineas.cxc', '>', 0)
+            ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
             ->groupBy('clientes.id')
             ->get();
         
