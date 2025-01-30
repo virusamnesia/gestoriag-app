@@ -34,7 +34,6 @@ class ClientesFacturaLineaController extends Controller
             ->where('proyecto_sucursal_lineas.clientes_factura_id', '!=', NULL)
             ->where('proyecto_sucursal_lineas.tipos_proceso_id', '=', 1)
             ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
-            ->groupBy('clientes.id')
             ->get();
 
         $fact = new ClientesFactura();
@@ -113,7 +112,6 @@ class ClientesFacturaLineaController extends Controller
             ->where('proyecto_sucursal_lineas.clientes_factura_id', '!=', NULL)
             ->where('proyecto_sucursal_lineas.tipos_proceso_id', '=', 1)
             ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
-            ->groupBy('clientes.id')
             ->get();
         
         $subtotal = 0;
