@@ -52,7 +52,8 @@
                         <th scope="col">Porcentaje aplicado</th>
                         <th scope="col">Fecha aplicación</th>
                         <th scope="col">Importe</th>
-                        <th scope="col">Agrupador</th>
+                        <th scope="col">Agrupador de Facturación</th>
+                        <th scope="col">Tipo de Producto</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -68,6 +69,7 @@
                                 <td>{{$row->fecha}}</td>
                                 <td>{{$row->cxc}}</td>
                                 <td>{{$row->agrupador}}</td>
+                                <td>{{$row->tipo}}</td>
                             </tr>
                         @endforeach
                     </tbody>
