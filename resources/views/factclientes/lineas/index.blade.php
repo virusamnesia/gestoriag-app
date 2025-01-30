@@ -25,20 +25,14 @@
 @section('content')
     <h4>Cliente: {{$cliente}}</h4>
     <h4>Proyecto: {{$proyecto}}</h4>
-    <h4>Subtotal: ${{number_format($subtotal,2)}}</h4>
-    <x-adminlte-input name="nombre" placeholder="Nombre del presupuesto" value="{{$subtotal}}"
-                        fgroup-class="col-md-8" disable-feedback/>
+    <h4>Subtotal: ${{number_format($subtotal,2)}}</h4> <input type="number" name="prueba" id="prueba" value="{{$subtotal}}" disabled/>
     
-    <x-adminlte-input name="prueba" id=="prueba" placeholder="Subtotal" label="Subtotal"
-    fgroup-class="col-md-8" disable-feedback value="{{$subtotal}}"/>
-
-
     <form action="/factclientes/lineas/store/{{$proyecto_id}}/{{$cliente_id}}" method="POST">
             
         @csrf
         <div class="row">
             <div class="col-md-11">
-                <x-adminlte-input name="subtotale" id=="subtotale" placeholder="Subtotal" label="Subtotal"
+                <x-adminlte-input name="subtotale" id="subtotale" placeholder="Subtotal" label="Subtotal"
                         fgroup-class="col-md-8" disable-feedback value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
