@@ -26,13 +26,17 @@
     <h4>Cliente: {{$cliente}}</h4>
     <h4>Proyecto: {{$proyecto}}</h4>
     <h4>Subtotal: ${{number_format($subtotal,2)}}</h4>
+    
+    <x-adminlte-input name="subtotal" id=="subtotal" placeholder="Subtotal" label="Subtotal"
+    fgroup-class="col-md-8" disable-feedback value="{{$subtotal}}"/>
+
 
     <form action="/factclientes/lineas/store/{{$proyecto_id}}/{{$cliente_id}}" method="POST">
             
         @csrf
         <div class="row">
             <div class="col-md-11">
-                <x-adminlte-input name="subtotal" id=="subtotal" placeholder="Subbtotal" label="Subtotal"
+                <x-adminlte-input name="subtotale" id=="subtotale" placeholder="Subtotal" label="Subtotal"
                         fgroup-class="col-md-8" disable-feedback value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
@@ -40,9 +44,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-1">
             </div>
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                     <thead class="bg-dark text-white">
                     <tr>
@@ -64,7 +68,7 @@
                             @php $name = "sel".$row->mov_id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" onchange="recalcular('{{$name}}',{{$row->cxc}})"/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" checked onchange="recalcular('{{$name}}',{{$row->cxc}})"/>
                                 </th>
                                 <td>{{$row->sucursal}}</td>
                                 <td>{{$row->municipio}}</td>
@@ -81,7 +85,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
             </div>
         </div>
     </form>
@@ -96,6 +100,8 @@
     </div>
 
 @stop
+
+@section('plugins.BootstrapSwitch', true)
 
 @section('css')
     {{-- Add here extra stylesheets --}}
