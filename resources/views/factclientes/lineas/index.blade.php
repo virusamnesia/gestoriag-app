@@ -47,6 +47,9 @@
                     <thead class="bg-dark text-white">
                     <tr>
                         <th scope="col">Facturar</th>
+                        <th scope="col">Sucursal</th>
+                        <th scope="col">Municipio</th>
+                        <th scope="col">Estado</th>
                         <th scope="col">Producto</th>
                         <th scope="col">Motivo</th>
                         <th scope="col">Porcentaje aplicado</th>
@@ -63,6 +66,9 @@
                                 <th scope="row">
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" onchange="recalcular('{{$name}}',{{$row->cxc}})"/>
                                 </th>
+                                <td>{{$row->sucursal}}</td>
+                                <td>{{$row->municipio}}</td>
+                                <td>{{$row->estado}}</td>
                                 <td>{{$row->producto}}</td>
                                 <td>{{$row->estatus}}</td>
                                 <td>{{$row->porcentaje}}</td>
