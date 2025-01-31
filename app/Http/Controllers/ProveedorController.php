@@ -19,7 +19,7 @@ class ProveedorController extends Controller
         ->orderBy('nombre') 
         ->get();
 
-        return view('proveedor.index', ['proveedores' => $proveedores]);
+        return view('Proveedor.index', ['proveedores' => $proveedores]);
     }
 
     /**
@@ -39,7 +39,7 @@ class ProveedorController extends Controller
             ->orderBy('municipio_contactos.nombre')
             ->get();
 
-        return view('proveedor.create', ['municipios' => $municipios, 'bancos' => $bancos]);
+        return view('Proveedor.create', ['municipios' => $municipios, 'bancos' => $bancos]);
     }
 
     /**
@@ -122,7 +122,7 @@ class ProveedorController extends Controller
             ->where('proveedors.id','=',$id)
             ->get();
 
-        return view('proveedor.show', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos]);
+        return view('Proveedor.show', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos]);
     }
 
     /**
@@ -152,7 +152,7 @@ class ProveedorController extends Controller
             ->where('proveedors.id','=',$id)
             ->get();
 
-        return view('proveedor.edit', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos]);
+        return view('Proveedor.edit', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos]);
     }
 
     /**
@@ -235,7 +235,7 @@ class ProveedorController extends Controller
             ->where('proveedors.id','=',$id)
             ->first();
 
-        return view('proveedor.municipios', ['proveedor' => $proveedor,'municipios' => $municipios]);
+        return view('Proveedor.municipios', ['proveedor' => $proveedor,'municipios' => $municipios]);
     }
 
     public function store_municipios(Request $request,$id)
