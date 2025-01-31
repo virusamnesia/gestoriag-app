@@ -19,6 +19,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProductosProyectoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ProveedorFacturaController;
+use App\Http\Controllers\ProveedorMunicipioController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\ProyectoLineaController;
 use App\Http\Controllers\ProyectoSucursalLineaController;
@@ -105,8 +106,8 @@ Route::middleware([
     Route::get('/proveedores/show/{id?}', [ProveedorController::class, 'show'])->name('showproveedor');
     Route::get('/proveedores/{id?}', [ProveedorController::class, 'edit'])->name('editproveedor');
     Route::post('/proveedores/update/{id?}', [ProveedorController::class, 'update'])->name('upproveedor');
-    Route::get('/proveedores/municipios/{id?}', [MunicipiosProveedorController::class, 'index'])->name('munproveedor');
-    Route::post('/proveedores/municipios/{id?}', [MunicipiosProveedorController::class, 'store'])->name('savemunproveedor');
+    Route::get('/proveedores/municipios/{id?}', [ProveedorMunicipioController::class, 'index'])->name('munproveedor');
+    Route::post('/proveedores/municipios/{id?}', [ProveedorMunicipioController::class, 'store'])->name('savemunproveedor');
 
     //PRODUCTOS
     Route::get('/productos', [ProductoController::class, 'index'])->name('productos');
