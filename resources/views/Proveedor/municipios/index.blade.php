@@ -65,7 +65,7 @@
                 <tbody>
                     @foreach ($municipios as $row) {{-- Add here extra stylesheets --}}
                         <tr>
-                            <th scope="row">{{$row->nombre}}</th>
+                            <th scope="row">{{$row->municipio}}</th>
                             <td>{{$row->estado}}</td>
                         </tr>
                     @endforeach
