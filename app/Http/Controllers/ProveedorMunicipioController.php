@@ -31,7 +31,7 @@ class ProveedorMunicipioController extends Controller
             ->where('proveedors.id','=',$id)
             ->get();
 
-        return view('Proveedor.municipios.index', ['municipios_all' => $municipios_all,'municipios' => $municipios,'proveedor' => $proveedor]);
+        return view('Proveedor.municipios.index', ['municipios_all' => $municipios_all,'municipios' => $municipios,'proveedor' => $proveedor,'id' => $id]);
 
     }
 
