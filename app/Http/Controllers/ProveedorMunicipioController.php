@@ -23,7 +23,7 @@ class ProveedorMunicipioController extends Controller
 
         $municipios = DB::table('proveedor_municipios')
             ->join('municipio_contactos', 'municipio_contactos.id', '=', 'proveedor_municipios.municipio_contacto_id')
-            ->join('ciudad_contactos', 'municipio_contactos.id', '=', 'ciudad_contatos.municipio_contacto_id')
+            ->join('ciudad_contactos', 'municipio_contactos.id', '=', 'ciudad_contactos.municipio_contacto_id')
             ->join('estado_contactos', 'estado_contactos.id', '=', 'municipio_contactos.estado_contacto_id')
             ->join('pais_contactos', 'pais_contactos.id', '=', 'estado_contactos.pais_contacto_id')
             ->join('proveedors', 'proveedors.id', '=', 'proveedor_municipios.proveedor_id')
