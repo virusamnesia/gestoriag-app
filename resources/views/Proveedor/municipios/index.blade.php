@@ -28,9 +28,9 @@
             
         @csrf
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="row">
-                    <x-adminlte-select2 name="municipio" label-class="text-lightblue"  fgroup-class="col-md-5"
+                    <x-adminlte-select2 name="municipio" label-class="text-lightblue"  fgroup-class="col-md-12"
                         igroup-size="sm" data-placeholder="Selecciona un municipio...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -44,7 +44,7 @@
                     </x-adminlte-select2>
                 </div>
             </div>
-            <div class="col-md-7">  
+            <div class="col-md-6">  
             </div>
             <div class="col-md-1">
                 <x-adminlte-button label="Nuevo" type="submit" theme="info" icon="fas fa-info-circle"/>
