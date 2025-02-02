@@ -165,7 +165,7 @@
             }else{
                 selectElement = document.getElementById('subtotal');
                 subtotal = selectElement.value;
-                alert('unchecked - '+cxc+' + '+this.checked);
+                alert('unchecked - '+cxc+' + '+id);
                 selectElement.value = subtotal - cxc;
             }
         }
