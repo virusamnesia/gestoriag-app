@@ -146,8 +146,8 @@
         }
 
         function recalcular(nombre,importe){
-            var subtotal = $("#subtotal").value();
-            var elemento = "#".nombre;
+            //var subtotal = $("#subtotal").value();
+            //var elemento = "#".nombre;
             
             //if($(elemento).value()){
                 //subtotal = subtotal + importe;
@@ -157,7 +157,7 @@
                 //subtotal = subtotal - importe;
             //}
             
-            $("#subtotal").value(subtotal + 1000);
+            $("#subtotal").value(1000);
         }
     </script>
 
