@@ -54,7 +54,7 @@
                             <td>{{$row->nombre}}</td>
                             <td>{{$row->anio}}</td>
                             <td>${{number_format($row->cxc, 2)}}</td>
-                            <td><a href= "/factclientes/lineas/{{$row->id}}">Revisar</a></td>
+                            <td><a href= "/factclientes/previo/{{$row->id}}">Revisar</a></td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -3,7 +3,7 @@
 @section('title', 'LineasFactura')
 
 @section('content_header')
-    <h1>Líneas de la factura</h1>
+    <h1>Previo líneas de la factura</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error! </strong>{{  Session::get('Error'); }}

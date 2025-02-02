@@ -147,7 +147,8 @@ Route::middleware([
 
     Route::get('/factclientes', [ClientesFacturaController::class, 'index'])->name('factclientes');
     Route::get('/factclientes/nuevo', [ClientesFacturaController::class, 'create'])->name('new.factclientes');
-    Route::get('/factclientes/lineas/{id?}', [ClientesFacturaLineaController::class, 'index'])->name('factclientes.lineas');
+    Route::get('/factclientes/previo/{id?}', [ClientesFacturaLineaController::class, 'index'])->name('factclientes.previo');
+    Route::get('/factclientes/lineas/{id?}', [ClientesFacturaLineaController::class, 'lineas'])->name('factclientes.lineas');
     Route::post('/factclientes/lineas/store/{idp?}/{idc?}', [ClientesFacturaLineaController::class, 'store'])->name('save.factclientes.lineas');
 
     //Presupuestos
