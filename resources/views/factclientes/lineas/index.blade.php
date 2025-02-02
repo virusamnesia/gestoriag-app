@@ -64,7 +64,7 @@
                             @php $name = "sel".$row->mov_id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" checked onchange="recalcular('{{$name}}','{{$row->cxc}}')"/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" checked onchange="recalcular()"/>
                                 </th>
                                 <td>{{$row->sucursal}}</td>
                                 <td>{{$row->municipio}}</td>
@@ -145,7 +145,7 @@
             location.href=url;
         }
 
-        function recalcular(nombre,importe){
+        function recalcular(){
             //var subtotal = $("#subtotal").value();
             //var elemento = "#".nombre;
             
