@@ -64,7 +64,7 @@
                             @php $name = "sel".$row->mov_id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" checked onchange="recalcular()"/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id)" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" is-checked/>
                                 </th>
                                 <td>{{$row->sucursal}}</td>
                                 <td>{{$row->municipio}}</td>
@@ -145,7 +145,7 @@
             location.href=url;
         }
 
-        function recalcular(){
+        function recalcular(id){
             //var subtotal = $("#subtotal").value();
             //var elemento = "#".nombre;
             
@@ -156,8 +156,17 @@
             //else{
                 //subtotal = subtotal - importe;
             //}
+
+            //var tname = "#term"+idp;
+            //selectElement = document.querySelector(tname);
+            //term = selectElement.value;
             
-            $("#subtotal").value(1000);
+            //$("#subtotal").value(1000);
+            if(this.checked) {
+                alert('checked');
+            }else{
+                alert('unchecked');
+            }
         }
     </script>
 
