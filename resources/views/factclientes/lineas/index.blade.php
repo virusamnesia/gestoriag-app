@@ -40,9 +40,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-1">
-            </div>
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                     <thead class="bg-dark text-white">
                     <tr>
@@ -80,8 +78,6 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-            <div class="col-md-1">
             </div>
         </div>
     </form>
@@ -158,14 +154,14 @@
             //}
 
             //var tname = "#term"+idp;
-            //selectElement = document.querySelector(tname);
-            //term = selectElement.value;
+            selectElement = document.getElementById('subtotal');
+            subtotal = selectElement.value;
             
             //$("#subtotal").value(1000);
             if(this.checked) {
-                alert('checked + '+cxc);
+                alert('checked + '+cxc+' + '+subtotal);
             }else{
-                alert('unchecked - '+cxc);
+                alert('unchecked - '+cxc+' + '+subtotal);
             }
         }
     </script>
