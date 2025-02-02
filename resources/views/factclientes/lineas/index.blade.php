@@ -143,7 +143,7 @@
 
         function recalcular(id,cxc){
             checkElement = document.getElementById(id);
-            checkValue = checkElement.value;
+            checkValue = checkElement.cheked;
             selectElement = document.getElementById('subtotal');
             subtotal = selectElement.value;
             var operacion = 0;
