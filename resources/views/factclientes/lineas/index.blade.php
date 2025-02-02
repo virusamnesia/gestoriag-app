@@ -146,15 +146,17 @@
             checkValue = checkElement.value;
             selectElement = document.getElementById('subtotal');
             subtotal = selectElement.value;
-            var operacion = 0;
+            operacion = 0;
             if(checkValue) {
                 operacion = subtotal + cxc;
                 selectElement.value = operacion;
                 checkElement.value = true;
+                alert(operacion);
             }else{
                 operacion = subtotal - cxc;
                 selectElement.value = operacion;
                 checkElement.value = false;
+                alert(operacion);
             }
         }
     </script>
