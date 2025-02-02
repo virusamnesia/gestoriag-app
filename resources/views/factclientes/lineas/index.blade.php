@@ -32,7 +32,7 @@
         @csrf
         <div class="row">
             <div class="col-md-11">
-                <x-adminlte-input name="subtotal" id="subtotal" type="number" label="Subtotal Seleccionado" disabled
+                <x-adminlte-input name="subtotal" id="subtotal" type="number" label="Subtotal Seleccionado" step="0.01" disabled
                         fgroup-class="col-md-5" value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
@@ -153,12 +153,12 @@
                 operacion = subtotal + importe;
                 selectElement.value = operacion;
                 //checkElement.value = false;
-                alert("suma"+operacion);
+                alert("Se agrega: "+importe);
             }else{
                 operacion = subtotal - importe;
                 selectElement.value = operacion;
                 //checkElement.value = true;
-                alert("resta"+operacion);
+                alert("Se resta: "+importe);
             }
         }
     </script>
