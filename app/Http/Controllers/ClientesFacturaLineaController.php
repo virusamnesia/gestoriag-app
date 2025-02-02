@@ -143,7 +143,7 @@ class ClientesFacturaLineaController extends Controller
             $sel = "sel".$row->mov_id;
             if ($request->$sel){
                 $linea = new ClientesFacturaLinea();
-                $linea->cliente_factura_id = $fact->id;
+                $linea->clientes_factura_id = $fact->id;
                 $linea->proyecto_sucursal_linea_id = $row->mov_id;
                 $linea->subtotal = $row->cxc;
                 $linea->impuestos = 0;
