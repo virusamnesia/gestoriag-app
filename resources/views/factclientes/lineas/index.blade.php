@@ -152,12 +152,12 @@
             if(checkValue) {
                 operacion = subtotal + importe;
                 selectElement.value = operacion;
-                checkElement.value = true;
+                checkElement.value = false;
                 alert(operacion);
             }else{
                 operacion = subtotal - importe;
                 selectElement.value = operacion;
-                checkElement.value = false;
+                checkElement.value = true;
                 alert(operacion);
             }
         }
