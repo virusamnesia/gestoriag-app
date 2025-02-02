@@ -110,19 +110,19 @@ class ClientesFacturaLineaController extends Controller
             ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
             ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
             ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+            ->leftJoin('agrupador_facturas', 'productos.agrupador_factura_id', '=', 'agrupador_facturas.id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->join('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','clientes.id as cliente_id','clientes.nombre as cliente',
             'clientes.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
-            'proyectos.id as proyecto_id', 'productos.id as producto_id', 'productos.nombre as producto', 
-            'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo',
+            'proyectos.id as proyecto_id','proyectos.nombre as proyecto', 'productos.id as producto_id', 'productos.nombre as producto', 'agrupador_facturas.nombre as agrupador', 
+            'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha',
             'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
             ->where('proyectos.id', '=',$idp)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
-            ->where('proyecto_sucursal_lineas.clientes_factura_id', '!=', NULL)
-            ->where('proyecto_sucursal_lineas.tipos_proceso_id', '=', 1)
             ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
+            ->where('proyecto_sucursal_lineas.clientes_factura_id', '=', NULL)
             ->get();
         
         $subtotal = 0;
@@ -156,7 +156,7 @@ class ClientesFacturaLineaController extends Controller
             } 
         };
 
-        $factura = DB::table('cliente_facturas')
+        $factura = DB::table('clientes_facturas')
             ->where('id','=',$fact->id)
             ->update([
             'subtotal'=> $subtotal,
