@@ -156,8 +156,8 @@
             //var tname = "#term"+idp; this.checked
             selectElement = document.getElementById('subtotal');
             subtotal = selectElement.value;
-            checkElement = document.getElementById('id');
-            check = checkElement.value;
+            checkElement = document.getElementById(this);
+            //check = checkElement.value;
             if(this.checked) {
                 alert('checked + '+cxc+' + '+subtotal);
                 selectElement.value = subtotal + cxc;
