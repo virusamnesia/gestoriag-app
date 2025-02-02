@@ -157,16 +157,12 @@
             
             checkElement = document.getElementById(id);
             checkValue = checkElement.value;
+            selectElement = document.getElementById('subtotal');
+            subtotal = selectElement.value;
             if(checkValue) {
-                selectElement = document.getElementById('subtotal');
-                subtotal = selectElement.value;
-                alert('checked + '+cxc+' + '+subtotal);
                 selectElement.value = subtotal + cxc;
                 checkElement.value = true;
             }else{
-                selectElement = document.getElementById('subtotal');
-                subtotal = selectElement.value;
-                alert('unchecked - '+cxc+' + '+checkValue);
                 selectElement.value = subtotal - cxc;
                 checkElement.value = false;
             }
