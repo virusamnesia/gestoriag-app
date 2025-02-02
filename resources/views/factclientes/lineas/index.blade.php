@@ -157,7 +157,7 @@
             
             checkElement = document.getElementById(this);
             //checkValue = checkElement.checked;
-            if(checkElement.checked) {
+            if(this.checked) {
                 selectElement = document.getElementById('subtotal');
                 subtotal = selectElement.value;
                 alert('checked + '+cxc+' + '+subtotal);
@@ -165,7 +165,7 @@
             }else{
                 selectElement = document.getElementById('subtotal');
                 subtotal = selectElement.value;
-                alert('unchecked - '+cxc+' + '+subtotal);
+                alert('unchecked - '+cxc+' + '+this.checked);
                 selectElement.value = subtotal - cxc;
             }
         }
