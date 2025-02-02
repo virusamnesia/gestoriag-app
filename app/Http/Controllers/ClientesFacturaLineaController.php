@@ -153,10 +153,33 @@ class ClientesFacturaLineaController extends Controller
 
                 $subtotal += $row->cxc;
                 $total += $row->cxc;
+
+                $mov = DB::table('proyecto_sucursal_lineas')
+                    ->where('id','=', $row->mov_id)
+                    ->update([
+                    'clientes_factura_id'=> $fact->id,
+                    'fecha_factura'=> $fact->fecha,
+                ]);
+
+                $line = DB::table('proyecto_lineas')
+                    ->where('id','=', $row->id)
+                    ->update([
+                    'cxc'=> 0,
+                ]);
+
+                $proyecto = DB::table('proyectos')
+                    ->where('id','=',$idp)
+                    ->first();
+
+                $proy = DB::table('proyectos')
+                    ->where('id','=', $proyecto->id)
+                    ->update([
+                    'cxc'=> $proyecto->cxc - $row->cxc,
+                ]);
             } 
         };
 
-        $factura = DB::table('clientes_facturas')
+        $facturas = DB::table('clientes_facturas')
             ->where('id','=',$fact->id)
             ->update([
             'subtotal'=> $subtotal,

@@ -152,8 +152,8 @@ class ProyectoController extends Controller
 
                     $importe_cliente = $linea->precio * ($movimiento->valor_cliente / 100);
                     $saldo_cliente = $saldo_cliente - $importe_cliente;
-                    $importe_proveedor = $linea->precio * ($movimiento->valor_proveedor / 100);
-                    $saldo_proveedor = $saldo_cliente - $importe_proveedor;
+                    $importe_proveedor = $linea->costo * ($movimiento->valor_proveedor / 100);
+                    $saldo_proveedor = $saldo_proveedor - $importe_proveedor;
 
                     $total_cliente = $total_cliente + $importe_cliente;
                     $total_proveedor = $total_proveedor + $importe_proveedor;
