@@ -32,8 +32,8 @@
         @csrf
         <div class="row">
             <div class="col-md-11">
-                <x-adminlte-input name="subtotal" id="subtotal"  type="number" label="Subtotal Seleccionado" disabled
-                        fgroup-class="col-md-8" value="{{$subtotal}}"/>
+                <x-adminlte-input name="subtotal" id="subtotal"  label="Subtotal Seleccionado" disabled
+                        fgroup-class="col-md-5" value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
                 <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
