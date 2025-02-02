@@ -156,9 +156,9 @@
             //var tname = "#term"+idp; this.checked
             selectElement = document.getElementById('subtotal');
             subtotal = selectElement.value;
-            checkElement = document.getElementById(this);
-            check = checkElement.value;
-            if(check) {
+            //checkElement = document.getElementById(this);
+            //check = checkElement.value;
+            if(this.is-checked) {
                 alert('checked + '+cxc+' + '+subtotal);
                 selectElement.value = subtotal + cxc;
             }else{
