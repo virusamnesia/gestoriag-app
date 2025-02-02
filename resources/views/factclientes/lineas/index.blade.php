@@ -154,14 +154,17 @@
             //}
 
             //var tname = "#term"+idp; this.checked
-            selectElement = document.getElementById('subtotal');
-            subtotal = selectElement.value;
+            
             //checkElement = document.getElementById(this);
             //check = checkElement.value;
-            if(this.is-checked) {
+            if(this.checked) {
+                selectElement = document.getElementById('subtotal');
+                subtotal = selectElement.value;
                 alert('checked + '+cxc+' + '+subtotal);
                 selectElement.value = subtotal + cxc;
             }else{
+                selectElement = document.getElementById('subtotal');
+                subtotal = selectElement.value;
                 alert('unchecked - '+cxc+' + '+subtotal);
                 selectElement.value = subtotal - cxc;
             }
