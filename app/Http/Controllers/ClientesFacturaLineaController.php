@@ -206,7 +206,7 @@ class ClientesFacturaLineaController extends Controller
 
         $inf = 1;
         session()->flash('Exito','Selecciona las partidas a facturar...');
-        return view('factclientes.lineas.index', ['factura' => $factura,'cliente' => $cliente,'proyecto' => $proyecto,'cliente_id' => $cliente_id,'proyecto_id' => $proyecto_id,'subtotal' => $subtotal,'movimientos' => $movimientos])->with('info',$inf);
+        return view('factclientes.lineas.lineas', ['factura' => $factura,'cliente' => $cliente,'proyecto' => $proyecto,'cliente_id' => $cliente_id,'proyecto_id' => $proyecto_id,'subtotal' => $subtotal,'movimientos' => $movimientos])->with('info',$inf);
     }
 
     /**
