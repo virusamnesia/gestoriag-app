@@ -158,7 +158,7 @@
             subtotal = selectElement.value;
             checkElement = document.getElementById('id');
             check = checkElement.value;
-            if(check) {
+            if(this.checked) {
                 alert('checked + '+cxc+' + '+subtotal);
                 selectElement.value = subtotal + cxc;
             }else{
