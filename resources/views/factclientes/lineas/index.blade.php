@@ -145,7 +145,7 @@
             checkElement = document.getElementById(id);
             checkValue = checkElement.value;
             selectElement = document.getElementById('subtotal');
-            subtotal = selectElement.value;
+            subtotal = parseInt(selectElement.value,10);
             operacion = 0;
             if(checkValue) {
                 operacion = subtotal + cxc;
