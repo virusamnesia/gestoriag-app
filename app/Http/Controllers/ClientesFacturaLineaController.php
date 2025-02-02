@@ -33,6 +33,7 @@ class ClientesFacturaLineaController extends Controller
             ->where('proyectos.id', '=',$id)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
             ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
+            ->where('proyecto_sucursal_lineas.clientes_factura_id', 'IS NULL')
             ->get();
 
         $cliente = "";
