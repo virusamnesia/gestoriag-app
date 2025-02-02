@@ -153,7 +153,7 @@
                 checkElement.value = true;
             }else{
                 operacion = subtotal - cxc;
-                selectElement.value = operacionc;
+                selectElement.value = operacion;
                 checkElement.value = false;
             }
         }
