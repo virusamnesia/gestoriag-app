@@ -142,18 +142,20 @@
         }
 
         function recalcular(id,cxc){
-            checkElement = document.getElementById(id);
-            checkValue = checkElement.value;
+            
             selectElement = document.getElementById('subtotal');
             subtotal = parseInt(selectElement.value,10);
+            importe = parseInt(cxc,10);
             operacion = 0;
+            checkElement = document.getElementById(id);
+            checkValue = checkElement.value;
             if(checkValue) {
-                operacion = subtotal + cxc;
+                operacion = subtotal + importe;
                 selectElement.value = operacion;
                 checkElement.value = true;
                 alert(operacion);
             }else{
-                operacion = subtotal - cxc;
+                operacion = subtotal - importe;
                 selectElement.value = operacion;
                 checkElement.value = false;
                 alert(operacion);
