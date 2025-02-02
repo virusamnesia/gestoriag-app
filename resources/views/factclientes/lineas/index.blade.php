@@ -64,7 +64,7 @@
                             @php $name = "sel".$row->mov_id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id,{{$row->cxc}})" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" is-checked/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id,{{$row->cxc}})" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
                                 </th>
                                 <td>{{$row->sucursal}}</td>
                                 <td>{{$row->municipio}}</td>
@@ -163,9 +163,9 @@
             
             //$("#subtotal").value(1000);
             if(this.checked) {
-                alert('checked + '.cxc);
+                alert('checked + '+cxc);
             }else{
-                alert('unchecked - '.cxc);
+                alert('unchecked - '+cxc);
             }
         }
     </script>
