@@ -148,7 +148,7 @@
             importe = parseInt(cxc,10);
             operacion = 0;
             checkElement = document.getElementById(id);
-            checkValue = checkElement.value;
+            checkValue = checkElement.is-checked;
             if(checkValue) {
                 operacion = subtotal + importe;
                 selectElement.value = operacion;
