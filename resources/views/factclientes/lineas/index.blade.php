@@ -142,26 +142,14 @@
         }
 
         function recalcular(id,cxc){
-            //var subtotal = $("#subtotal").value();
-            //var elemento = "#".nombre;
-            
-            //if($(elemento).value()){
-                //subtotal = subtotal + importe;
-            //}
-
-            //else{
-                //subtotal = subtotal - importe;
-            //}
-
-            //var tname = "#term"+idp;
             selectElement = document.getElementById('subtotal');
             subtotal = selectElement.value;
-            
-            //$("#subtotal").value(1000);
             if(this.checked) {
                 alert('checked + '+cxc+' + '+subtotal);
+                selectElement.value = subtotal + cxc;
             }else{
                 alert('unchecked - '+cxc+' + '+subtotal);
+                selectElement.value = subtotal - cxc;
             }
         }
     </script>
