@@ -152,13 +152,13 @@
             if(checkValue) {
                 operacion = subtotal + importe;
                 selectElement.value = operacion;
-                checkElement.value = false;
-                alert(operacion);
+                //checkElement.value = false;
+                alert("suma"+operacion);
             }else{
                 operacion = subtotal - importe;
                 selectElement.value = operacion;
-                checkElement.value = true;
-                alert(operacion);
+                //checkElement.value = true;
+                alert("resta"+operacion);
             }
         }
     </script>
