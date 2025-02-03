@@ -53,7 +53,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
+                        @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                             @php $name = "sel".$row->id; @endphp
                             <tr>
                                 <th scope="row">
