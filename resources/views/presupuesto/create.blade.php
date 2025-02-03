@@ -40,7 +40,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="cliente" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="proveedor" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona un proveedor...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
