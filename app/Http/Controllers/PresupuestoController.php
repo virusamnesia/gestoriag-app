@@ -82,7 +82,7 @@ class PresupuestoController extends Controller
             $proveedor = Proveedor::where('id','=', $request->proveedor)->first();
             $inf = 1;
             session()->flash('Exito','El presupuesto se agregó con éxito...');
-            return view('presupuesto.lineas', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('info',$inf);
+            return view('presupuesto.lineas.index', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('info',$inf);
         }
         else{
             $inf = 1;

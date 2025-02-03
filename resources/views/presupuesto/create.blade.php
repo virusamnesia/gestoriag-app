@@ -49,7 +49,7 @@
                         </x-slot>
                         <option/>
                         @foreach ($proveedores as $rowe)
-                        <option value="{{$rowe->id}}">{{$rowe->nombre}}-{{$rowe->id}}</option>
+                        <option value="{{$rowe->id}}">{{$rowe->nombre}}</option>
                         @endforeach
                     </x-adminlte-select2>
                 </div>
