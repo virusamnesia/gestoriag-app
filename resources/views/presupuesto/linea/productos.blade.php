@@ -45,17 +45,19 @@
                     <tr>
                         <th scope="col">Seleccionar</th>
                         <th scope="col">Producto</th>
+                        <th scope="col">Clave</th>
                         <th scope="col">Tipo</th>
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($productos as $row) {{-- Add here extra stylesheets --}}
+                        @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                             @php $name = "sel".$row->id; @endphp
                             <tr>
                                 <th scope="row">
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
                                 </th>
                                 <td>{{$row->producto}}</td>
+                                <td>{{$row->alias}}</td>
                                 <td>{{$row->tipo}}</td>
                             </tr>
                         @endforeach
