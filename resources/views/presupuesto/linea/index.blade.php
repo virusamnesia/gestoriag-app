@@ -26,7 +26,7 @@
     <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
     <h4>Proeveedor: {{$proveedor->cliente}}</h4>
 
-    <form action="/presupuestos/lineas/store/{{$id}}" method="POST">
+    <form action="/presupuestos/lineas/store/{{$idp}}/{{$idv}}/{{$idc}}" method="POST">
             
         @csrf
         <div class="row">

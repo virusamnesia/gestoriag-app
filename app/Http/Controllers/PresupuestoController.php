@@ -320,7 +320,7 @@ class PresupuestoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeLineas(Request $request, $id,$idv)
+    public function storeLineas(Request $request, $idp,$idv,$idc)
     {
 
         $lineas =DB::table('proyecto_lineas')
@@ -330,13 +330,17 @@ class PresupuestoController extends Controller
             ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
             ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
             ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
+            ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
             'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
             ->where('proveedors.id','=',$idv)
-            ->orderBy('sucursals.nombre')
+            ->where('clientes.id','=',$idc)
+            ->where('proyecto_lineas.proveedor_id','=',NULL)
+            ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
+            ->orderBy('clientes.nombre')
             ->get();
 
         foreach ($lineas as $row){
@@ -344,7 +348,7 @@ class PresupuestoController extends Controller
             if ($request->$sel){
                 $data = [
                     'proveedor_id' => $idv,
-                    'presupuesto_id' => $id,
+                    'presupuesto_id' => $idp,
                 ];
                 
                 $linea = DB::table('proyecto_lineas')
