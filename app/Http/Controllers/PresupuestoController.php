@@ -339,7 +339,6 @@ class PresupuestoController extends Controller
             ->where('proveedors.id','=',$idv)
             ->where('clientes.id','=',$idc)
             ->where('proyecto_lineas.proveedor_id','=',NULL)
-            ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
             ->orderBy('clientes.nombre')
             ->get();
 
