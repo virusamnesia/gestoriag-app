@@ -51,7 +51,7 @@
                                 {{$row->nombre}}
                             </th>
                             <td>{{$row->rfc}}</td>
-                            <td><a href= "/presupuesto/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}">Seleccionar</a></td>
+                            <td><a href= "/presupuestos/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}">Seleccionar</a></td>
                         </tr>
                     @endforeach
                 </tbody>
