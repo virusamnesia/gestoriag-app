@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\EstadosPresupuesto;
 use App\Models\MovimientosPagoCliente;
 use App\Models\Presupuesto;
@@ -47,20 +48,20 @@ class PresupuestoController extends Controller
     public function store(Request $request)
     {
         $lineas =DB::table('proyecto_lineas')
-        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-        ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
-        ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
-        ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
-        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
-        'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
-        ->where('proveedors.id','=',$request->proveedor)
-        ->orderBy('sucursals.nombre')
-        ->get();
+            ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+            ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+            ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+            ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+            ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
+            ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
+            ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+            ->select('clientes.id','clientes.nombre','clientes.alias','clientes.rfc')
+            ->where('proveedors.id','=',$request->proveedor)
+            ->where('proyecto_lineas.proveedor_id','=',NULL)
+            ->groupBy('clientes.id','clientes.nombre','clientes.alias','clientes.rfc')
+            ->orderBy('clientes.nombre')
+            ->get();
 
         if (count($lineas) > 0){
             $presupuesto = new Presupuesto();
@@ -82,13 +83,41 @@ class PresupuestoController extends Controller
             $proveedor = Proveedor::where('id','=', $request->proveedor)->first();
             $inf = 1;
             session()->flash('Exito','El presupuesto se agregó con éxito...');
-            return view('presupuesto.linea.index', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('info',$inf);
+            return view('presupuesto.linea.clientes', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('info',$inf);
         }
         else{
             $inf = 1;
             session()->flash('Error','No existen gestiones para este proveedor...');
             return redirect()->route('presupuestos')->with('info',$inf);
         }
+
+    }
+
+    public function products($idp,$idv,$idc)
+    {
+        $lineas =DB::table('proyecto_lineas')
+            ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+            ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+            ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+            ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+            ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
+            ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
+            ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+            ->select('productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias')
+            ->where('proveedors.id','=',$idv)
+            ->where('clientes.id','=',$idc)
+            ->where('proyecto_lineas.proveedor_id','=',NULL)
+            ->groupBy('productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias')
+            ->orderBy('clientes.nombre')
+            ->get();
+
+        $proveedor = Proveedor::where('id','=', $idv)->first();
+        $presupuesto = Presupuesto::where('id','=', $idp)->first();
+        $cliente = Cliente::where('id','=', $idc)->first();
+        $inf = 1;
+        session()->flash('Exito','Selecciona los productos para el presupuesto...');
+        return view('presupuesto.linea.clientes', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('info',$inf);
 
     }
 
@@ -152,7 +181,35 @@ class PresupuestoController extends Controller
      */
     public function edit(top50 $top50)
     {
-        //
+        $lineas =DB::table('proyecto_lineas')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
+        ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
+        ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('clientes.nombre','clientes.alias','clientes.rfc')
+        ->where('proveedors.id','=',$request->proveedor)
+        ->orderBy('sucursals.nombre')
+        ->get();
+
+        $lineas =DB::table('proyecto_lineas')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
+        ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
+        ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
+        'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
+        ->where('proveedors.id','=',$request->proveedor)
+        ->orderBy('sucursals.nombre')
+        ->get();
     }
 
     /**

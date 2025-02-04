@@ -3,7 +3,7 @@
 @section('title', 'Partidas')
 
 @section('content_header')
-    <h1>Productos a cotizar</h1>
+    <h1>Clientes a selecionar</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error! </strong>{{  Session::get('Error'); }}
@@ -24,59 +24,44 @@
 
 @section('content')
     <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
-    <h4>Proeveedor: {{$proveedor->cliente}}</h4>
+    <h4>Proveedor: {{$proveedor->nombre}}</h4>
 
-    <form action="/presupuestos/lineas/store/{{$id}}" method="POST">
-            
-        @csrf
-        <div class="row">
-            <div class="col-md-11">
-            </div>
-            <div class="col-md-1">
-                <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
-            </div>
+    <div class="row">
+        <div class="col-md-11">
         </div>
-        <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
-                <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
-                    <thead class="bg-dark text-white">
-                    <tr>
-                        <th scope="col">Cotizar</th>
-                        <th scope="col">Sucursal</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Dirección</th>
-                        <th scope="col">Municipio</th>
-                        <th scope="col">Estado</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
-                            @php $name = "sel".$row->id; @endphp
-                            <tr>
-                                <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
-                                </th>
-                                <td>{{$row->sucursal}}</td>
-                                <td>{{$row->producto}}</td>
-                                <td>{{$row->tipo}}</td>
-                                <td>{{$row->direccion}}</td>
-                                <td>{{$row->municipio}}</td>
-                                <td>{{$row->estado}}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-2">
-            </div>
+        <div class="col-md-1">
         </div>
-    </form>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
+                <thead class="bg-dark text-white">
+                <tr>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">RFC</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach ($clientes as $row) {{-- Add here extra stylesheets --}}
+                        <tr>
+                            <th scope="row">
+                                <td>{{$row->cliente}}</td>
+                            </th>
+                            <td>{{$row->rfc}}</td>
+                            <td><a href= "/presupuesto/productos/{{$presupuesto->nombre}}/{{$id}}/{{$row->id}}">Seleccionar</a></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-1">
-            <x-adminlte-button label="Regresar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back()"/>
         </div>
         <div class="col-md-10">
         </div>

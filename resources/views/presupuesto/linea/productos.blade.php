@@ -24,9 +24,9 @@
 
 @section('content')
     <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
-    <h4>Proeveedor: {{$proveedor->cliente}}</h4>
-
-    <form action="/presupuestos/lineas/store/{{$id}}" method="POST">
+    <h4>Proveedor: {{$proveedor->nombre}}</h4>
+    <h4>Cliente: {{$cliente->nombre}}</h4>
+    <form action="/presupuestos/lineas/store/{{$idp}}/{{$idc}}" method="POST">
             
         @csrf
         <div class="row">
@@ -43,28 +43,20 @@
                 <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                     <thead class="bg-dark text-white">
                     <tr>
-                        <th scope="col">Cotizar</th>
-                        <th scope="col">Sucursal</th>
+                        <th scope="col">Seleccionar</th>
                         <th scope="col">Producto</th>
                         <th scope="col">Tipo</th>
-                        <th scope="col">Dirección</th>
-                        <th scope="col">Municipio</th>
-                        <th scope="col">Estado</th>
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
+                        @foreach ($productos as $row) {{-- Add here extra stylesheets --}}
                             @php $name = "sel".$row->id; @endphp
                             <tr>
                                 <th scope="row">
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
                                 </th>
-                                <td>{{$row->sucursal}}</td>
                                 <td>{{$row->producto}}</td>
                                 <td>{{$row->tipo}}</td>
-                                <td>{{$row->direccion}}</td>
-                                <td>{{$row->municipio}}</td>
-                                <td>{{$row->estado}}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -127,7 +119,7 @@
 
     <script type="text/javascript">
         function back(){
-            var base = "<?php echo '/presupuestos' ?>";
+            var base = "<?php echo '/presupuestos/clientes' ?>";
             var url = base;
             location.href=url;
         }
