@@ -57,10 +57,10 @@ class PresupuestoController extends Controller
             ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->select('clientes.id','clientes.nombre','clientes.alias','clientes.rfc')
+            ->select('clientes.id','clientes.nombre','clientes.clave','clientes.rfc')
             ->where('proveedors.id','=',$request->proveedor)
             ->where('proyecto_lineas.proveedor_id','=',NULL)
-            ->groupBy('clientes.id','clientes.nombre','clientes.alias','clientes.rfc')
+            ->groupBy('clientes.id','clientes.nombre','clientes.clave','clientes.rfc')
             ->orderBy('clientes.nombre')
             ->get();
 
@@ -192,7 +192,7 @@ class PresupuestoController extends Controller
         ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
         ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-        ->select('clientes.nombre','clientes.alias','clientes.rfc')
+        ->select('clientes.nombre','clientes.clave','clientes.rfc')
         ->where('proveedors.id','=',$request->proveedor)
         ->orderBy('sucursals.nombre')
         ->get();
