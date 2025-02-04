@@ -51,7 +51,7 @@
                     </thead>
                     <tbody>
                         @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
-                            @php $name = "sel".$row->id; @endphp
+                            @php $name = "sel".$row->producto_id; @endphp
                             <tr>
                                 <th scope="row">
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
