@@ -45,7 +45,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($clientes as $row) {{-- Add here extra stylesheets --}}
+                    @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">
                                 <td>{{$row->cliente}}</td>
