@@ -48,7 +48,7 @@
                     @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">
-                                <td>{{$row->nombre}}</td>
+                                {{$row->nombre}}
                             </th>
                             <td>{{$row->rfc}}</td>
                             <td><a href= "/presupuesto/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}">Seleccionar</a></td>
