@@ -48,10 +48,10 @@
                     @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">
-                                <td>{{$row->cliente}}</td>
+                                <td>{{$row->nombre}}</td>
                             </th>
                             <td>{{$row->rfc}}</td>
-                            <td><a href= "/presupuesto/productos/{{$presupuesto->nombre}}/{{$id}}/{{$row->id}}">Seleccionar</a></td>
+                            <td><a href= "/presupuesto/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}">Seleccionar</a></td>
                         </tr>
                     @endforeach
                 </tbody>
