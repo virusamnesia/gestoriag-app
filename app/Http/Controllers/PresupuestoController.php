@@ -119,7 +119,7 @@ class PresupuestoController extends Controller
         $cliente = Cliente::where('id','=', $idc)->first();
         $inf = 1;
         session()->flash('Exito','Selecciona los productos para el presupuesto...');
-        return view('presupuesto.linea.clientes', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('info',$inf);
+        return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('info',$inf);
 
     }
 
