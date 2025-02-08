@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Presupuestos')
+@section('title', 'Facturas')
 
 @section('content_header')
-    <h1>Presupuestos</h1>
+    <h1>Presupuestos facturables</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!  </strong>{{  Session::get('Error'); }}
@@ -27,55 +27,40 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo()"/>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
-                    <th scope="col">Presupesto</th>
+                    <th scope="col">Id</th>
                     <th scope="col">Proveedor</th>
+                    <th scope="col">RFC</th>
+                    <th scope="col">Presupuesto</th>
                     <th scope="col">Año</th>
-                    <th scope="col">Importe</th>
-                    <th scope="col">Saldo</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Cotización</th>
-                    <th scope="col">Autorización</th>
+                    <th scope="col">Importe Facturable</th>
                     <th scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                     @foreach ($presupuestos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
-                            <th scope="row">{{$row->nombre}}</th>
+                            <th scope="row">{{$row->id}}</th>
                             <td>{{$row->proveedor}}</td>
+                            <td>{{$row->rfc}}</td>
+                            <td>{{$row->nombre}}</td>
                             <td>{{$row->anio}}</td>
-                            <td>{{$row->importe}}</td>
-                            <td>{{$row->saldo}}</td>
-                            <td>{{$row->estado}}</td>
-                            <td>{{$row->fecha_cotizacion}}</td>
-                            <td>{{$row->fecha_autorizacion}}</td>
-                            <td>
-                                <span class="pull-right">
-                                    <div class="dropdown">
-                                        <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
-                                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                            <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
-                                            @if($row->autorizar== 0)
-                                            <li><button class="btn align-self-left" id="btncostos" onclick="costos({{$row->id}})"><i class="ion-md-chatboxes"></i>Costos</button></li>
-                                            <li><button class="btn align-self-left" id="btnauth" onclick="auth({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
-                                            @endif
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
-                                    </div>
-                                </span>
-                            </td>
+                            <td>${{number_format($row->cxp, 2)}}</td>
+                            <td><a href= "/factproveedores/previo/{{$row->id}}">Revisar</a></td>
                         </tr>
                     @endforeach
                 </tbody>
             <table>
+        </div>
+        <div class="col-md-2">
         </div>
     </div>
 
@@ -119,33 +104,27 @@
 
     <script type="text/javascript">
         function nuevo(){
-            var base = "<?php echo '/presupuestos/nuevo' ?>";
+            var base = "<?php echo '/factproveedores/nuevo' ?>";
             var url = base;
+            location.href=url;
+        }
+        
+        function detalle(id){
+            var base = "<?php echo '/factproveedores/lineas/' ?>";
+            var url = base+id;
             location.href=url;
         }
     </script>
 
     <script type="text/javascript">
         function edit(id){
-            var base = "<?php echo '/presupuestos/lineas/'?>";
+            var base = "<?php echo '/factproveedores/'?>";
             var url = base+id;
             location.href=url;
         }
 
         function view(id){
-            var base = "<?php echo '/presupuestos/show/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function costos(id){
-            var base = "<?php echo '/presupuestos/costos/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function auth(id){
-            var base = "<?php echo '/presupuestos/auth/'?>";
+            var base = "<?php echo '/factproveedores/show/'?>";
             var url = base+id;
             location.href=url;
         }

@@ -8,8 +8,9 @@
 
 @section('content')
     
-    <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
-    <h4>Proveedor: {{$proveedor->cliente}}</h4>
+    <h5>Presupuesto: {{$presupuesto->nombre}}</h5>
+    <h5>Proveedor: {{$proveedor->nombre}}</h5>
+    <h5>Proyecto: {{$linea->proyecto}}</h5>
     <h5>Sucursal: {{$linea->sucursal}}</h5>
     <h5>Producto: {{$linea->producto}}</h5>
 
@@ -32,7 +33,7 @@
             <div class="col-md-8">
                 <div class="row">
                     <input type="hidden" value="{{$next->id}}" name="movimiento"/>
-                    <x-adminlte-input name="accion" label="Acción" placeholder="Acción" label-class="text-lightblue" disabled
+                    <x-adminlte-input name="accion" label="Acción" placeholder="{{$next->nombre}}" label-class="text-lightblue" disabled
                     value="{{$next->nombre}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
@@ -85,7 +86,7 @@
         <div class="col-md-10">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back({{$proyecto->id}})"/>
+            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back({{$idp}})"/>
         </div>
     </div>
 
@@ -131,9 +132,21 @@
 
     <script type="text/javascript">
         function back(id){
-            var base = "<?php echo '/presupuestos/lineas/show/' ?>";
+            var base = "<?php echo '/presupuestos/lineas/' ?>";
             var url = base+id;
             location.href=url;
+        }
+    </script>
+
+    <script type="text/javascript">
+    function delete(id){
+        
+    }
+    </script>
+
+    <script type="text/javascript">
+        function edit(id){
+           
         }
     </script>
 @stop

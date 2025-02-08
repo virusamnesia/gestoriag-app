@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Historial')
+@section('title', 'Costos')
 
 @section('content_header')
-    <h1>Historial de la sucursal</h1>
+    <h1>Costos de productos</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error!  </strong>{{  Session::get('Error'); }}
+        <strong>Error! </strong>{{  Session::get('Error'); }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -23,60 +23,64 @@
 @stop
 
 @section('content')
-    <h5>Presupuesto: {{$presupuesto->nombre}}</h5>
-    <h5>Proveedor: {{$proveedor->nombre}}</h5>
-    <h5>Proyecto: {{$linea->proyecto}}</h5>
-    <h5>Sucursal: {{$linea->sucursal}}</h5>
-    <h5>Producto: {{$linea->producto}}</h5>
-    <div class="row">
-        <div class="col-md-11">
-        </div>
-        <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo({{$idp}},{{$idl}})"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
-                <thead class="bg-dark text-white">
-                <tr>
-                    <th scope="col">Movimiento</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Observaciones</th>
-                    <th scope="col">URL's</th>
-                    <th scope="col">Facturable</th>
-                    <th scope="col">Fecha Factura</th>
-                    <th scope="col">Factura</th>
-                    <th scope="col">Importe</th>
-                    <th scope="col">Saldo</th>
-                </tr>
-                </thead>
-                <tbody>
-                    @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
-                        <tr>
-                            <th scope="row">{{$row->movimiento}}</th>
-                            <td>{{$row->fecha_mov}}</td>
-                            <td>{{$row->observaciones}}</td>
-                            <td><a href="{{$row->url}}">{{$row->url}}</a></td>
-                            <td>{{$row->es_facturable}}</td>
-                            <td>{{$row->fecha_factura}}</td>
-                            <td>{{$row->factura}}</td>
-                            <td>${{number_format($row->importe, 2)}}</td>
-                            <td>${{number_format($row->saldo, 2)}}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            <table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1">
+    <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
+    <h4>Proveedor: {{$proveedor->nombre}}</h4>
+    <form action="/presupuestos/costos/update/{{$id}}" method="POST">
             
+        @csrf
+        <div class="row">
+            <div class="col-md-11">
+            </div>
+            <div class="col-md-1">
+                <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-8">
+                <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
+                    <thead class="bg-dark text-white">
+                    <tr>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Clave</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Costo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
+                            @php $name = "costo".$row->producto_id; @endphp
+                            <tr>
+                                <th scope="row">
+                                    {{$row->producto}}
+                                </th>
+                                <td>{{$row->alias}}</td>
+                                <td>{{$row->tipo}}</td>
+                                <td><x-adminlte-input name="{{$name}}" id="{{$name}}" placeholder="Costo" type="number" fgroup-class="col-md-5"  value="0"
+                                    igroup-size="sm" min=1 max=100000 step="0.05">
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text bg-light">
+                                            <i class="fas fa-dollar-sign text-lightblue"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-md-1">
+            <x-adminlte-button label="Regresar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back()"/>
         </div>
         <div class="col-md-10">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back({{$idp}})"/>
         </div>
     </div>
 
@@ -105,6 +109,9 @@
         $(document).ready(function() {
             $('#tablarow').DataTable({
                 dom: 'Bfrtip',
+                paging: false,
+                scrollY: 400,
+                select: true,
                 buttons: [
                     'copy', 'csv', 'excel', 
                     {
@@ -118,17 +125,12 @@
         } );
     </script>
 
-<script type="text/javascript">
-    function back(id){
-        var base = "<?php echo '/presupuestos/lineas/' ?>";
-        var url = base+id;
-        location.href=url;
-    }
+    <script type="text/javascript">
+        function back(){
+            var base = "<?php echo '/presupuestos' ?>";
+            var url = base;
+            location.href=url;
+        }
+    </script>
 
-    function nuevo(idp,idl){
-        var base = "<?php echo '/presupuestos/lineas/sucursales/nuevo/' ?>";
-        var url = base+idp+"/"+idl;
-        location.href=url;
-    }
-</script>
 @stop

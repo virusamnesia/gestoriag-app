@@ -3,12 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProveedorFacturaController extends Controller
 {
     public function index(){
         
-        return view('cliente.index');
+        $facturas = DB::table('proveedor_facturas')
+            ->join('proveedors','proveedors.id','=','proveedor_facturas.proveedor_id')
+            ->join('presupuestos','presupuestos.id','=','proveedor_facturas.presupuesto_id')
+            ->select('proveedor_facturas.*','proveedors.nombre as proveedor','proveedors.rfc as rfc','presupuestos.nombre as presupuesto')
+            ->orderBy('proveedor_facturas.id')
+            ->get();
+
+       
+        return view('factproveedores.index', ['facturas' => $facturas]);
     }
 
     /**
@@ -18,7 +27,13 @@ class ProveedorFacturaController extends Controller
      */
     public function create()
     {
-        //
+        $presupuestos = DB::table('presupuestos')
+            ->join('proveedors','proveedors.id','=','presupuestos.proveedor_id')
+            ->select('presupuestos.*','proveedors.nombre as proveedor','proveedors.rfc as rfc')
+            ->where('proveedors.cxp', '>',0)
+            ->get();
+        
+        return view('factproveedores.create', ['presupuestos' => $presupuestos]);
     }
 
     /**

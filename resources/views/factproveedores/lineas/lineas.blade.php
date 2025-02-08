@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Historial')
+@section('title', 'LineasFactura')
 
 @section('content_header')
-    <h1>Historial de la sucursal</h1>
+    <h1>Líneas de la factura</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error!  </strong>{{  Session::get('Error'); }}
+        <strong>Error! </strong>{{  Session::get('Error'); }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -23,64 +23,62 @@
 @stop
 
 @section('content')
-    <h5>Presupuesto: {{$presupuesto->nombre}}</h5>
-    <h5>Proveedor: {{$proveedor->nombre}}</h5>
-    <h5>Proyecto: {{$linea->proyecto}}</h5>
-    <h5>Sucursal: {{$linea->sucursal}}</h5>
-    <h5>Producto: {{$linea->producto}}</h5>
-    <div class="row">
-        <div class="col-md-11">
-        </div>
-        <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo({{$idp}},{{$idl}})"/>
-        </div>
-    </div>
+    <h4>Proveedor: {{$proveedor}}</h4>
+    <h4>Presupuesto: {{$presupuesto}}</h4>
+    <h4>Factura: {{$factura->id}}</h4>
+    <h4>Fecha: {{$factura->fecha}}</h4>
+    <h4>Odoo: {{$factura->factura_odoo}}</h4>
+    <h4>Facturado: ${{number_format($subtotal,2)}}</h4>
+    
     <div class="row">
         <div class="col-md-12">
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
-                    <th scope="col">Movimiento</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Observaciones</th>
-                    <th scope="col">URL's</th>
-                    <th scope="col">Facturable</th>
-                    <th scope="col">Fecha Factura</th>
-                    <th scope="col">Factura</th>
+                    <th scope="col">Sucursal</th>
+                    <th scope="col">Municipio</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Motivo</th>
+                    <th scope="col">Porcentaje aplicado</th>
+                    <th scope="col">Fecha aplicación</th>
                     <th scope="col">Importe</th>
-                    <th scope="col">Saldo</th>
+                    <th scope="col">Agrupador de Facturación</th>
+                    <th scope="col">Tipo de Producto</th>
                 </tr>
                 </thead>
                 <tbody>
                     @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
-                        <tr>
-                            <th scope="row">{{$row->movimiento}}</th>
-                            <td>{{$row->fecha_mov}}</td>
-                            <td>{{$row->observaciones}}</td>
-                            <td><a href="{{$row->url}}">{{$row->url}}</a></td>
-                            <td>{{$row->es_facturable}}</td>
-                            <td>{{$row->fecha_factura}}</td>
-                            <td>{{$row->factura}}</td>
-                            <td>${{number_format($row->importe, 2)}}</td>
-                            <td>${{number_format($row->saldo, 2)}}</td>
+                       <tr>
+                            <td>{{$row->sucursal}}</td>
+                            <td>{{$row->municipio}}</td>
+                            <td>{{$row->estado}}</td>
+                            <td>{{$row->producto}}</td>
+                            <td>{{$row->estatus}}</td>
+                            <td>{{$row->porcentaje}}%</td>
+                            <td>{{$row->fecha}}</td>
+                            <td>${{number_format($row->cxp,2)}}</td>
+                            <td>{{$row->agrupador}}</td>
+                            <td>{{$row->tipo}}</td>
                         </tr>
                     @endforeach
                 </tbody>
-            <table>
+            </table>
         </div>
     </div>
     <div class="row">
         <div class="col-md-1">
-            
+            <x-adminlte-button label="Regresar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back()"/>
         </div>
         <div class="col-md-10">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back({{$idp}})"/>
         </div>
     </div>
 
 @stop
+
+@section('plugins.BootstrapSwitch', true)
 
 @section('css')
     {{-- Add here extra stylesheets --}}
@@ -105,6 +103,9 @@
         $(document).ready(function() {
             $('#tablarow').DataTable({
                 dom: 'Bfrtip',
+                paging: false,
+                scrollY: 400,
+                select: true,
                 buttons: [
                     'copy', 'csv', 'excel', 
                     {
@@ -118,17 +119,14 @@
         } );
     </script>
 
-<script type="text/javascript">
-    function back(id){
-        var base = "<?php echo '/presupuestos/lineas/' ?>";
-        var url = base+id;
-        location.href=url;
-    }
+    <script type="text/javascript">
+        function back(){
+            var base = "<?php echo '/factproveedores' ?>";
+            var url = base;
+            location.href=url;
+        }
 
-    function nuevo(idp,idl){
-        var base = "<?php echo '/presupuestos/lineas/sucursales/nuevo/' ?>";
-        var url = base+idp+"/"+idl;
-        location.href=url;
-    }
-</script>
+        
+    </script>
+
 @stop

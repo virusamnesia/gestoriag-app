@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="5" value="{{$clie->clave}}"
+                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="12" value="{{$clie->clave}}"
                         fgroup-class="col-md-3" disable-feedback/>
                 </div>
                 <div class="row">
@@ -40,7 +40,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="rfc" placeholder="RFC" size="15" maxlength="13" value="{{$clie->rfc}}"
+                    <x-adminlte-input name="rfc" placeholder="RFC" size="15" maxlength="15" value="{{$clie->rfc}}"
                         fgroup-class="col-md-4" disable-feedback/>
                 </div>
                 <div class="row">

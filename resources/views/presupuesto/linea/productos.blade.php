@@ -70,7 +70,7 @@
     </form>
     <div class="row">
         <div class="col-md-1">
-            <x-adminlte-button label="Regresar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back()"/>
+            <x-adminlte-button label="Regresar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back({{$idv}})"/>
         </div>
         <div class="col-md-10">
         </div>
@@ -122,9 +122,9 @@
     </script>
 
     <script type="text/javascript">
-        function back(){
-            var base = "<?php echo '/presupuestos/clientes' ?>";
-            var url = base;
+        function back(id){
+            var base = "<?php echo '/presupuestos/clientes/' ?>";
+            var url = base+id;
             location.href=url;
         }
     </script>

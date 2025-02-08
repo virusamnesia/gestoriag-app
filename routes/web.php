@@ -19,6 +19,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProductosProyectoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ProveedorFacturaController;
+use App\Http\Controllers\ProveedorFacturaLineaController;
 use App\Http\Controllers\ProveedorMunicipioController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\ProyectoLineaController;
@@ -160,16 +161,21 @@ Route::middleware([
     Route::get('/presupuestos/{id?}', [PresupuestoController::class, 'edit'])->name('edit.presupuestos');
     Route::post('/presupuestos/update/{id?}', [PresupuestoController::class, 'update'])->name('update.presupuestos');
     Route::get('/presupuestos/auth/{id?}', [PresupuestoController::class, 'auth'])->name('auth.presupuestos');
-    Route::post('/presupuestos/lineas/update/{id?}', [PresupuestoController::class, 'updatePrice'])->name('updateprice.presupuestos.lineas');
+    Route::post('/presupuestos/lineas/update', [PresupuestoController::class, 'updatePrice'])->name('updateprice.presupuestos.lineas');
     Route::get('/presupuestos/lineas/show/{id?}', [PresupuestoController::class, 'show'])->name('show.presupuestos');
+    Route::get('/presupuestos/costos/{id?}', [PresupuestoController::class, 'costos'])->name('presupuestos.costos');
+    Route::post('/presupuestos/costos/update/{id?}', [PresupuestoController::class, 'updatecostos'])->name('update.presupuestos.costos');
+    Route::get('/presupuestos/lineas/{id?}', [PresupuestoController::class, 'lineas'])->name('presupuestos.lineas');
     Route::post('/presupuestos/lineas/costo/{id?}', [PresupuestoController::class, 'updatecosto'])->name('update.presupuestos.lineas');
     Route::get('/presupuestos/lineas/sucursales/{idp?}/{idl?}', [PresupuestoController::class, 'indexmov'])->name('proyectos.lineas.sucursales');
     Route::get('/presupuestos/lineas/sucursales/nuevo/{idp?}/{idl?}', [PresupuestoController::class, 'createmov'])->name('new.proyectos.lineas.sucursales');
     Route::post('/presupuestos/lineas/sucursales/store/{idp?}/{idl?}', [PresupuestoController::class, 'storemov'])->name('save.proyectos.lineas.sucursales');
 
     Route::get('/factproveedores', [ProveedorFacturaController::class, 'index'])->name('factproveedores');
-    Route::get('/factproveedores/lineas/{id?}', [ProveedorFacturaController::class, 'index'])->name('factproveedores.lineas');
-    Route::post('/factproveedores/lineas/store/{idf?}/{idp?}', [ProveedorFacturaController::class, 'store'])->name('save.factproveedores.lineas');
+    Route::get('/factproveedores/nuevo', [ProveedorFacturaController::class, 'create'])->name('new.factproveedores');
+    Route::get('/factproveedores/previo/{id?}', [ProveedorFacturaLineaController::class, 'index'])->name('factproveedores.previo');
+    Route::get('/factproveedores/lineas/{id?}', [ProveedorFacturaLineaController::class, 'lineas'])->name('factproveedores.lineas');
+    Route::post('/factproveedores/lineas/store/{idp?}/{idc?}', [ProveedorFacturaLineaController::class, 'store'])->name('save.factproveedores.lineas');
 
 });
 

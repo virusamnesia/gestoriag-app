@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Partidas')
+@section('title', 'LineasFactura')
 
 @section('content_header')
-    <h1>Productos a cotizar</h1>
+    <h1>Previo líneas de la factura</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error! </strong>{{  Session::get('Error'); }}
@@ -23,54 +23,61 @@
 @stop
 
 @section('content')
-    <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
-    <h4>Proveedor: {{$proveedor->nombre}}</h4>
-
-    <form action="/presupuestos/lineas/store/{{$idp}}/{{$idv}}/{{$idc}}" method="POST">
+    <h4>Proveedor: {{$proveedor}}</h4>
+    <h4>Presupuesto: {{$presupuesto}}</h4>
+    <h4>Subtotal Original: ${{number_format($subtotal,2)}}</h4>
+    
+    <form action="/factproveedores/lineas/store/{{$presupuesto_id}}/{{$proveedor_id}}" method="POST">
             
         @csrf
         <div class="row">
             <div class="col-md-11">
+                <x-adminlte-input name="subtotal" id="subtotal" type="number" label="Subtotal Seleccionado" step="0.01" disabled
+                        fgroup-class="col-md-5" value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
                 <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                     <thead class="bg-dark text-white">
                     <tr>
-                        <th scope="col">Cotizar</th>
+                        <th scope="col">Facturar</th>
                         <th scope="col">Sucursal</th>
-                        <th scope="col">Producto</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Dirección</th>
                         <th scope="col">Municipio</th>
                         <th scope="col">Estado</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Motivo</th>
+                        <th scope="col">Porcentaje aplicado</th>
+                        <th scope="col">Fecha aplicación</th>
+                        <th scope="col">Importe</th>
+                        <th scope="col">Agrupador de Facturación</th>
+                        <th scope="col">Tipo de Producto</th>
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
-                            @php $name = "sel".$row->id; @endphp
+                        @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
+                            @php $name = "sel".$row->mov_id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id,{{$row->cxp}})" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
                                 </th>
                                 <td>{{$row->sucursal}}</td>
-                                <td>{{$row->producto}}</td>
-                                <td>{{$row->tipo}}</td>
-                                <td>{{$row->direccion}}</td>
                                 <td>{{$row->municipio}}</td>
                                 <td>{{$row->estado}}</td>
+                                <td>{{$row->producto}}</td>
+                                <td>{{$row->estatus}}</td>
+                                <td>{{$row->porcentaje}}%</td>
+                                <td>{{$row->fecha}}</td>
+                                <td>${{number_format($row->cxp,2)}}</td>
+                                <td>{{$row->agrupador}}</td>
+                                <td>{{$row->tipo}}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-            <div class="col-md-2">
             </div>
         </div>
     </form>
@@ -85,6 +92,8 @@
     </div>
 
 @stop
+
+@section('plugins.BootstrapSwitch', true)
 
 @section('css')
     {{-- Add here extra stylesheets --}}
@@ -127,9 +136,30 @@
 
     <script type="text/javascript">
         function back(){
-            var base = "<?php echo '/presupuestos' ?>";
+            var base = "<?php echo '/factproveedores' ?>";
             var url = base;
             location.href=url;
+        }
+
+        function recalcular(id,cxp){
+            
+            selectElement = document.getElementById('subtotal');
+            subtotal = parseInt(selectElement.value,10);
+            importe = parseInt(cxp,10);
+            operacion = 0;
+            checkElement = document.getElementById(id);
+            checkValue = checkElement.checked;
+            if(checkValue) {
+                operacion = subtotal + importe;
+                selectElement.value = operacion;
+                //checkElement.value = false;
+                alert("Se agrega: "+importe);
+            }else{
+                operacion = subtotal - importe;
+                selectElement.value = operacion;
+                //checkElement.value = true;
+                alert("Se resta: "+importe);
+            }
         }
     </script>
 

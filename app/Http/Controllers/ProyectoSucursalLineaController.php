@@ -128,11 +128,12 @@ class ProyectoSucursalLineaController extends Controller
         ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftJoin('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
         'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
-        'tipos_productos.nombre as tipo')
+        'presupuestos.id as presupuesto_id','presupuestos.saldo as presupuesto_saldo','presupuestos.cxp as presupuestos_cxp','tipos_productos.nombre as tipo')
         ->where('proyecto_lineas.id','=',$idl)
         ->first();
 
@@ -198,6 +199,17 @@ class ProyectoSucursalLineaController extends Controller
             $proy = DB::table('proyectos')
                 ->where('id','=',$idp)
                 ->update($data);
+
+            if($linea->presupuesto_id > 0){
+                $data = [
+                    'saldo' => $linea->presupuesto_saldo - $importep,
+                    'cxp' => $linea->presupuesto_cxp + $importep,
+                ];
+        
+                $pres = DB::table('presupuestos')
+                    ->where('id','=',$linea->presupuesto_id)
+                    ->update($data);
+            }
             
             //
             $inf = 1;

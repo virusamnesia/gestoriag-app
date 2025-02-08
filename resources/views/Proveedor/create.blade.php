@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="5"
+                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="12"
                         fgroup-class="col-md-3" disable-feedback/>
                 </div>
                 <div class="row">
@@ -39,7 +39,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="rfc" placeholder="RFC" size="15" maxlength="13"
+                    <x-adminlte-input name="rfc" placeholder="RFC" size="15" maxlength="15"
                         fgroup-class="col-md-3" disable-feedback/>
                 </div>
                 <div class="row">
