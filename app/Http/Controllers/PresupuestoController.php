@@ -728,4 +728,127 @@ class PresupuestoController extends Controller
 
         return view('presupuesto.movimiento.index', ['movimientos' => $movimientos,'linea' => $linea,'proveedor' => $proveedor,'presupuesto' => $presupuesto,'idp' => $idp,'idl' => $idl]);
     }
+
+    public function matriz($id){
+        
+        $presupuesto = DB::table('presupuestos')
+        ->leftjoin('estados_presupuestos', 'estados_presupuestos.id', '=', 'presupuestos.estados_presupuesto_id')
+        ->select('presupuestos.*','estados_presupuestos.nombre as estado')
+        ->where('presupuestos.id','=',$id)->first();
+
+        $proveedor = Proveedor::where('id','=',$presupuesto->proveedor_id)->first();
+        
+        $productos =DB::table('proyecto_lineas')
+        ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo')
+        ->where('presupuestos.id','=',$id)
+        ->groupBy('productos.id', 'productos.nombre','estatus_linea_clientes.nombre','tipos_productos.nombre')
+        ->orderBy('productos.nombre')
+        ->get();
+
+        $lineas =DB::table('proyecto_lineas')
+        ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','presupuestos.id as presupuesto_id',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'tipos_productos.nombre as tipo')
+        ->where('presupuestos.id','=',$id)
+        ->orderBy('sucursals.nombre','productos.nombre')
+        ->get();
+
+        return view('proveedor.linea.matriz', ['lineas' => $lineas,'proveedor' => $proveedor,'presupuesto' => $presupuesto,'id' => $id, 'productos' => $productos]);
+    }
+
+    public function matrizcxp($id){
+        
+        $presupuesto = DB::table('presupuestos')
+        ->leftjoin('estados_presupuestos', 'estados_presupuestos.id', '=', 'presupuestos.estados_presupuesto_id')
+        ->select('presupuestos.*','estados_presupuestos.nombre as estado')
+        ->where('presupuestos.id','=',$id)->first();
+
+        $proveedor = Proveedor::where('id','=',$presupuesto->proveedor_id)->first();
+        
+        $productos =DB::table('proyecto_lineas')
+        ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo')
+        ->where('presupuestos.id','=',$id)
+        ->groupBy('productos.id', 'productos.nombre','estatus_linea_clientes.nombre','tipos_productos.nombre')
+        ->orderBy('productos.nombre')
+        ->get();
+
+        $lineas =DB::table('proyecto_lineas')
+        ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','presupuestos.id as presupuesto_id',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'tipos_productos.nombre as tipo')
+        ->where('presupuestos.id','=',$id)
+        ->orderBy('sucursals.nombre','productos.nombre')
+        ->get();
+
+        return view('proveedor.linea.matrizcxp', ['lineas' => $lineas,'proveedor' => $proveedor,'presupuesto' => $presupuesto,'id' => $id, 'productos' => $productos]);
+    }
+
+    public function matrizsaldos($id){
+        
+        $presupuesto = DB::table('presupuestos')
+        ->leftjoin('estados_presupuestos', 'estados_presupuestos.id', '=', 'presupuestos.estados_presupuesto_id')
+        ->select('presupuestos.*','estados_presupuestos.nombre as estado')
+        ->where('presupuestos.id','=',$id)->first();
+
+        $proveedor = Proveedor::where('id','=',$presupuesto->proveedor_id)->first();
+        
+        $productos =DB::table('proyecto_lineas')
+        ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo')
+        ->where('presupuestos.id','=',$id)
+        ->groupBy('productos.id', 'productos.nombre','estatus_linea_clientes.nombre','tipos_productos.nombre')
+        ->orderBy('productos.nombre')
+        ->get();
+
+        $lineas =DB::table('proyecto_lineas')
+        ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','presupuestos.id as presupuesto_id',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'tipos_productos.nombre as tipo')
+        ->where('presupuestos.id','=',$id)
+        ->orderBy('sucursals.nombre','productos.nombre')
+        ->get();
+
+        return view('proveedor.linea.matrizsaldos', ['lineas' => $lineas,'proveedor' => $proveedor,'presupuesto' => $presupuesto,'id' => $id, 'productos' => $productos]);
+    }
 }

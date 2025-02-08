@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Proyecto')
+@section('title', 'Presupuesto')
 
 @section('content_header')
-    <h1>Importes del Proyecto</h1>
+    <h1>Saldos del presupuesto</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error!  </strong>{{  Session::get('Error'); }} @php if ($import > 0) echo '<a href="/proyectos/errores/'.$import.'">Ver errores</a>'; @endphp
+        <strong>Error!  </strong>{{  Session::get('Error'); }} @php if ($import > 0) echo '<a href="/presupuestos/errores/'.$import.'">Ver errores</a>'; @endphp
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -23,8 +23,8 @@
 @stop
 
 @section('content')
-    <h5>Proyecto: {{$proyecto->nombre}}</h5>
-    <h5>Cliente: {{$cliente->nombre}}</h5>
+    <h5>presupuesto: {{$presupuesto->nombre}}</h5>
+    <h5>proveedor: {{$proveedor->nombre}}</h5>
     <div class="row">
         <div class="col-md-11">
         </div>
@@ -51,10 +51,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @php $totalcliente = 0; $sucact =0;@endphp
+                    @php $totalproveedor = 0; $sucact =0;@endphp
                     @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                         @if ($sucact != $row->sucursal_id)
-                        @php $totalcliente = 0; $sucact = $row->sucursal_id; @endphp
+                        @php $totalproveedor = 0; $sucact = $row->sucursal_id; @endphp
                         <tr>
                             <th scope="row">{{$row->sucursal}}</th>
                             <td>{{$row->domicilio}}</td>
@@ -65,11 +65,11 @@
                                 @php $valprod =0; @endphp
                                 @foreach ($lineas as $lin)
                                     @if ($lin->sucursal == $row->sucursal)
-                                        <td>${{number_format($lin->precio, 2)}}</td>
+                                        <td>${{number_format($lin->saldo_proveedor, 2)}}</td>
                                         @php 
-                                            $totalcliente += $lin->precio; 
+                                            $totalproveedor += $lin->saldo_proveedor; 
                                             $valprod = 1;
-                                            $totalproducto[$prod->producto] += $lin->precio;
+                                            $totalproducto[$prod->producto] += $lin->saldo_proveedor;
                                         @endphp
                                     @endif
                                 @endforeach
@@ -77,7 +77,7 @@
                                     <td>${{number_format(0, 2)}}</td>
                                 @endif
                             @endforeach
-                            <td>${{number_format($totalcliente, 2)}}</td>
+                            <td>${{number_format($totalproveedor, 2)}}</td>
                         </tr>
                         @endif
                     @endforeach
@@ -142,7 +142,7 @@
     <script type="text/javascript">
 
         function back(){
-            var base = "<?php echo '/proyectos'?>";
+            var base = "<?php echo '/presupuestos'?>";
             var url = base;
             location.href=url;
         }

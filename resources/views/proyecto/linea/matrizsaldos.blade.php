@@ -3,7 +3,7 @@
 @section('title', 'Proyecto')
 
 @section('content_header')
-    <h1>Importes del Proyecto</h1>
+    <h1>Saldos del Proyecto</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!  </strong>{{  Session::get('Error'); }} @php if ($import > 0) echo '<a href="/proyectos/errores/'.$import.'">Ver errores</a>'; @endphp
@@ -65,11 +65,11 @@
                                 @php $valprod =0; @endphp
                                 @foreach ($lineas as $lin)
                                     @if ($lin->sucursal == $row->sucursal)
-                                        <td>${{number_format($lin->precio, 2)}}</td>
+                                        <td>${{number_format($lin->saldo_cliente, 2)}}</td>
                                         @php 
-                                            $totalcliente += $lin->precio; 
+                                            $totalcliente += $lin->saldo_cliente; 
                                             $valprod = 1;
-                                            $totalproducto[$prod->producto] += $lin->precio;
+                                            $totalproducto[$prod->producto] += $lin->saldo_cliente;
                                         @endphp
                                     @endif
                                 @endforeach
