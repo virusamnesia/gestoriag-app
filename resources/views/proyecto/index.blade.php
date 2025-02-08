@@ -68,6 +68,7 @@
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
+                                            <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
                                             @if($row->autorizar == 0)
                                                 <li><button class="btn align-self-left" id="btnauth" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
                                                 <li><button class="btn align-self-left" id="btnterm" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Terminos de Pago</button></li>
@@ -150,6 +151,12 @@
 
         function term(id){
             var base = "<?php echo '/proyectos/terminos/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function matriz(id){
+            var base = "<?php echo '/proyectos/matriz/'?>";
             var url = base+id;
             location.href=url;
         }

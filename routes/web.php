@@ -134,7 +134,7 @@ Route::middleware([
     
     Route::get('/proyectos/productos/{idp?}/{idc?}', [ProductosProyectoController::class, 'index'])->name('proyectos.productos');
     Route::post('/proyectos/productos/update/{idp?}/{idc?}', [ProductosProyectoController::class, 'update'])->name('update.proyectos.productos');
-
+    Route::get('/proyectos/matriz/{id?}', [ProyectoLineaController::class, 'matriz'])->name('proyectos.matriz');
     Route::get('/proyectos/lineas/{id?}', [ProyectoLineaController::class, 'index'])->name('proyectos.lineas');
     Route::get('/proyectos/lineas/nuevo/{id?}', [ProyectoLineaController::class, 'create'])->name('new.proyectos.lineas');
     Route::post('/proyectos/lineas/store/{id?}', [ProyectoLineaController::class, 'store'])->name('save.proyectos.lineas');
