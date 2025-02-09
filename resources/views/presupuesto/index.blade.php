@@ -52,8 +52,8 @@
                             <th scope="row">{{$row->nombre}}</th>
                             <td>{{$row->proveedor}}</td>
                             <td>{{$row->anio}}</td>
-                            <td>{{$row->importe}}</td>
-                            <td>{{$row->saldo}}</td>
+                            <td>${{number_format($row->importe, 2)}}</td>
+                            <td>${{number_format($row->saldo, 2)}}</td>
                             <td>{{$row->estado}}</td>
                             <td>{{$row->fecha_cotizacion}}</td>
                             <td>{{$row->fecha_autorizacion}}</td>
@@ -65,6 +65,8 @@
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
                                             <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
+                                            <li><button class="btn align-self-left" id="btnmatrizcxc" onclick="matrizcxc({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz CxC</button></li>
+                                            <li><button class="btn align-self-left" id="btnmatrizsaldos" onclick="matrizsaldos({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Saldos</button></li>
                                             @if($row->autorizar== 0)
                                             <li><button class="btn align-self-left" id="btncostos" onclick="costos({{$row->id}})"><i class="ion-md-chatboxes"></i>Costos</button></li>
                                             <li><button class="btn align-self-left" id="btnauth" onclick="auth({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
@@ -153,6 +155,18 @@
 
         function matriz(id){
             var base = "<?php echo '/presupuestos/matriz/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function matrizcxc(id){
+            var base = "<?php echo '/presupuestos/matrizcxc/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function matrizsaldos(id){
+            var base = "<?php echo '/presupuestos/matrizsaldos/'?>";
             var url = base+id;
             location.href=url;
         }

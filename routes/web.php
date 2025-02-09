@@ -135,6 +135,8 @@ Route::middleware([
     Route::get('/proyectos/productos/{idp?}/{idc?}', [ProductosProyectoController::class, 'index'])->name('proyectos.productos');
     Route::post('/proyectos/productos/update/{idp?}/{idc?}', [ProductosProyectoController::class, 'update'])->name('update.proyectos.productos');
     Route::get('/proyectos/matriz/{id?}', [ProyectoLineaController::class, 'matriz'])->name('proyectos.matriz');
+    Route::get('/proyectos/matrizcxc/{id?}', [ProyectoLineaController::class, 'matrizcxc'])->name('proyectos.matrizcxc');
+    Route::get('/proyectos/matrizsaldos/{id?}', [ProyectoLineaController::class, 'matrizsaldos'])->name('proyectos.matrizsaldos');
     Route::get('/proyectos/lineas/{id?}', [ProyectoLineaController::class, 'index'])->name('proyectos.lineas');
     Route::get('/proyectos/lineas/nuevo/{id?}', [ProyectoLineaController::class, 'create'])->name('new.proyectos.lineas');
     Route::post('/proyectos/lineas/store/{id?}', [ProyectoLineaController::class, 'store'])->name('save.proyectos.lineas');
@@ -171,7 +173,9 @@ Route::middleware([
     Route::get('/presupuestos/lineas/sucursales/nuevo/{idp?}/{idl?}', [PresupuestoController::class, 'createmov'])->name('new.presupuestos.lineas.sucursales');
     Route::post('/presupuestos/lineas/sucursales/store/{idp?}/{idl?}', [PresupuestoController::class, 'storemov'])->name('save.presupuestos.lineas.sucursales');
     Route::get('/presupuestos/matriz/{id?}', [PresupuestoController::class, 'matriz'])->name('presupuestos.matriz');
-
+    Route::get('/presupuestos/matrizcxp/{id?}', [PresupuestoController::class, 'matrizcxp'])->name('presupuestos.matrizcxc');
+    Route::get('/presupuestos/matrizsaldos/{id?}', [PresupuestoController::class, 'matrizsaldos'])->name('presupuestos.matrizsaldos');
+    
     Route::get('/factproveedores', [ProveedorFacturaController::class, 'index'])->name('factproveedores');
     Route::get('/factproveedores/nuevo', [ProveedorFacturaController::class, 'create'])->name('new.factproveedores');
     Route::get('/factproveedores/previo/{id?}', [ProveedorFacturaLineaController::class, 'index'])->name('factproveedores.previo');

@@ -57,8 +57,8 @@
                                 </th>
                                 <td>{{$row->alias}}</td>
                                 <td>{{$row->tipo}}</td>
-                                <td><x-adminlte-input name="{{$name}}" id="{{$name}}" placeholder="Costo" type="number" fgroup-class="col-md-5"  value="0"
-                                    igroup-size="sm" min=1 max=100000 step="0.05">
+                                <td><x-adminlte-input name="{{$name}}" id="{{$name}}" placeholder="Costo" type="number" fgroup-class="col-md-12"  value="0"
+                                    igroup-size="sm" min=0 max=100000 step="0.05">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-dollar-sign text-lightblue"></i>
@@ -109,8 +109,6 @@
         $(document).ready(function() {
             $('#tablarow').DataTable({
                 dom: 'Bfrtip',
-                paging: false,
-                scrollY: 400,
                 select: true,
                 buttons: [
                     'copy', 'csv', 'excel', 

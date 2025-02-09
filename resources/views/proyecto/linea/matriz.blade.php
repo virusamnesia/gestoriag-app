@@ -37,6 +37,7 @@
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
+                    <th scope="col">Marca</th>
                     <th scope="col">Sucursal</th>
                     <th scope="col">Domicilio</th>
                     <th scope="col">Municipio</th>
@@ -56,6 +57,7 @@
                         @if ($sucact != $row->sucursal_id)
                         @php $totalcliente = 0; $sucact = $row->sucursal_id; @endphp
                         <tr>
+                            <th scope="row">{{$row->marca}}</th>
                             <th scope="row">{{$row->sucursal}}</th>
                             <td>{{$row->domicilio}}</td>
                             <td>{{$row->municipio}}</td>
@@ -64,7 +66,7 @@
                             @foreach ($productos as $prod)
                                 @php $valprod =0; @endphp
                                 @foreach ($lineas as $lin)
-                                    @if ($lin->sucursal == $row->sucursal)
+                                    @if ($lin->sucursal_id == $row->sucursal_id and $lin->producto == $prod->producto)
                                         <td>${{number_format($lin->precio, 2)}}</td>
                                         @php 
                                             $totalcliente += $lin->precio; 
@@ -84,6 +86,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

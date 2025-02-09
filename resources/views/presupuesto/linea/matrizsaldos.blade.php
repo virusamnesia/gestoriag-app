@@ -37,6 +37,8 @@
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
+                    <th scope="col">Proyecto</th>
+                    <th scope="col">Marca</th>
                     <th scope="col">Sucursal</th>
                     <th scope="col">Domicilio</th>
                     <th scope="col">Municipio</th>
@@ -51,11 +53,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @php $totalproveedor = 0; $sucact =0;@endphp
+                    @php $totalproveedor = 0; $sucact =0;$proact =0;@endphp
                     @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
-                        @if ($sucact != $row->sucursal_id)
-                        @php $totalproveedor = 0; $sucact = $row->sucursal_id; @endphp
+                        @if ($sucact != $row->sucursal_id or $proact != $row->proyecto_id)
+                        @php $totalcliente = 0; $sucact = $row->sucursal_id; $proact = $row->proyecto_id; @endphp
                         <tr>
+                            <th scope="row">{{$row->proyecto}}</th>
+                            <th scope="row">{{$row->marca}}</th>
                             <th scope="row">{{$row->sucursal}}</th>
                             <td>{{$row->domicilio}}</td>
                             <td>{{$row->municipio}}</td>
@@ -64,12 +68,12 @@
                             @foreach ($productos as $prod)
                                 @php $valprod =0; @endphp
                                 @foreach ($lineas as $lin)
-                                    @if ($lin->sucursal == $row->sucursal)
-                                        <td>${{number_format($lin->saldo_proveedor, 2)}}</td>
+                                    @if ($lin->proyecto_id == $row->proyecto_id and $lin->sucursal_id == $row->sucursal_id and $lin->producto == $prod->producto)
+                                        <td>${{number_format($lin->saldoproveedor, 2)}}</td>
                                         @php 
-                                            $totalproveedor += $lin->saldo_proveedor; 
+                                            $totalproveedor += $lin->saldoproveedor; 
                                             $valprod = 1;
-                                            $totalproducto[$prod->producto] += $lin->saldo_proveedor;
+                                            $totalproducto[$prod->producto] += $lin->saldoproveedor;
                                         @endphp
                                     @endif
                                 @endforeach
@@ -84,6 +88,8 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

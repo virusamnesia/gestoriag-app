@@ -30,16 +30,15 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-2">
-        </div>
-        <div class="col-md-8">
+        <div class="col-md-12">
             <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                 <thead class="bg-dark text-white">
                 <tr>
+                    <th scope="col">Proyecto</th>
+                    <th scope="col">Marca</th>
                     <th scope="col">Sucursal</th>
                     <th scope="col">Domicilio</th>
                     <th scope="col">Municipio</th>
@@ -48,7 +47,6 @@
                     <th scope="col">Tipo</th>
                     <th scope="col">Costo</th>
                     <th scope="col">Saldo</th>
-                    <th scope="col">Terminos</th>
                     <th scope="col">Estatus</th>
                     <th scope="col">Acciones</th
                 </tr>
@@ -56,6 +54,8 @@
                 <tbody>
                     @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                     <tr>
+                        <th scope="row">{{$row->proyecto}}</th>
+                        <th scope="row">{{$row->marca}}</th>
                         <th scope="row">{{$row->sucursal}}</th>
                         <td>{{$row->domicilio}}</td>
                         <td>{{$row->municipio}}</td>
@@ -64,17 +64,16 @@
                         <td>{{$row->tipo}}</td>
                         <td>${{number_format($row->costo, 2)}}</td>
                         <td>${{number_format($row->saldoproveedor, 2)}}</td>
-                        <td>{{$row->terminos}}</td>
                         <td>{{$row->estatus}}</td>
                         <td>
                             <span class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                     <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                        @if($row->autorizar == 0)
+                                        @if($presupuesto->autorizar == 0)
                                         <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$presupuesto->id}},{{$row->id}},'{{$row->sucursal}}','{{$row->producto}}',{{$row->costo}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                         @endif
-                                        @if($row->autorizar== 1)
+                                        @if($presupuesto->autorizar== 1)
                                         <li><button class="btn align-self-left" id="btnview" onclick="view({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
                                         <li><button class="btn align-self-left" id="btnmove" onclick="move({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
                                         @endif
@@ -86,8 +85,6 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-        <div class="col-md-2">
         </div>
     </div>
     <div class="row">
@@ -183,8 +180,6 @@
         $(document).ready(function() {
             $('#tablarow').DataTable({
                 dom: 'Bfrtip',
-                paging: false,
-                scrollY: 400,
                 select: true,
                 buttons: [
                     'copy', 'csv', 'excel', 
