@@ -96,11 +96,11 @@ class ProyectoSucursalLineaController extends Controller
             ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
             ->first();
 
-        $inf = 1;
+        $inf = 'No existen más acciones que agregar...';
 
         if($next == null){
-            session()->flash('Error','No existen más acciones que agregar...');
-            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+            session()->flash('Error',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
         }
         else{
             return view('proyecto.movimiento.create', ['idp' => $idp,'idl' => $idl,'proyecto' => $proyecto,'cliente' => $cliente,
@@ -141,9 +141,9 @@ class ProyectoSucursalLineaController extends Controller
         $movimiento = MovimientosPagoCliente::where('id','=',$request->movimiento)->first();
 
         if($movimiento == null){
-            $inf = 1;
-            session()->flash('Error','No existen más acciones que agregar...');
-            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+            $inf = 'No existen más acciones que agregar...';
+            session()->flash('Error',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
         }
         else{
             $importec = 0;
@@ -213,9 +213,9 @@ class ProyectoSucursalLineaController extends Controller
             }
             
             //
-            $inf = 1;
-            session()->flash('Exito','La actualización se agregó con éxito...');
-            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+            $inf = 'La actualización se agregó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);
         }
 
         

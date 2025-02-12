@@ -82,14 +82,14 @@ class PresupuestoController extends Controller
             $id = $presupuesto->id;
 
             $proveedor = Proveedor::where('id','=', $request->proveedor)->first();
-            $inf = 1;
-            session()->flash('Exito','El presupuesto se agregó con éxito...');
-            return view('presupuesto.linea.clientes', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('info',$inf);
+            $inf = 'El presupuesto se agregó con éxito...';
+            session()->flash('Exito',$inf);
+            return view('presupuesto.linea.clientes', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('message',$inf);
         }
         else{
-            $inf = 1;
-            session()->flash('Error','No existen gestiones para este proveedor...');
-            return redirect()->route('presupuestos')->with('info',$inf);
+            $inf = 'No existen gestiones para este proveedor...';
+            session()->flash('Error',$inf);
+            return redirect()->route('presupuestos')->with('error',$inf);
         }
 
     }
@@ -117,9 +117,9 @@ class PresupuestoController extends Controller
         $proveedor = Proveedor::where('id','=', $idv)->first();
         $presupuesto = Presupuesto::where('id','=', $idp)->first();
         $cliente = Cliente::where('id','=', $idc)->first();
-        $inf = 1;
-        session()->flash('Exito','Selecciona los productos para el presupuesto...');
-        return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('info',$inf);
+        $inf = 'Selecciona los productos para el presupuesto...';
+        session()->flash('Exito',$inf);
+        return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('message',$inf);
 
     }
 
@@ -180,9 +180,9 @@ class PresupuestoController extends Controller
  
          $proveedor = Proveedor::where('id','=', $presupuesto->proveedor_id)->first();
 
-         $inf = 1;
-         session()->flash('Exito','Selecciona los productos para el presupuesto...');
-         return view('presupuesto.productos', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('info',$inf);
+         $inf = 'Selecciona los productos para el presupuesto...';
+         session()->flash('Exito',$inf);
+         return view('presupuesto.productos', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('message',$inf);
  
      }
 
@@ -235,9 +235,9 @@ class PresupuestoController extends Controller
             ->where('id','=', $id)
             ->update($data);
 
-        $inf = 0;
-        session()->flash('Exito','Los costos se modificarón con éxito...');
-        return redirect()->route('presupuestos')->with('info',$inf);
+        $inf = 'Los costos se modificarón con éxito...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('presupuestos')->with('message',$inf);
     }
 
     /**
@@ -404,9 +404,9 @@ class PresupuestoController extends Controller
                 ->where('id','=', $id)
                 ->update($data);
     
-            $inf = 0;
-            session()->flash('Exito','El presupuesto se autorizó con éxito...');
-            return redirect()->route('presupuestos')->with('info',$inf);
+            $inf = 'El presupuesto se autorizó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('presupuestos')->with('message',$inf);
         }
     }
 
@@ -535,9 +535,9 @@ class PresupuestoController extends Controller
             } 
         };
 
-        $inf = 1;
-        session()->flash('Exito','El presupuesto fue creado con éxito...');
-        return redirect()->route('presupuestos')->with('info',$inf);
+        $inf = 'El presupuesto fue creado con éxito...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('presupuestos')->with('message',$inf);
 
     }
 
@@ -588,15 +588,15 @@ class PresupuestoController extends Controller
             ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
             ->first();
 
-        $inf = 1;
+        $inf = 'No existen más acciones que agregar...';
 
         if($next == null){
-            session()->flash('Error','No existen más acciones que agregar...');
-            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+            session()->flash('Error',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
         }
         else{
             return view('presu´puesto.movimiento.create', ['idp' => $idp,'idl' => $idl,'presupuesto' => $presupuesto,'proveedor' => $proveedor,
-            'linea' => $linea,'next' => $next])->with('info',$inf);
+            'linea' => $linea,'next' => $next]);
         }
     }
 
@@ -701,9 +701,9 @@ class PresupuestoController extends Controller
                 ->update($data);
             
             //
-            $inf = 1;
-            session()->flash('Exito','La actualización se agregó con éxito...');
-            return redirect()->route('presupuesto.lineas', ['id' => $idp])->with('info',$inf);
+            $inf = 'La actualización se agregó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('presupuesto.lineas', ['id' => $idp])->with('message',$inf);
         }
     }
 

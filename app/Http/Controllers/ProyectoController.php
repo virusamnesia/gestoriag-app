@@ -88,9 +88,9 @@ class ProyectoController extends Controller
             };
         };
 
-        $inf = 1;
-        session()->flash('Exito','El proyecto se agregó con éxito...');
-        return redirect()->route('proyectos.sucursales', ['idp' => $id,'idc' => $request->cliente])->with('info',$inf);
+        $inf = 'El proyecto se agregó con éxito...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('proyectos.sucursales', ['idp' => $id,'idc' => $request->cliente])->with('message',$inf);
     }
 
     /**
@@ -209,15 +209,15 @@ class ProyectoController extends Controller
                 ->where('id','=',$id)
                 ->update($data);
             
-            $inf = 1;
-            session()->flash('Exito','La autorización se realizó con éxito...');
-            return redirect()->route('proyectos')->with('info',$inf);
+            $inf = 'La autorización se realizó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('proyectos')->with('message',$inf);
 
         }
         else{
-            $inf = 1;
-            session()->flash('Error','Proyecto previamente autorizado...');
-            return redirect()->route('proyectos')->with('info',$inf);
+            $inf = 'Proyecto previamente autorizado...';
+            session()->flash('Error',$inf);
+            return redirect()->route('proyectos')->with('error',$inf);
         }
     }
 
@@ -256,9 +256,9 @@ class ProyectoController extends Controller
 
         }
         else{
-            $inf = 1;
-            session()->flash('Error','Proyecto previamente autorizado...');
-            return redirect()->route('proyectos')->with('info',$inf);
+            $inf = 'Proyecto previamente autorizado...';
+            session()->flash('Error',$inf);
+            return redirect()->route('proyectos')->with('error',$inf);
         }
     }
 
@@ -284,15 +284,15 @@ class ProyectoController extends Controller
                 ->where('producto_id','=',$idp)
                 ->update($data);
             
-            $inf = 1;
-            session()->flash('Exito','La actualización se realizó con éxito...');
-            return redirect()->route('terminos.proyectos',['id' => $id])->with('info',$inf);
+            $inf = 'La actualización se realizó con éxito...';
+            session()->flash('Exito', $inf);
+            return redirect()->route('terminos.proyectos',['id' => $id])->with('message',$inf);
 
         }
         else{
-            $inf = 1;
-            session()->flash('Error','Actualización no realizada...');
-            return redirect()->route('terminos.proyectos',['id' => $id])->with('info',$inf);
+            $inf = 'Actualización no realizada...';
+            session()->flash('Error',$inf);
+            return redirect()->route('terminos.proyectos',['id' => $id])->with('error',$inf);
         }
     }
 

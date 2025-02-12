@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\backend\UserController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CiudadContactoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClientesFacturaController;
@@ -58,6 +58,8 @@ Route::middleware([
     })->name('dashboard');
 
     //CONFIGURACION
+
+
     Route::get('/municipios/{idc?}/{ids?}', [MunicipioContactoController::class, 'index'])->name('municipios');
     Route::post('/municipios/store/{idc?}/{ids?}', [MunicipioContactoController::class, 'store'])->name('savemunicipios');
     Route::get('/ciudades', [CiudadContactoController::class, 'index'])->name('ciudades');
@@ -84,6 +86,13 @@ Route::middleware([
    
     //USUARIOS
     Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios');
+    Route::get('/usuarios/nuevo', [UserController::class, 'create'])->name('new.usuarios');
+    Route::post('/usuarios/store', [UserController::class, 'store'])->name('save.usuarios');
+    Route::get('/usuarios/show/{id?}', [UserController::class, 'show'])->name('show.usuarios');
+    Route::get('/usuarios/{id?}', [UserController::class, 'edit'])->name('edit.usuarios');
+    Route::post('/usuarios/update/{id?}', [UserController::class, 'update'])->name('update.usuarios');
+    Route::get('/usuarios/reset/{id?}', [UserController::class, 'reset'])->name('reset.usuarios');
+    Route::get('/usuarios/delete/{id?}', [UserController::class, 'destroy'])->name('reset.usuarios');
     
     //CLIENTES
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes');
@@ -148,13 +157,14 @@ Route::middleware([
     Route::post('/proyectos/lineas/import/{idp?}/{idc?}', [ProyectoLineaController::class, 'import'])->name('import.proyectos.lineas');
     Route::get('/proyectos/errores/{id?}', [ProyectoLineaController::class, 'errores'])->name('errores.proyectos');
 
+    //FACTURACION CLIENTES
     Route::get('/factclientes', [ClientesFacturaController::class, 'index'])->name('factclientes');
     Route::get('/factclientes/nuevo', [ClientesFacturaController::class, 'create'])->name('new.factclientes');
     Route::get('/factclientes/previo/{id?}', [ClientesFacturaLineaController::class, 'index'])->name('factclientes.previo');
     Route::get('/factclientes/lineas/{id?}', [ClientesFacturaLineaController::class, 'lineas'])->name('factclientes.lineas');
     Route::post('/factclientes/lineas/store/{idp?}/{idc?}', [ClientesFacturaLineaController::class, 'store'])->name('save.factclientes.lineas');
 
-    //Presupuestos
+    //PRESUPUESTOS
     Route::get('/presupuestos', [PresupuestoController::class, 'index'])->name('presupuestos');
     Route::get('/presupuestos/nuevo', [PresupuestoController::class, 'create'])->name('new.presupuestos');
     Route::post('/presupuestos/store', [PresupuestoController::class, 'store'])->name('save.presupuestos');
@@ -176,6 +186,7 @@ Route::middleware([
     Route::get('/presupuestos/matrizcxp/{id?}', [PresupuestoController::class, 'matrizcxp'])->name('presupuestos.matrizcxc');
     Route::get('/presupuestos/matrizsaldos/{id?}', [PresupuestoController::class, 'matrizsaldos'])->name('presupuestos.matrizsaldos');
     
+    //FACTURACION PROVEEDORES
     Route::get('/factproveedores', [ProveedorFacturaController::class, 'index'])->name('factproveedores');
     Route::get('/factproveedores/nuevo', [ProveedorFacturaController::class, 'create'])->name('new.factproveedores');
     Route::get('/factproveedores/previo/{id?}', [ProveedorFacturaLineaController::class, 'index'])->name('factproveedores.previo');

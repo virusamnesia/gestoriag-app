@@ -30,61 +30,66 @@
             <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo()"/>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
-                <thead class="bg-dark text-white">
-                <tr>
-                    <th scope="col">Proyecto</th>
-                    <th scope="col">Cliente</th>
-                    <th scope="col">Año</th>
-                    <th scope="col">Importe</th>
-                    <th scope="col">Saldo</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Cotización</th>
-                    <th scope="col">Autorización</th>
-                    <th scope="col">Finalización</th>
-                    <th scope="col">Cancelación</th>
-                    <th scope="col">Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                    @foreach ($proyectos as $row) {{-- Add here extra stylesheets --}}
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
+                        <thead class="bg-dark text-white">
                         <tr>
-                            <th scope="row">{{$row->nombre}}</th>
-                            <td>{{$row->cliente}}</td>
-                            <td>{{$row->anio}}</td>
-                            <td>${{number_format($row->importe, 2)}}</td>
-                            <td>${{number_format($row->saldo, 2)}}</td>
-                            <td>{{$row->estado}}</td>
-                            <td>{{$row->fecha_cotizacion}}</td>
-                            <td>{{$row->fecha_autorizacion}}</td>
-                            <td>{{$row->fecha_finalizacion}}</td>
-                            <td>{{$row->fecha_cancelacion}}</td>
-                            <td>
-                                <span class="pull-right">
-                                    <div class="dropdown">
-                                        <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
-                                        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                            <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                            <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
-                                            <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
-                                            <li><button class="btn align-self-left" id="btnmatrizcxc" onclick="matrizcxc({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz CxC</button></li>
-                                            <li><button class="btn align-self-left" id="btnmatrizsaldos" onclick="matrizsaldos({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Saldos</button></li>
-                                            @if($row->autorizar == 0)
-                                                <li><button class="btn align-self-left" id="btnauth" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
-                                                <li><button class="btn align-self-left" id="btnterm" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Terminos de Pago</button></li>
-                                            @endif
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
-                                    </div>
-                                </span>
-                            </td>
+                            <th scope="col">Proyecto</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Año</th>
+                            <th scope="col">Importe</th>
+                            <th scope="col">Saldo</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Cotización</th>
+                            <th scope="col">Autorización</th>
+                            <th scope="col">Finalización</th>
+                            <th scope="col">Cancelación</th>
+                            <th scope="col">Acciones</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            <table>
+                        </thead>
+                        <tbody>
+                            @foreach ($proyectos as $row) {{-- Add here extra stylesheets --}}
+                                <tr>
+                                    <th scope="row">{{$row->nombre}}</th>
+                                    <td>{{$row->cliente}}</td>
+                                    <td>{{$row->anio}}</td>
+                                    <td>${{number_format($row->importe, 2)}}</td>
+                                    <td>${{number_format($row->saldo, 2)}}</td>
+                                    <td>{{$row->estado}}</td>
+                                    <td>{{$row->fecha_cotizacion}}</td>
+                                    <td>{{$row->fecha_autorizacion}}</td>
+                                    <td>{{$row->fecha_finalizacion}}</td>
+                                    <td>{{$row->fecha_cancelacion}}</td>
+                                    <td>
+                                        <span class="pull-right">
+                                            <div class="dropdown">
+                                                <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
+                                                <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
+                                                    <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
+                                                    <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
+                                                    <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
+                                                    <li><button class="btn align-self-left" id="btnmatrizcxc" onclick="matrizcxc({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz CxC</button></li>
+                                                    <li><button class="btn align-self-left" id="btnmatrizsaldos" onclick="matrizsaldos({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Saldos</button></li>
+                                                    @if($row->autorizar == 0)
+                                                        <li><button class="btn align-self-left" id="btnauth" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
+                                                        <li><button class="btn align-self-left" id="btnterm" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Terminos de Pago</button></li>
+                                                    @endif
+                                                    <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                            </div>
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    <table>
+                </div>
+            </div>
         </div>
     </div>
+   
 
 @stop
 
@@ -107,6 +112,32 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 
+    @if (session("message"))
+        <script>
+            $(document).ready(function() {
+                let mensaje = "{{ session ('message')}}";
+                Swal.fire({
+                    'title': 'Resultado',
+                    'text': mensaje,
+                    'icon': 'success'
+                })
+            } );
+        </script>
+    @endif
+
+    @if (session("error"))
+        <script>
+            $(document).ready(function() {
+                let mensaje = "{{ session ('error')}}";
+                Swal.fire({
+                    'title': 'Resultado',
+                    'text': mensaje,
+                    'icon': 'error'
+                })
+            } );
+        </script>
+    @endif
+    
     <script type="text/javascript">
         $(document).ready(function() {
             $('#tablarow').DataTable({

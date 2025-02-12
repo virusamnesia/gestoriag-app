@@ -168,15 +168,16 @@ class ProyectoLineaController extends Controller
                 ->where('id','=',$id)
                 ->update($data);
 
-            session()->flash('Exito','la partida del proyecto se agregó con éxito...');
+            $inf = 'la partida del proyecto se agregó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $id])->with('message',$inf);
         }
         else{
-            session()->flash('Error','El producto para la sucursal seleccionada ya existe en el proyecto...');
+            $inf = 'El producto para la sucursal seleccionada ya existe en el proyecto...';
+            session()->flash('Error',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $id])->with('error',$inf);
         };
-
-        $inf = 1;
         
-        return redirect()->route('proyectos.lineas', ['id' => $id])->with('info',$inf);
     }
 
     /**
@@ -272,9 +273,9 @@ class ProyectoLineaController extends Controller
             ->where('id','=',$idp)
             ->update($data);
         
-        $inf = 1;
-        session()->flash('Exito','Las sucursales se agregaron con éxito...');
-        return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+        $inf = 'Las sucursales se agregaron con éxito...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);
     }
 
     public function import(Request $request,$idp,$idc){
@@ -319,9 +320,9 @@ class ProyectoLineaController extends Controller
         $numerrores = $errors->count();
 
         if($numerrores == 0){
-            $inf = 0;
-            session()->flash('Exito','El proyecto se importó con éxito...');
-            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);;
+            $inf = 'El proyecto se importó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);;
         }
         else{
             $inf = $importacion->id;

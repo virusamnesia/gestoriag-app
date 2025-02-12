@@ -15,7 +15,7 @@ return [
     */
 
     'title' => 'Gestoria G',
-    'title_prefix' => 'G-',
+    'title_prefix' => '',
     'title_postfix' => '',
 
     /*
@@ -332,7 +332,7 @@ return [
         ['header' => 'Configuracion de Cuentas'],
         [
             'text' => 'Usuarios',
-            'url' => 'admin/settings',
+            'url' => '/usuarios',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
@@ -542,12 +542,12 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
                 ],
             ],
         ],

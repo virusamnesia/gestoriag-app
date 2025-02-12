@@ -105,6 +105,32 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 
+    @if (session("message"))
+        <script>
+            $(document).ready(function() {
+                let mensaje = "{{ session ('message')}}";
+                Swal.fire({
+                    'title': 'Resultado',
+                    'text': mensaje,
+                    'icon': 'success'
+                })
+            } );
+        </script>
+    @endif
+
+    @if (session("error"))
+        <script>
+            $(document).ready(function() {
+                let mensaje = "{{ session ('error')}}";
+                Swal.fire({
+                    'title': 'Resultado',
+                    'text': mensaje,
+                    'icon': 'error'
+                })
+            } );
+        </script>
+    @endif
+    
     <script type="text/javascript">
         $(document).ready(function() {
             $('#tablarow').DataTable({

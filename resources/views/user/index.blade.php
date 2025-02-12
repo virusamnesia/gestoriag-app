@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Proyecto')
+@section('title', 'Usuarios')
 
 @section('content_header')
-    <h1>Partidas del Proyecto</h1>
+    <h1>Clientes</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Error!  </strong>{{  Session::get('Error'); }} @php if ($import > 0) echo '<a href="/proyectos/errores/'.$import.'">Ver errores</a>'; @endphp
+        <strong>Error!  </strong>{{  Session::get('Error'); }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -23,57 +23,43 @@
 @stop
 
 @section('content')
-    <h5>Proyecto: {{$proyecto->nombre}}</h5>
-    <h5>Cliente: {{$cliente->nombre}}</h5>
     <div class="row">
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo({{$proyecto->id}})"/>
+            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo()"/>
         </div>
-    </div> 
+    </div>
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-8">
                     <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                         <thead class="bg-dark text-white">
                         <tr>
-                            <th scope="col">Sucursal</th>
-                            <th scope="col">Domicilio</th>
-                            <th scope="col">Municipio</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Producto</th>
-                            <th scope="col">Tipo</th>
-                            <th scope="col">Precio</th>
-                            <th scope="col">Saldo</th>
-                            <th scope="col">Terminos</th>
-                            <th scope="col">Estatus</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Email</th>
                             <th scope="col">Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
+                            @foreach ($usuarios as $row) {{-- Add here extra stylesheets --}}
                                 <tr>
-                                    <th scope="row">{{$row->sucursal}}</th>
-                                    <td>{{$row->domicilio}}</td>
-                                    <td>{{$row->municipio}}</td>
-                                    <td>{{$row->estado}}</td>
-                                    <td>{{$row->producto}}</td>
-                                    <td>{{$row->tipo}}</td>
-                                    <td>${{number_format($row->precio, 2)}}</td>
-                                    <td>${{number_format($row->saldocliente, 2)}}</td>
-                                    <td>{{$row->terminos}}</td>
-                                    <td>{{$row->estatus}}</td>
+                                    <th scope="row">{{$row->id}}</th>
+                                    <td>{{$row->name}}</td>
+                                    <td>{{$row->email}}</td>
                                     <td>
                                         <span class="pull-right">
                                             <div class="dropdown">
                                                 <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                                 <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                                    <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                                    <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
-                                                    <li><button class="btn align-self-left" id="btnmove" onclick="move({{$proyecto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
-                                                    <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                                    <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
+                                                    <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="icon ion-md-chatboxes"></i>Ver</button></li>
+                                                    <li><button class="btn align-self-left" id="btndelete" onclick="del({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
+                                                    <li><button class="btn align-self-left" id="btnreset" onclick="reset({{$row->id}})"><i class="icon ion-md-albums"></i>Contraseña</button></li>
                                             </div>
                                         </span>
                                     </td>
@@ -81,6 +67,8 @@
                             @endforeach
                         </tbody>
                     <table>
+                </div>
+                <div class="col-md-2">
                 </div>
             </div>
         </div>
@@ -132,7 +120,8 @@
             } );
         </script>
     @endif
-    
+
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('#tablarow').DataTable({
@@ -151,29 +140,36 @@
     </script>
 
     <script type="text/javascript">
-        function nuevo(id){
-            var base = "<?php echo '/proyectos/lineas/nuevo/' ?>";
-            var url = base+id;
+        function nuevo(){
+            var base = "<?php echo '/usuarios/nuevo' ?>";
+            var url = base;
             location.href=url;
         }
+        
     </script>
 
     <script type="text/javascript">
-        function edit(idp,idl){
-            var base = "<?php echo '/proyectos/lineas/'?>";
-            var url = base+idp+"/"+idl;
+        function edit(id){
+            var base = "<?php echo '/usuarios/'?>";
+            var url = base+id;
             location.href=url;
         }
 
-        function view(idp,idl){
-            var base = "<?php echo '/proyectos/lineas/sucursales/'?>";
-            var url = base+idp+"/"+idl;
+        function view(id){
+            var base = "<?php echo '/usuarios/show/'?>";
+            var url = base+id;
             location.href=url;
         }
 
-        function move(idp,idl){
-            var base = "<?php echo '/proyectos/lineas/sucursales/nuevo/'?>";
-            var url = base+idp+"/"+idl;
+        function reset(id){
+            var base = "<?php echo '/usuarios/reset/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function del(id){
+            var base = "<?php echo '/usuarios/delete/'?>";
+            var url = base+id;
             location.href=url;
         }
     </script>
