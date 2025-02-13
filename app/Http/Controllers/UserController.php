@@ -7,9 +7,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Traits\HasRoles;
 
 class UserController extends Controller
 {
+    use HasRoles;
+    
     public function index(){
         $usuarios = DB::table('users')
         ->leftJoin('model_has_roles','model_has_roles.model_id','=','users.id')
@@ -152,7 +155,7 @@ class UserController extends Controller
         $usuario = User::find($request->id);
 
         
-        $usuario->roles()->sync( $request->rol);
+        $usuario->assignRole($request->rol);
 
         $inf = 'Se agregó el rol con éxito...';
         session()->flash('Exito',$inf);

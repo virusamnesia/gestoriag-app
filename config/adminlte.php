@@ -321,7 +321,6 @@ return [
             'icon' => 'fas fa-project-diagram',
             'label_color' => 'success',
             'icon_color' => 'purple',
-            'can' => 'proyecto',
         ],
         [
             'text' => 'Presupuestos',

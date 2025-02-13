@@ -93,7 +93,7 @@
                         </x-slot>
                         <option/>
                         @foreach ($roles as $row)
-                        <option value="{{$row->id}}">{{$row->name}}</option>
+                        <option value="{{$row->name}}">{{$row->name}}</option>
                         @endforeach
                     </x-adminlte-select2>
                 </div>
