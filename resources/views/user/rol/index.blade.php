@@ -27,7 +27,9 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-           <x-adminlte-button label="Nuevo" data-toggle="modal" data-target="#modalAdd" class="bg-teal"/>
+            @can('roles')
+            <x-adminlte-button label="Nuevo" data-toggle="modal" data-target="#modalAdd" class="bg-teal"/>
+            @endcan
         </div>
     </div>
     <div class="card">
