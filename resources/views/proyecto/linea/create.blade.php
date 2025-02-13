@@ -72,7 +72,7 @@
                 </div>
                 <div class="row">
                     <x-adminlte-input name="precio" id="precio" placeholder="$Precio" type="number" fgroup-class="col-md-5"
-                        igroup-size="sm" min=1 max=1000 step="0.05">
+                        igroup-size="sm" min=1 max=100000 step="0.05">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
                                 <i class="fas fa-dollar-sign"></i>

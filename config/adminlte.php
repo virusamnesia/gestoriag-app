@@ -321,6 +321,7 @@ return [
             'icon' => 'fas fa-project-diagram',
             'label_color' => 'success',
             'icon_color' => 'purple',
+            'can' => 'proyecto',
         ],
         [
             'text' => 'Presupuestos',
@@ -336,8 +337,13 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'Roles',
+            'route' => 'roles',
+            'icon' => 'fas fa-fw fa-lock',
+        ],
+        [
             'text' => 'Permisos',
-            'url' => 'admin/settings',
+            'route' => 'permisos',
             'icon' => 'fas fa-fw fa-lock',
         ],
         [

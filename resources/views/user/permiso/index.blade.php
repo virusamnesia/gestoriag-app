@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Usuarios')
+@section('title', 'Permisos')
 
 @section('content_header')
-    <h1>Clientes</h1>
+    <h1>Permisos</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!  </strong>{{  Session::get('Error'); }}
@@ -27,7 +27,7 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo()"/>
+            <x-adminlte-button label="Nuevo" data-toggle="modal" data-target="#modalAdd" class="bg-teal"/>
         </div>
     </div>
     <div class="card">
@@ -41,28 +41,20 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Nombre</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Rol</th>
                             <th scope="col">Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach ($usuarios as $row) {{-- Add here extra stylesheets --}}
+                            @foreach ($permisos as $row) {{-- Add here extra stylesheets --}}
                                 <tr>
                                     <th scope="row">{{$row->id}}</th>
                                     <td>{{$row->name}}</td>
-                                    <td>{{$row->email}}</td>
-                                    <td>{{$row->rol}}</td>
                                     <td>
                                         <span class="pull-right">
                                             <div class="dropdown">
                                                 <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                                 <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                                    <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                                    <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="icon ion-md-chatboxes"></i>Ver</button></li>
-                                                    <li><button class="btn align-self-left" id="btnrol"  data-toggle="modal" data-target="#modalAdd"  onclick="rol('{{$row->id}}')"><i class="icon ion-md-create"></i>Editar Rol</button></li>
-                                                    <li><button class="btn align-self-left" id="btndelete" onclick="del({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
-                                                    <li><button class="btn align-self-left" id="btnreset" onclick="reset({{$row->id}})"><i class="icon ion-md-albums"></i>Contraseña</button></li>
+                                                <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#modalEdit"  onclick="edit('{{$row->id}}','{{$row->name}}')"><i class="icon ion-md-create"></i>Editar</button></li> 
                                             </div>
                                         </span>
                                     </td>
@@ -77,25 +69,42 @@
         </div>
     </div>
 
-    <x-adminlte-modal id="modalAdd" title="Rol" size="md" theme="teal"
+    <x-adminlte-modal id="modalAdd" title="Nuevo Permiso" size="md" theme="teal"
         icon="fas fa-bell" v-centered static-backdrop>
-        <form action="/usuarios/rol/store" method="POST">
+        <form action="/permisos/store" method="POST">
+             @csrf
+            <div class="card">
+                <div class="card-body">
+                    <x-adminlte-input name="nombre" placeholder="Permiso" label-class="text-lightblue" fgroup-class="col-md-12">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text">
+                                <i class="fas fa-user text-lightblue"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+            </div>
+        <x-slot name="footerSlot">
+            <x-adminlte-button type="submit" class="mr-auto" theme="success" label="Guardar"/>
+        </form>
+            <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal" label="Cerrar"/>
+        </x-slot>
+    </x-adminlte-modal>
+
+    <x-adminlte-modal id="modalEdit" title="Editar Permiso" size="md" theme="teal"
+        icon="fas fa-bell" v-centered static-backdrop>
+        <form action="/permisos/update" method="POST">
              @csrf
             <div class="card">
                 <div class="card-body">
                     <input type="hidden" name="id" id="id">
-                    <x-adminlte-select2 name="rol" label-class="text-lightblue"  fgroup-class="col-md-12"
-                        igroup-size="sm" data-placeholder="Selecciona un rol...">
+                    <x-adminlte-input name="enombre" id="enombre" placeholder="Permiso" label-class="text-lightblue" fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
-                            <div class="input-group-text bg-gradient-info">
-                                <i class="far fa-building"></i>
+                            <div class="input-group-text">
+                                <i class="fas fa-user text-lightblue"></i>
                             </div>
                         </x-slot>
-                        <option/>
-                        @foreach ($roles as $row)
-                        <option value="{{$row->id}}">{{$row->name}}</option>
-                        @endforeach
-                    </x-adminlte-select2>
+                    </x-adminlte-input>
                 </div>
             </div>
         <x-slot name="footerSlot">
@@ -168,45 +177,11 @@
                 ]
             });
         } );
-    </script>
 
-    <script type="text/javascript">
-        function nuevo(){
-            var base = "<?php echo '/usuarios/nuevo' ?>";
-            var url = base;
-            location.href=url;
+        function edit(id,name){
+            $("#id").val(id);
+            $("#enombre").val(name);
         }
         
-    </script>
-
-    <script type="text/javascript">
-        function edit(id){
-            var base = "<?php echo '/usuarios/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function view(id){
-            var base = "<?php echo '/usuarios/show/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function reset(id){
-            var base = "<?php echo '/usuarios/reset/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function del(id){
-            var base = "<?php echo '/usuarios/delete/'?>";
-            var url = base+id;
-            location.href=url;
-        }
-
-        function rol(id){
-            $("#id").val(id);
-        }
-
     </script>
 @stop

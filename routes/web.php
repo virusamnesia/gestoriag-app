@@ -13,6 +13,7 @@ use App\Http\Controllers\MovimientosPagoClienteController;
 use App\Http\Controllers\MovimientosPagoProveedorController;
 use App\Http\Controllers\MunicipioContactoController;
 use App\Http\Controllers\MunicipiosProveedorController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrecioProductoController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\ProductoController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\ProveedorMunicipioController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\ProyectoLineaController;
 use App\Http\Controllers\ProyectoSucursalLineaController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\SucursalesProyectoController;
 use App\Http\Controllers\TerminosPagoClienteController;
@@ -93,6 +95,17 @@ Route::middleware([
     Route::post('/usuarios/update/{id?}', [UserController::class, 'update'])->name('update.usuarios');
     Route::get('/usuarios/reset/{id?}', [UserController::class, 'reset'])->name('reset.usuarios');
     Route::get('/usuarios/delete/{id?}', [UserController::class, 'destroy'])->name('reset.usuarios');
+    Route::post('/usuarios/rol/store', [UserController::class, 'rol'])->name('rol.usuarios');
+
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles');
+    Route::post('/roles/store', [RoleController::class, 'store'])->name('store.roles');
+    Route::post('/roles/update', [RoleController::class, 'update'])->name('update.roles');
+    Route::get('/roles/permisos/{id?}', [RoleController::class, 'permisos'])->name('permisos.roles');
+    Route::post('/roles/permisos/store/{id?}', [RoleController::class, 'storepermisos'])->name('store.permisos.roles');
+
+    Route::get('/permisos', [PermissionController::class, 'index'])->name('permisos');
+    Route::post('/permisos/store', [PermissionController::class, 'store'])->name('store.permisos');
+    Route::post('/permisos/update', [PermissionController::class, 'update'])->name('update.permisos');
     
     //CLIENTES
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes');

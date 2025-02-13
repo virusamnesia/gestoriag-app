@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,8 +11,15 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function index(){
-        $usuarios =User::get();
-        return view('user.index', ['usuarios' => $usuarios]);
+        $usuarios = DB::table('users')
+        ->leftJoin('model_has_roles','model_has_roles.model_id','=','users.id')
+        ->leftJoin('roles','roles.id','=','model_has_roles.role_id')
+        ->select('users.*','roles.name as rol')
+        ->get();
+
+
+        $roles = Role::all();
+        return view('user.index', ['usuarios' => $usuarios,'roles' => $roles]);
     }
 
     /**
@@ -131,6 +139,22 @@ class UserController extends Controller
         ]);
 
         $inf = 'La contraseña se reestableció con éxito...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('usuarios')->with('message',$inf);
+    }
+
+    public function rol(Request $request)
+    {
+        $validacion = $request->validate([
+            'rol' => 'required',
+        ]);
+        
+        $usuario = User::find($request->id);
+
+        
+        $usuario->roles()->sync( $request->rol);
+
+        $inf = 'Se agregó el rol con éxito...';
         session()->flash('Exito',$inf);
         return redirect()->route('usuarios')->with('message',$inf);
     }
