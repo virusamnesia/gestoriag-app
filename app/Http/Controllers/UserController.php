@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
@@ -12,17 +13,49 @@ use Spatie\Permission\Traits\HasRoles;
 class UserController extends Controller
 {
     use HasRoles;
+    protected $guardName = 'sanctum';
     
     public function index(){
-        $usuarios = DB::table('users')
-        ->leftJoin('model_has_roles','model_has_roles.model_id','=','users.id')
-        ->leftJoin('roles','roles.id','=','model_has_roles.role_id')
-        ->select('users.*','roles.name as rol')
-        ->get();
+        
+        $user = Auth::user()->id;
+
+        $acceso = 8;
+
+        $permisos = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->get();
+        
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $usuarios = DB::table('users')
+            ->leftJoin('model_has_roles','model_has_roles.model_id','=','users.id')
+            ->leftJoin('roles','roles.id','=','model_has_roles.role_id')
+            ->select('users.*','roles.name as rol')
+            ->get();
 
 
-        $roles = Role::all();
-        return view('user.index', ['usuarios' => $usuarios,'roles' => $roles]);
+            $roles = Role::all();
+            return view('user.index', ['usuarios' => $usuarios,'roles' => $roles]);
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('dashboard')->with('error',$inf);
+        }
+        
     }
 
     /**

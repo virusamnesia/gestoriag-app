@@ -176,6 +176,8 @@ Route::middleware([
     Route::get('/factclientes/previo/{id?}', [ClientesFacturaLineaController::class, 'index'])->name('factclientes.previo');
     Route::get('/factclientes/lineas/{id?}', [ClientesFacturaLineaController::class, 'lineas'])->name('factclientes.lineas');
     Route::post('/factclientes/lineas/store/{idp?}/{idc?}', [ClientesFacturaLineaController::class, 'store'])->name('save.factclientes.lineas');
+    Route::get('/factclientes/lineas/odood/{id?}', [ClientesFacturaLineaController::class, 'odooDetalle'])->name('odood.factclientes.lineas');
+    Route::get('/factclientes/lineas/odooa/{id?}', [ClientesFacturaLineaController::class, 'odooAgrupador'])->name('odooa.factclientes.lineas');
 
     //PRESUPUESTOS
     Route::get('/presupuestos', [PresupuestoController::class, 'index'])->name('presupuestos');

@@ -65,7 +65,8 @@
                                         <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                             <li><button class="btn align-self-left" id="btndetalle" onclick="detalle({{$row->id}})"><i class="icon ion-md-create"></i>Detalle</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="odoo({{$row->id}})"><i class="icon ion-md-albums"></i>Odoo</button></li>
+                                            <li><button class="btn align-self-left" id="btnodood" onclick="odood({{$row->id}})"><i class="icon ion-md-albums"></i>Odoo Detalle</button></li>
+                                            <li><button class="btn align-self-left" id="btnodooa" onclick="odooa({{$row->id}})"><i class="icon ion-md-albums"></i>Odoo Agrupador</button></li>
                                             <li><button class="btn align-self-left" id="btndelete" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
                                     </div>
                                 </span>
@@ -126,6 +127,18 @@
         
         function detalle(id){
             var base = "<?php echo '/factclientes/lineas/' ?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function odood(id){
+            var base = "<?php echo '/factclientes/lineas/odood/' ?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function odooa(id){
+            var base = "<?php echo '/factclientes/lineas/odooa/' ?>";
             var url = base+id;
             location.href=url;
         }
