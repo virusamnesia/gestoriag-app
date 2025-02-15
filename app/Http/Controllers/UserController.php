@@ -21,15 +21,6 @@ class UserController extends Controller
 
         $acceso = 8;
 
-        $permisos = DB::table('users')
-            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
-            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
-            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
-            ->where('users.id','=', $user)
-            ->get();
-        
         $permiso = DB::table('users')
             ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
@@ -38,6 +29,26 @@ class UserController extends Controller
             ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
             ->where('users.id','=', $user)
             ->where('permissions.id','=', $acceso)
+            ->first();
+
+        $permisor = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', 9)
+            ->first();
+
+        $permisoa = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('roles.id','=', 1)
             ->first();
         
         if ($permiso){
@@ -49,7 +60,7 @@ class UserController extends Controller
 
 
             $roles = Role::all();
-            return view('user.index', ['usuarios' => $usuarios,'roles' => $roles]);
+            return view('user.index', ['usuarios' => $usuarios,'roles' => $roles,'permisor' => $permisor,'permisoa' => $permisoa]);
         }
         else{
             $inf = 'No cuentas con el permiso de acceso';

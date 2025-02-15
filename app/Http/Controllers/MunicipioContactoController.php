@@ -7,22 +7,41 @@ use App\Models\EstadoContacto;
 use App\Models\MunicipioContacto;
 use App\Models\PaisContacto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MunicipioContactoController extends Controller
 {
     public function index($idc,$ids){
+        $user = Auth::user()->id;
+
+        $acceso = 12;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
         
-        $estados = EstadoContacto::all();
-        $paises = PaisContacto::all();
+        if ($permiso){
+            $estados = EstadoContacto::all();
+            $paises = PaisContacto::all();
 
-        $municipios = DB::table('municipio_contactos')
-            ->join('estado_contactos', 'estado_contactos.id', '=', 'municipio_contactos.estado_contacto_id')
-            ->join('pais_contactos', 'pais_contactos.id', '=', 'estado_contactos.pais_contacto_id')
-            ->select('municipio_contactos.*', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais')
-            ->get();
-        return view('municipio.index', ['municipios' => $municipios,'estados' => $estados, 'paises' => $paises, 'idc' => $idc, 'ids' => $ids]);
-
+            $municipios = DB::table('municipio_contactos')
+                ->join('estado_contactos', 'estado_contactos.id', '=', 'municipio_contactos.estado_contacto_id')
+                ->join('pais_contactos', 'pais_contactos.id', '=', 'estado_contactos.pais_contacto_id')
+                ->select('municipio_contactos.*', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais')
+                ->get();
+            return view('municipio.index', ['municipios' => $municipios,'estados' => $estados, 'paises' => $paises, 'idc' => $idc, 'ids' => $ids]);
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('dashboard')->with('error',$inf);
+        }
     }
 
     /**

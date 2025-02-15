@@ -8,18 +8,38 @@ use App\Models\MunicipioContacto;
 use App\Models\PaisContacto;
 use App\Models\Proveedor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
 class ProveedorController extends Controller
 {
     public function index(){
-        
-        $proveedores =Proveedor::select('id', 'clave', 'nombre', 'rfc','email','telefono')
-        ->orderBy('nombre') 
-        ->get();
+        $user = Auth::user()->id;
 
-        return view('Proveedor.index', ['proveedores' => $proveedores]);
+        $acceso = 12;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $proveedores =Proveedor::select('id', 'clave', 'nombre', 'rfc','email','telefono')
+            ->orderBy('nombre') 
+            ->get();
+
+            return view('Proveedor.index', ['proveedores' => $proveedores]);
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('dashboard')->with('error',$inf);
+        }
     }
 
     /**

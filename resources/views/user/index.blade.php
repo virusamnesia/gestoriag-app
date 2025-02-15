@@ -60,7 +60,9 @@
                                                 <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                                     <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                                     <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="icon ion-md-chatboxes"></i>Ver</button></li>
+                                                    @if($permisor)
                                                     <li><button class="btn align-self-left" id="btnrol"  data-toggle="modal" data-target="#modalAdd"  onclick="rol('{{$row->id}}')"><i class="icon ion-md-create"></i>Editar Rol</button></li>
+                                                    @endif
                                                     <li><button class="btn align-self-left" id="btndelete" onclick="del({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
                                                     <li><button class="btn align-self-left" id="btnreset" onclick="reset({{$row->id}})"><i class="icon ion-md-albums"></i>Contraseña</button></li>
                                             </div>
@@ -93,7 +95,12 @@
                         </x-slot>
                         <option/>
                         @foreach ($roles as $row)
+                        @if($permisoa and $row->id == 1)
                         <option value="{{$row->name}}">{{$row->name}}</option>
+                        @endif
+                        @if($row->id != 1)
+                        <option value="{{$row->name}}">{{$row->name}}</option>
+                        @endif
                         @endforeach
                     </x-adminlte-select2>
                 </div>

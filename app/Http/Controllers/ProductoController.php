@@ -8,21 +8,41 @@ use App\Models\TerminosPagoCliente;
 use App\Models\TerminosPagoProveedor;
 use App\Models\TiposProducto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller
 {
     public function index(){
-        
-        $productos = DB::table('productos')
-            ->leftJoin('terminos_pago_clientes', 'productos.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->join('agrupador_facturas', 'agrupador_facturas.id', '=', 'productos.agrupador_factura_id')
-            ->select('productos.*','terminos_pago_clientes.id as tpc_id','terminos_pago_clientes.nombre as tpc_nombre', 
-            'tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre','agrupador_facturas.nombre as agrupador')
-            ->get();
+        $user = Auth::user()->id;
 
-        return view('producto.index', ['productos' => $productos]);
+        $acceso = 12;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $productos = DB::table('productos')
+                ->leftJoin('terminos_pago_clientes', 'productos.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->join('agrupador_facturas', 'agrupador_facturas.id', '=', 'productos.agrupador_factura_id')
+                ->select('productos.*','terminos_pago_clientes.id as tpc_id','terminos_pago_clientes.nombre as tpc_nombre', 
+                'tipos_productos.id as tps_id','tipos_productos.nombre as tps_nombre','agrupador_facturas.nombre as agrupador')
+                ->get();
+
+            return view('producto.index', ['productos' => $productos]);
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('dashboard')->with('error',$inf);
+        }
     }
 
     /**
