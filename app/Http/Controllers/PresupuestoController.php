@@ -9,21 +9,72 @@ use App\Models\Presupuesto;
 use App\Models\Proveedor;
 use App\Models\ProyectoSucursalLinea;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PresupuestoController extends Controller
 {
     public function index(){
         
-        $presupuestos =DB::table('presupuestos')
-        ->join('proveedors', 'proveedors.id', '=', 'presupuestos.proveedor_id')
-        ->leftjoin('estados_presupuestos', 'estados_presupuestos.id', '=', 'presupuestos.estados_presupuesto_id')
-        ->select('presupuestos.*','proveedors.nombre as proveedor','proveedors.id as proveedor_id','estados_presupuestos.nombre as estado',
-        'estados_presupuestos.id as estados_presupuesto_id')
-        ->orderBy('presupuestos.id', 'desc')
-        ->get();
+        $user = Auth::user()->id;
 
-        return view('presupuesto.index', ['presupuestos' => $presupuestos]);
+        $acceso = 5;
+
+        $permisos = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->get();
+        
+            $permisoa = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', 6)
+            ->first();
+        
+        $permisom = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', 13)
+            ->first();
+        
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $presupuestos =DB::table('presupuestos')
+            ->join('proveedors', 'proveedors.id', '=', 'presupuestos.proveedor_id')
+            ->leftjoin('estados_presupuestos', 'estados_presupuestos.id', '=', 'presupuestos.estados_presupuesto_id')
+            ->select('presupuestos.*','proveedors.nombre as proveedor','proveedors.id as proveedor_id','estados_presupuestos.nombre as estado',
+            'estados_presupuestos.id as estados_presupuesto_id')
+            ->orderBy('presupuestos.id', 'desc')
+            ->get();
+
+            return view('presupuesto.index', ['presupuestos' => $presupuestos,'permisos' => $permisos,'permisoa' => $permisoa,'permisom' => $permisom]);    
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('dashboard')->with('error',$inf);
+        }
+        
     }
 
     /**
@@ -33,10 +84,30 @@ class PresupuestoController extends Controller
      */
     public function create()
     {
-        $estados = EstadosPresupuesto::all();
-        $proveedores = Proveedor::all();
+        $user = Auth::user()->id;
 
-        return view('presupuesto.create', ['proveedores' => $proveedores, 'estados' => $estados]);
+        $acceso = 5;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $estados = EstadosPresupuesto::all();
+            $proveedores = Proveedor::all();
+
+            return view('presupuesto.create', ['proveedores' => $proveedores, 'estados' => $estados]);
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
     }
 
     /**
@@ -96,31 +167,50 @@ class PresupuestoController extends Controller
 
     public function products($idp,$idv,$idc)
     {
-        $lineas =DB::table('proyecto_lineas')
-            ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-            ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-            ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-            ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-            ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
-            ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
-            ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
-            ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias')
-            ->where('proveedors.id','=',$idv)
-            ->where('clientes.id','=',$idc)
-            ->where('proyecto_lineas.proveedor_id','=',NULL)
-            ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
-            ->orderBy('productos.nombre')
-            ->get();
+        $user = Auth::user()->id;
 
-        $proveedor = Proveedor::where('id','=', $idv)->first();
-        $presupuesto = Presupuesto::where('id','=', $idp)->first();
-        $cliente = Cliente::where('id','=', $idc)->first();
-        $inf = 'Selecciona los productos para el presupuesto...';
-        session()->flash('Exito',$inf);
-        return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('message',$inf);
+        $acceso = 6;
 
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $lineas =DB::table('proyecto_lineas')
+                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
+                ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
+                ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
+                ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias')
+                ->where('proveedors.id','=',$idv)
+                ->where('clientes.id','=',$idc)
+                ->where('proyecto_lineas.proveedor_id','=',NULL)
+                ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
+                ->orderBy('productos.nombre')
+                ->get();
+
+            $proveedor = Proveedor::where('id','=', $idv)->first();
+            $presupuesto = Presupuesto::where('id','=', $idp)->first();
+            $cliente = Cliente::where('id','=', $idc)->first();
+            $inf = 'Selecciona los productos para el presupuesto...';
+            session()->flash('Exito',$inf);
+            return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('message',$inf);    
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
     }
 
     /**
@@ -162,82 +252,121 @@ class PresupuestoController extends Controller
 
      public function costos($id)
      {
-        $presupuesto = Presupuesto::where('id','=', $id)->first();
-         
-        $lineas =DB::table('proyecto_lineas')
-             ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-             ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-             ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-             ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-             ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias')
-             ->where('proyecto_lineas.presupuesto_id','=',$presupuesto->id)
-             ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
-             ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
-             ->orderBy('productos.nombre')
-             ->get();
- 
-         $proveedor = Proveedor::where('id','=', $presupuesto->proveedor_id)->first();
+        $user = Auth::user()->id;
 
-         $inf = 'Selecciona los productos para el presupuesto...';
-         session()->flash('Exito',$inf);
-         return view('presupuesto.productos', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('message',$inf);
- 
+        $acceso = 5;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $presupuesto = Presupuesto::where('id','=', $id)->first();
+            
+            $lineas =DB::table('proyecto_lineas')
+                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias')
+                ->where('proyecto_lineas.presupuesto_id','=',$presupuesto->id)
+                ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
+                ->orderBy('productos.nombre')
+                ->get();
+    
+            $proveedor = Proveedor::where('id','=', $presupuesto->proveedor_id)->first();
+
+            $inf = 'Selecciona los productos para el presupuesto...';
+            session()->flash('Exito',$inf);
+            return view('presupuesto.productos', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor])->with('message',$inf);   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
      }
 
     public function updatecostos(Request $request, $id)
     {
-        $presupuesto = Presupuesto::where('id','=', $id)->first();
-         
-        $lineas =DB::table('proyecto_lineas')
-             ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-             ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-             ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-             ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-             ->select('productos.id as producto_id','proyecto_lineas.id as linea_id')
-             ->where('proyecto_lineas.presupuesto_id','=',$id)
-             ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
-             ->orderBy('productos.nombre')
-             ->get();
+        $user = Auth::user()->id;
+
+        $acceso = 5;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
         
-        $subtotal = 0;
-        $total = 0; 
+        if ($permiso){
+            $presupuesto = Presupuesto::where('id','=', $id)->first();
+            
+            $lineas =DB::table('proyecto_lineas')
+                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->select('productos.id as producto_id','proyecto_lineas.id as linea_id')
+                ->where('proyecto_lineas.presupuesto_id','=',$id)
+                ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                ->orderBy('productos.nombre')
+                ->get();
+            
+            $subtotal = 0;
+            $total = 0; 
 
-        foreach ($lineas as $row){
-            $input = "costo".$row->producto_id;
-            if ($request->$input > 0){
-                
-                $subtotal += $request->$input;
-                $total += $request->$input;
+            foreach ($lineas as $row){
+                $input = "costo".$row->producto_id;
+                if ($request->$input > 0){
+                    
+                    $subtotal += $request->$input;
+                    $total += $request->$input;
 
-                $line = DB::table('proyecto_lineas')
-                    ->where('id','=', $row->linea_id)
-                    ->update([
-                    'costo'=> $request->$input,
-                ]);
-            }
-            else{
-                if($row->costo > 0){
-                    $subtotal += $row->costo;
-                    $total += $row->costo;
+                    $line = DB::table('proyecto_lineas')
+                        ->where('id','=', $row->linea_id)
+                        ->update([
+                        'costo'=> $request->$input,
+                    ]);
+                }
+                else{
+                    if($row->costo > 0){
+                        $subtotal += $row->costo;
+                        $total += $row->costo;
+                    }
                 }
             }
-        }
-        
-        $data = [
-            'importe' => $subtotal,
-        ];
-        
-        $pres = DB::table('presupuestos')
-            ->where('id','=', $id)
-            ->update($data);
+            
+            $data = [
+                'importe' => $subtotal,
+            ];
+            
+            $pres = DB::table('presupuestos')
+                ->where('id','=', $id)
+                ->update($data);
 
-        $inf = 'Los costos se modificarón con éxito...';
-        session()->flash('Exito',$inf);
-        return redirect()->route('presupuestos')->with('message',$inf);
+            $inf = 'Los costos se modificarón con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('presupuestos')->with('message',$inf);   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
     }
 
     /**
@@ -248,7 +377,22 @@ class PresupuestoController extends Controller
      */
     public function edit()
     {
-        $lineas =DB::table('proyecto_lineas')
+        $user = Auth::user()->id;
+
+        $acceso = 5;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $lineas =DB::table('proyecto_lineas')
         ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
         ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
         ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
@@ -276,7 +420,13 @@ class PresupuestoController extends Controller
         'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
         ->where('proveedors.id','=',1)
         ->orderBy('sucursals.nombre')
-        ->get();
+        ->get();    
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
+        
     }
 
     /**
@@ -310,27 +460,23 @@ class PresupuestoController extends Controller
      */
     public function auth($id)
     {
-        $presupuesto = Presupuesto::where('id','=', $id)->first();
-         
-        $lineas =DB::table('proyecto_lineas')
-             ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-             ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-             ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-             ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-             ->select('productos.id as producto_id','proyecto_lineas.id as linea_id')
-             ->where('proyecto_lineas.presupuesto_id','=',$id)
-             ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
-             ->where('proyecto_lineas.costo','=',0)
-             ->get();
+        $user = Auth::user()->id;
+
+        $acceso = 6;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
         
-        if (count($lineas) > 0){
-            $inf = 0;
-            session()->flash('Error','Existen porductos sin costo asignado...');
-            return redirect()->route('presupuestos')->with('info',$inf);
-        }
-        else{
+        if ($permiso){
+            $presupuesto = Presupuesto::where('id','=', $id)->first();
+            
             $lineas =DB::table('proyecto_lineas')
                 ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
                 ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
@@ -338,125 +484,169 @@ class PresupuestoController extends Controller
                 ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                 ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo')
+                ->select('productos.id as producto_id','proyecto_lineas.id as linea_id')
                 ->where('proyecto_lineas.presupuesto_id','=',$id)
                 ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                ->where('proyecto_lineas.costo','=',0)
                 ->get();
-
-            $subtotal = 0;
-            $saldototal = 0; 
-    
-            foreach ($lineas as $row){
-                $subtotal += $row->costo;
-
-                $movs =DB::table('proyecto_lineas')
-                    ->join('proyecto_sucursal_lineas', 'proyecto_lineas.id', '=', 'proyecto_sucursal_lineas.proyecto_linea_id')
-                    ->leftjoin('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
-                    ->select('proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as mov_porc','proyecto_lineas.id as linea_id',
-                    'proyecto_lineas.costo','movimientos_pago_clientes.valor_proveedor')
+            
+            if (count($lineas) > 0){
+                $inf = 0;
+                session()->flash('Error','Existen porductos sin costo asignado...');
+                return redirect()->route('presupuestos')->with('info',$inf);
+            }
+            else{
+                $lineas =DB::table('proyecto_lineas')
+                    ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                    ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                    ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                    ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                    ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+                    ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                    ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo')
                     ->where('proyecto_lineas.presupuesto_id','=',$id)
-                    ->where('proyecto_lineas.id','=',$row->linea_id)
                     ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                     ->get();
-                $cxp = 0;
-                $saldo = $row->costo;
-                foreach($movs as $m){
-                    $importe = $row->costo * ($m->mov_porc/100);
-                    $cxp += $importe;
-                    $saldo = $saldo - $importe;
-                    if($importe > 0){
-                        $data = [
-                            'importe_proveedor'=> $importe,
-                            'saldo_proveedor'=> $saldo,
-                            'es_facturable'=> 1,
-                            'proveedor_id'=> $presupuesto->proveedor_id,
-                        ];
-                    }
-                    else{
-                        $data = [
-                            'importe_proveedor'=> $importe,
-                            'saldo_proveedor'=> $saldo,
-                            'proveedor_id'=> $presupuesto->proveedor_id,
-                        ];
-                    }
-                    $upm = DB::table('proyecto_sucursal_lineas')
-                        ->where('id','=', $m->mov_id)
-                        ->update($data);
-                }
 
-                $line = DB::table('proyecto_lineas')
-                    ->where('id','=', $row->linea_id)
-                    ->update([
-                    'saldoproveedor'=> $saldo,
-                    'cxp'=> $cxp,
-                ]);
+                $subtotal = 0;
+                $saldototal = 0; 
+        
+                foreach ($lineas as $row){
+                    $subtotal += $row->costo;
+
+                    $movs =DB::table('proyecto_lineas')
+                        ->join('proyecto_sucursal_lineas', 'proyecto_lineas.id', '=', 'proyecto_sucursal_lineas.proyecto_linea_id')
+                        ->leftjoin('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
+                        ->select('proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as mov_porc','proyecto_lineas.id as linea_id',
+                        'proyecto_lineas.costo','movimientos_pago_clientes.valor_proveedor')
+                        ->where('proyecto_lineas.presupuesto_id','=',$id)
+                        ->where('proyecto_lineas.id','=',$row->linea_id)
+                        ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                        ->get();
+                    $cxp = 0;
+                    $saldo = $row->costo;
+                    foreach($movs as $m){
+                        $importe = $row->costo * ($m->mov_porc/100);
+                        $cxp += $importe;
+                        $saldo = $saldo - $importe;
+                        if($importe > 0){
+                            $data = [
+                                'importe_proveedor'=> $importe,
+                                'saldo_proveedor'=> $saldo,
+                                'es_facturable'=> 1,
+                                'proveedor_id'=> $presupuesto->proveedor_id,
+                            ];
+                        }
+                        else{
+                            $data = [
+                                'importe_proveedor'=> $importe,
+                                'saldo_proveedor'=> $saldo,
+                                'proveedor_id'=> $presupuesto->proveedor_id,
+                            ];
+                        }
+                        $upm = DB::table('proyecto_sucursal_lineas')
+                            ->where('id','=', $m->mov_id)
+                            ->update($data);
+                    }
+
+                    $line = DB::table('proyecto_lineas')
+                        ->where('id','=', $row->linea_id)
+                        ->update([
+                        'saldoproveedor'=> $saldo,
+                        'cxp'=> $cxp,
+                    ]);
+                    
+                    $saldototal += $saldo;
+                }
                 
-                $saldototal += $saldo;
-            }
-            
-            $data = [
-                'saldo' => $saldototal,
-                'fecha_autorizacion' => today(),
-                'autorizar' => 1,
-            ];
-            
-            $pres = DB::table('presupuestos')
-                ->where('id','=', $id)
-                ->update($data);
-    
-            $inf = 'El presupuesto se autorizó con éxito...';
-            session()->flash('Exito',$inf);
-            return redirect()->route('presupuestos')->with('message',$inf);
+                $data = [
+                    'saldo' => $saldototal,
+                    'fecha_autorizacion' => today(),
+                    'autorizar' => 1,
+                ];
+                
+                $pres = DB::table('presupuestos')
+                    ->where('id','=', $id)
+                    ->update($data);
+        
+                $inf = 'El presupuesto se autorizó con éxito...';
+                session()->flash('Exito',$inf);
+                return redirect()->route('presupuestos')->with('message',$inf);
+            }   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
         }
     }
 
     public function updatePrice(Request $request,$id)
     {
-        $lineas =DB::table('proyecto_lineas')
-            ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-            ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-            ->select('productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
-            ->where('proveedors.id','=',$id)
-            ->orderBy('productos.id')
-            ->orderBy('productos.nombre')
-            ->orderBy('tipos_productos.nombre')
-            ->get();
+        $user = Auth::user()->id;
 
-        $costo_total= 0;
+        $acceso = 5;
 
-        foreach ($lineas as $row){
-            $sel = "sel".$row->producto_id;
-            $costo = "costo".$row->producto_id;
-            if ($request->$sel){
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $lineas =DB::table('proyecto_lineas')
+                ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                ->select('productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
+                ->where('proveedors.id','=',$id)
+                ->orderBy('productos.id')
+                ->orderBy('productos.nombre')
+                ->orderBy('tipos_productos.nombre')
+                ->get();
+
+            $costo_total= 0;
+
+            foreach ($lineas as $row){
+                $sel = "sel".$row->producto_id;
+                $costo = "costo".$row->producto_id;
+                if ($request->$sel){
+                    $data = [
+                        'costo' => $request-> $costo,
+                        'saldoproveedor' => $request->$costo,
+                    ];
+                    
+                    $linea = DB::table('proyecto_lineas')
+                        ->where('producto_id','=',$row->id)
+                        ->update($data);
+                    
+                    $costo_total += $request->$costo;
+                } 
+
                 $data = [
-                    'costo' => $request-> $costo,
-                    'saldoproveedor' => $request->$costo,
+                    'importe' => $costo_total,
+                    'saldo' => $costo_total,
+                    'autorizar' => 1,
                 ];
                 
-                $linea = DB::table('proyecto_lineas')
-                    ->where('producto_id','=',$row->id)
+                $presupuesto = DB::table('presupuestos')
+                    ->where('id','=',$id)
                     ->update($data);
-                
-                $costo_total += $request->$costo;
-            } 
 
-            $data = [
-                'importe' => $costo_total,
-                'saldo' => $costo_total,
-                'autorizar' => 1,
-            ];
-            
-            $presupuesto = DB::table('presupuestos')
-                ->where('id','=',$id)
-                ->update($data);
+            };
 
-        };
-
-        $inf = 1;
-        session()->flash('Exito','El prresupuesto fue autorizado con éxito...');
-        return redirect()->route('presupuestos')->with('info',$inf);
+            $inf = 1;
+            session()->flash('Exito','El prresupuesto fue autorizado con éxito...');
+            return redirect()->route('presupuestos')->with('info',$inf);   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
     }
 
     

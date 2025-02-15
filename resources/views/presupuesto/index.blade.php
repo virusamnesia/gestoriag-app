@@ -64,12 +64,16 @@
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
+                                            @if($permisom)
                                             <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
                                             <li><button class="btn align-self-left" id="btnmatrizcxc" onclick="matrizcxc({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz CxC</button></li>
                                             <li><button class="btn align-self-left" id="btnmatrizsaldos" onclick="matrizsaldos({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Saldos</button></li>
+                                            @endif
+                                            @if($permisoa)
                                             @if($row->autorizar== 0)
                                             <li><button class="btn align-self-left" id="btncostos" onclick="costos({{$row->id}})"><i class="ion-md-chatboxes"></i>Costos</button></li>
                                             <li><button class="btn align-self-left" id="btnauth" onclick="auth({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
+                                            @endif
                                             @endif
                                             <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
                                     </div>
