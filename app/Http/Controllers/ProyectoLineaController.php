@@ -479,4 +479,46 @@ class ProyectoLineaController extends Controller
 
         return view('proyecto.linea.matrizsaldos', ['lineas' => $lineas,'cliente' => $cliente,'proyecto' => $proyecto,'id' => $id, 'productos' => $productos]);
     }
+
+    public function matrizmargen($id){
+        
+        $proyecto = DB::table('proyectos')
+        ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
+        ->select('proyectos.*','estados_proyectos.nombre as estado')
+        ->where('proyectos.id','=',$id)->first();
+
+        $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
+        
+        $productos =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
+        ->where('proyectos.id','=',$id)
+        ->groupBy('productos.id', 'productos.nombre','tipos_productos.nombre')
+        ->orderBy('productos.nombre','asc')
+        ->get();
+
+        $lineas =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',DB::raw('proyecto_lineas.precio - proyecto_lineas.costo as margen'),
+        'tipos_productos.nombre as tipo')
+        ->where('proyectos.id','=',$id)
+        ->orderBy('sucursals.marca','asc')
+        ->orderBy('sucursals.id','asc')
+        ->orderBy('productos.nombre','asc')
+        ->get();
+
+        return view('proyecto.linea.matrizmargen', ['lineas' => $lineas,'cliente' => $cliente,'proyecto' => $proyecto,'id' => $id, 'productos' => $productos]);
+    }
 }

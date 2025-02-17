@@ -74,6 +74,7 @@
                                                     <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
                                                     <li><button class="btn align-self-left" id="btnmatrizcxc" onclick="matrizcxc({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz CxC</button></li>
                                                     <li><button class="btn align-self-left" id="btnmatrizsaldos" onclick="matrizsaldos({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Saldos</button></li>
+                                                    <li><button class="btn align-self-left" id="btnmatrizmargen" onclick="matrizmargen({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Margen</button></li>
                                                     @endif
                                                     @if($permisoa)
                                                     @if($row->autorizar == 0)
@@ -206,6 +207,12 @@
 
         function matrizsaldos(id){
             var base = "<?php echo '/proyectos/matrizsaldos/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function matrizmargen(id){
+            var base = "<?php echo '/proyectos/matrizmargen/'?>";
             var url = base+id;
             location.href=url;
         }
