@@ -71,7 +71,7 @@
                                     <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                     <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                         @if($presupuesto->autorizar == 0)
-                                        <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smeditar"  onclick="edit('{{$presupuesto->id}}','{{$row->id}}','{{$row->sucursal}}','{{$row->producto}}','{{$row->costo}}')"><i class="icon ion-md-create"></i>Editar</button></li>
+                                        <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smeditar"  onclick="editar('{{$row->id}}','{{$row->sucursal}}','{{$row->producto}}','{{$row->costo}}')"><i class="icon ion-md-create"></i>Editar</button></li>
                                         @endif
                                         @if($presupuesto->autorizar== 1)
                                         <li><button class="btn align-self-left" id="btnview" onclick="view({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
@@ -207,11 +207,11 @@
             location.href=url;
         }
 
-        function edit(idp,idl,suc,prod,cost){
-            $("#id").value(idl);
-            $("#sucursal").value(suc);
-            $("#producto").value(prod);
-            $("#costo").value(cost);
+        function editar(idl,suc,prod,cost){
+            $("#id").val(idl);
+            $("#sucursal").val(suc);
+            $("#producto").val(prod);
+            $("#costo").val(cost);
         }
     </script>
 
