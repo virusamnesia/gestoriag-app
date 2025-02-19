@@ -112,10 +112,10 @@
                     @csrf
                     <div class="modal-body">
                         <br>
-                        <h6>Nuevo Termino</h6>
+                        <h6>Editar Costo</h6>
                         <br>
                         <div class="row">
-                            <input type="hiden" name="id" id="id" />
+                            <input type="hidden" name="id" id="id" />
                             <x-adminlte-input name="sucursal" id="sucursal" placeholder="Nombre de la sucursal" label-class="text-lightblue" 
                             fgroup-class="col-md-12">
                                 <x-slot name="prependSlot">
