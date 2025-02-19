@@ -189,7 +189,7 @@ Route::middleware([
     Route::get('/presupuestos/{id?}', [PresupuestoController::class, 'edit'])->name('edit.presupuestos');
     Route::post('/presupuestos/update/{id?}', [PresupuestoController::class, 'update'])->name('update.presupuestos');
     Route::get('/presupuestos/auth/{id?}', [PresupuestoController::class, 'auth'])->name('auth.presupuestos');
-    Route::post('/presupuestos/lineas/update', [PresupuestoController::class, 'updatePrice'])->name('updateprice.presupuestos.lineas');
+    Route::post('/presupuestos/lineas/update/{id?}', [PresupuestoController::class, 'updatePrice'])->name('updateprice.presupuestos.lineas');
     Route::get('/presupuestos/lineas/show/{id?}', [PresupuestoController::class, 'show'])->name('show.presupuestos');
     Route::get('/presupuestos/costos/{id?}', [PresupuestoController::class, 'costos'])->name('presupuestos.costos');
     Route::post('/presupuestos/costos/update/{id?}', [PresupuestoController::class, 'updatecostos'])->name('update.presupuestos.costos');
