@@ -622,7 +622,7 @@ class PresupuestoController extends Controller
             ];
             
             $linea = DB::table('proyecto_lineas')
-                ->where('producto_id','=',$request->id)
+                ->where('id','=',$request->id)
                 ->update($data);
             
             $presupuesto = DB::table('proyecto_lineas')
