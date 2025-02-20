@@ -613,7 +613,7 @@ class PresupuestoController extends Controller
                 ->orderBy('productos.id')
                 ->orderBy('productos.nombre')
                 ->orderBy('tipos_productos.nombre')
-                ->fisrt();
+                ->first();
 
 
             $data = [
