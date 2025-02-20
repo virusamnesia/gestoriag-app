@@ -617,33 +617,26 @@ class PresupuestoController extends Controller
 
             $costo_total= 0;
 
-            foreach ($lineas as $row){
-                $sel = "sel".$row->producto_id;
-                $costo = "costo".$row->producto_id;
-                if ($request->$sel){
-                    $data = [
-                        'costo' => $request-> $costo,
-                        'saldoproveedor' => $request->$costo,
-                    ];
-                    
-                    $linea = DB::table('proyecto_lineas')
-                        ->where('producto_id','=',$row->id)
-                        ->update($data);
-                    
-                    $costo_total += $request->$costo;
-                } 
+            $data = [
+                'costo' => $request->costo,
+                'saldoproveedor' => $request->costo,
+            ];
+            
+            $linea = DB::table('proyecto_lineas')
+                ->where('producto_id','=',$request->id)
+                ->update($data);
+            
+            $costo_total += $request->costo;
 
-                $data = [
-                    'importe' => $costo_total,
-                    'saldo' => $costo_total,
-                    'autorizar' => 1,
-                ];
-                
-                $presupuesto = DB::table('presupuestos')
-                    ->where('id','=',$id)
-                    ->update($data);
-
-            };
+            $data = [
+                'importe' => $costo_total,
+                'saldo' => $costo_total,
+                'autorizar' => 1,
+            ];
+            
+            $presupuesto = DB::table('presupuestos')
+                ->where('id','=',$id)
+                ->update($data);
 
             $inf = 1;
             session()->flash('Exito','El prresupuesto fue autorizado con éxito...');
