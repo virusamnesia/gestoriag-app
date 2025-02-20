@@ -7,6 +7,7 @@ use App\Models\EstadosPresupuesto;
 use App\Models\MovimientosPagoCliente;
 use App\Models\Presupuesto;
 use App\Models\Proveedor;
+use App\Models\ProyectoLinea;
 use App\Models\ProyectoSucursalLinea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -449,7 +450,12 @@ class PresupuestoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $linea = ProyectoLinea::find($id);
+
+        $linea->delete();
+        $inf = 'La línea del proyecto se desvinculo del presupuesto con éxito...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('usuarios')->with('message',$inf);
     }
 
     /**
@@ -603,7 +609,7 @@ class PresupuestoController extends Controller
                 ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
                 ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
                 ->select('productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
-                ->where('proveedors.id','=',$id)
+                ->where('proyecto_lineas.id','=',$request->id)
                 ->orderBy('productos.id')
                 ->orderBy('productos.nombre')
                 ->orderBy('tipos_productos.nombre')
