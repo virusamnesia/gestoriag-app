@@ -613,9 +613,8 @@ class PresupuestoController extends Controller
                 ->orderBy('productos.id')
                 ->orderBy('productos.nombre')
                 ->orderBy('tipos_productos.nombre')
-                ->get();
+                ->fisrt();
 
-            $costo_total= 0;
 
             $data = [
                 'costo' => $request->costo,
@@ -626,12 +625,15 @@ class PresupuestoController extends Controller
                 ->where('producto_id','=',$request->id)
                 ->update($data);
             
-            $costo_total += $request->costo;
+            $presupuesto = DB::table('proyecto_lineas')
+            ->select(DB::raw('SUM(costo) AS `costototal`'))
+            ->where('proyecto_lineas.presupeusto_id','=',$id)
+            ->first();
 
             $data = [
-                'importe' => $costo_total,
-                'saldo' => $costo_total,
-                'autorizar' => 1,
+                'importe' => $presupuesto->costototal,
+                'saldo' => $presupuesto->costototal,
+                'autorizar' => 0,
             ];
             
             $presupuesto = DB::table('presupuestos')
