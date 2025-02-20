@@ -29,7 +29,20 @@
             </div>
             <div class="col-md-6">
                 <h5>Sucursal: {{$sucursal->nombre}}</h5>
-                <h5>Producto: {{$producto->nombre}}</h5>
+                <div class="row">
+                    <x-adminlte-select2 name="producto" label-class="text-lightblue"  fgroup-class="col-md-10"
+                        igroup-size="sm" data-placeholder="Selecciona el producto...">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="fas  fa-address-card"></i>
+                            </div>
+                        </x-slot>
+                        <option/>
+                        @foreach ($productos as $rowp)
+                        <option value="{{$rowp->id}}" @php if ($rowp->id == $linea->producto_id) { echo "selected";} @endphp >{{$rowp->nombre}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
                 <div class="row">
                     <x-adminlte-input name="precio" placeholder="Precio del producto" label-class="text-lightblue" 
                     fgroup-class="col-md-12" value="{{$linea->precio}}">

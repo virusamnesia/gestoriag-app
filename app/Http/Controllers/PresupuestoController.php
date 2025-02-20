@@ -448,14 +448,123 @@ class PresupuestoController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($idp,$idl)
     {
-        $linea = ProyectoLinea::find($id);
+        $user = Auth::user()->id;
 
-        $linea->delete();
-        $inf = 'La línea del proyecto se desvinculo del presupuesto con éxito...';
-        session()->flash('Exito',$inf);
-        return redirect()->route('usuarios')->with('message',$inf);
+        $acceso = 5;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $presupuesto = Presupuesto::find($idp);
+
+            if($presupuesto->autorizar == 0){
+                $data = [
+                    'costo' => 0,
+                    'saldoproveedor' => 0,
+                    'proveedor_id' => NULL,
+                    'presupuesto_id' => NULL,
+                ];
+                
+                $linea = DB::table('proyecto_lineas')
+                    ->where('id','=',$idl)
+                    ->update($data);
+                
+                $presupuesto = DB::table('proyecto_lineas')
+                ->select(DB::raw('SUM(costo) AS `costototal`'))
+                ->where('proyecto_lineas.presupuesto_id','=',$idp)
+                ->first();
+    
+                $data = [
+                    'importe' => $presupuesto->costototal,
+                    'saldo' => $presupuesto->costototal,
+                    'autorizar' => 0,
+                ];
+                
+                $presupuesto = DB::table('presupuestos')
+                    ->where('id','=',$idp)
+                    ->update($data);
+    
+                $inf = 1;
+                session()->flash('Exito','La línea fue eliminada del presupuesto con éxito...');
+                return redirect()->route('presupuestos')->with('info',$inf);
+            }
+            else{
+                $inf = 'El presupuesto esta autorizado, no es posible la acción solicitada';
+                return redirect()->route('presupuestos')->with('error',$inf);
+            }
+               
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
+    }
+
+    public function cancelar($id)
+    {
+        $user = Auth::user()->id;
+
+        $acceso = 6;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $presupuesto = Presupuesto::find($id);
+
+            if($presupuesto->autorizar == 0){
+                $data = [
+                    'costo' => 0,
+                    'saldoproveedor' => 0,
+                    'proveedor_id' => NULL,
+                    'presupuesto_id' => NULL,
+                ];
+                
+                $linea = DB::table('proyecto_lineas')
+                    ->where('presupuesto_id','=',$id)
+                    ->update($data);
+                
+                $data = [
+                    'importe' => 0,
+                    'saldo' => 0,
+                    'autorizar' => 0,
+                    'estados_presupuesto_id' => 6,
+                ];
+                
+                $presupuesto = DB::table('presupuestos')
+                    ->where('id','=',$id)
+                    ->update($data);
+    
+                $inf = 1;
+                session()->flash('Exito','El presupuesto fue cancelado con éxito...');
+                return redirect()->route('presupuestos')->with('info',$inf);
+            }
+            else{
+                $inf = 'El presupuesto esta autorizado, no es posible la acción solicitada';
+                return redirect()->route('presupuestos')->with('error',$inf);
+            }   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
     }
 
     /**

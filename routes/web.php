@@ -189,6 +189,7 @@ Route::middleware([
     Route::get('/presupuestos/{id?}', [PresupuestoController::class, 'edit'])->name('edit.presupuestos');
     Route::post('/presupuestos/update/{id?}', [PresupuestoController::class, 'update'])->name('update.presupuestos');
     Route::get('/presupuestos/auth/{id?}', [PresupuestoController::class, 'auth'])->name('auth.presupuestos');
+    Route::get('/presupuestos/cancelar/{id?}', [PresupuestoController::class, 'cancelar'])->name('cancelar.presupuestos');
     Route::post('/presupuestos/costos/linea/{id?}', [PresupuestoController::class, 'updatePrice'])->name('updateprice.presupuestos.lineas');
     Route::get('/presupuestos/lineas/show/{id?}', [PresupuestoController::class, 'show'])->name('show.presupuestos');
     Route::get('/presupuestos/costos/{id?}', [PresupuestoController::class, 'costos'])->name('presupuestos.costos');
@@ -196,6 +197,7 @@ Route::middleware([
     Route::get('/presupuestos/lineas/{id?}', [PresupuestoController::class, 'lineas'])->name('presupuestos.lineas');
     Route::post('/presupuestos/lineas/costo/{id?}', [PresupuestoController::class, 'updatecosto'])->name('update.presupuestos.lineas');
     Route::get('/presupuestos/lineas/sucursales/{idp?}/{idl?}', [PresupuestoController::class, 'indexmov'])->name('presupuestos.lineas.sucursales');
+    Route::get('/presupuestos/lineas/delete/{idp?}/{idl?}', [PresupuestoController::class, 'destroy'])->name('delete.presupuestos.lineas.');
     Route::get('/presupuestos/lineas/sucursales/nuevo/{idp?}/{idl?}', [PresupuestoController::class, 'createmov'])->name('new.presupuestos.lineas.sucursales');
     Route::post('/presupuestos/lineas/sucursales/store/{idp?}/{idl?}', [PresupuestoController::class, 'storemov'])->name('save.presupuestos.lineas.sucursales');
     Route::get('/presupuestos/matriz/{id?}', [PresupuestoController::class, 'matriz'])->name('presupuestos.matriz');

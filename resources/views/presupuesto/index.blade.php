@@ -62,6 +62,7 @@
                                     <div class="dropdown">
                                         <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
+                                            @if($row->estados_presupuesto_id != 6)                    
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
                                             @if($permisom)
@@ -75,7 +76,8 @@
                                             <li><button class="btn align-self-left" id="btnauth" onclick="auth({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
                                             @endif
                                             @endif
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                            <li><button class="btn align-self-left" id="btncancelar" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                            @endif
                                     </div>
                                 </span>
                             </td>
@@ -152,8 +154,14 @@
 
     <script type="text/javascript">
         function nuevo(){
-            var base = "<?php echo '/presupuestos/nuevo' ?>";
+            var base = "<?php echo '/presupuestos/nuevo'?>";
             var url = base;
+            location.href=url;
+        }
+
+        function cancelar(id){
+            var base = "<?php echo '/presupuestos/cancelar/'?>";
+            var url = base+id;
             location.href=url;
         }
     </script>

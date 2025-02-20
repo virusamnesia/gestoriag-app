@@ -77,7 +77,9 @@
                                         <li><button class="btn align-self-left" id="btnview" onclick="view({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
                                         <li><button class="btn align-self-left" id="btnmove" onclick="move({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
                                         @endif
-                                        <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                        @if($presupuesto->autorizar == 0)
+                                        <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$presupuesto->id}},{{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                        @endif
                                 </div>
                             </span>
                         </td>
@@ -203,6 +205,12 @@
 
         function move(idp,idl){
             var base = "<?php echo '/presupuestos/lineas/sucursales/nuevo/' ?>";
+            var url = base+idp+"/"+idl;
+            location.href=url;
+        }
+
+        function delete(idp,idl){
+            var base = "<?php echo '/presupuestos/lineas/delete/' ?>";
             var url = base+idp+"/"+idl;
             location.href=url;
         }

@@ -212,9 +212,11 @@ class ProyectoLineaController extends Controller
             ->select('productos.*','tipos_productos.nombre as tipo')
             ->where('productos.id','=', $linea->producto_id)->first();
 
+            $productos = Producto::all();
+
             $terminos = TerminosPagoCliente::all();
 
-            return view('proyecto.linea.edit', ['cliente' => $cliente,'linea' => $linea,'proyecto' => $proyecto, 'sucursal' => $sucursal, 'producto' => $producto, 'terminos' => $terminos]);
+            return view('proyecto.linea.edit', ['cliente' => $cliente,'linea' => $linea,'proyecto' => $proyecto, 'sucursal' => $sucursal, 'producto' => $producto, 'terminos' => $terminos, 'productos' => $productos]);
         }
         else{
             session()->flash('Error','El estatus del proyecto no permite edición de las partidas...');
@@ -261,6 +263,7 @@ class ProyectoLineaController extends Controller
                     'saldocliente'=> $saldo,
                     'terminos_pago_cliente_id'=> $request->termino,
                     'estatus_linea_cliente_id'=> $terminos->estatus,
+                    'producto_id'=> $request->producto,
                 ]
             );
 
