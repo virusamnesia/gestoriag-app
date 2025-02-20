@@ -627,7 +627,7 @@ class PresupuestoController extends Controller
             
             $presupuesto = DB::table('proyecto_lineas')
             ->select(DB::raw('SUM(costo) AS `costototal`'))
-            ->where('proyecto_lineas.presupeusto_id','=',$id)
+            ->where('proyecto_lineas.presupuesto_id','=',$id)
             ->first();
 
             $data = [
