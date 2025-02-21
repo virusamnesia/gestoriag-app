@@ -209,9 +209,25 @@ class SucursalController extends Controller
      * @param  \App\Models\Sucursal  $sucursal
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sucursal $sucursal)
+    public function destroy($idc,$ids)
     {
-        //
+        $lineas = DB::table('proyecto_lineas')
+        ->where('sucursal_id', '=',$ids)
+        ->get();
+
+        if ($lineas){
+            $inf = 'La sucursal está vinculada a proyectos existentes...';
+            session()->flash('Error',$inf);
+            return redirect()->route('sucursalesclientes',['id'=> $idc])->with('error',$inf);    
+        }
+        else{
+            $sucursal = Sucursal::find($ids);
+            $sucursal->delete();
+            
+            $inf = 'La sucursal se eliminó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('sucursalesclientes',['id'=> $idc])->with('message',$inf);
+        }  
     }
     
 }

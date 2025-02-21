@@ -78,7 +78,7 @@
                                         <li><button class="btn align-self-left" id="btnmove" onclick="move({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
                                         @endif
                                         @if($presupuesto->autorizar == 0)
-                                        <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$presupuesto->id}},{{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                        <li><button class="btn align-self-left" id="btnborrar" onclick="borrar({{$presupuesto->id}},{{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
                                         @endif
                                 </div>
                             </span>
@@ -209,17 +209,17 @@
             location.href=url;
         }
 
-        function delete(idp,idl){
-            var base = "<?php echo '/presupuestos/lineas/delete/' ?>";
-            var url = base+idp+"/"+idl;
-            location.href=url;
-        }
-
         function editar(idl,suc,prod,cost){
             $("#id").val(idl);
             $("#sucursal").val(suc);
             $("#producto").val(prod);
             $("#costo").val(cost);
+        }
+
+        function borrar(idp,idl){
+            var base = "<?php echo '/presupuestos/lineas/delete/' ?>";
+            var url = base+idp+"/"+idl;
+            location.href=url;
         }
     </script>
 
