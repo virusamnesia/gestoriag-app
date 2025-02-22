@@ -135,7 +135,7 @@
     <script type="text/javascript">
     function borrar(idc,ids){
         var base = "<?php echo '/clientes/sucursales/destroy/' ?>";
-        var url = base+udc+'/'+ids;
+        var url = base+idc+'/'+ids;
         location.href=url;
     }
     </script>
