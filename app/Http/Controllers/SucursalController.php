@@ -213,7 +213,7 @@ class SucursalController extends Controller
     {
         $lineas = DB::table('proyecto_lineas')
         ->where('sucursal_id', '=',$ids)
-        ->get();
+        ->first();
 
         if ($lineas){
             $inf = 'La sucursal está vinculada a proyectos existentes...';
