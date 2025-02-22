@@ -67,7 +67,7 @@
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                             <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$cliente->id}},{{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                             <li><button class="btn align-self-left" id="btnview" onclick="view({{$cliente->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
+                                            <li><button class="btn align-self-left" id="btnborrar" onclick="borrar({{$cliente->id}},{{$row->id}})"><i class="icon ion-md-albums"></i>Borrar</button></li>
                                     </div>
                                 </span>
                             </td>
@@ -133,15 +133,9 @@
     </script>
 
     <script type="text/javascript">
-    function delete(id){
-        var base = "<?php echo '/contable/cobranza/histNotas/' ?>";
-        if (cadena>'0'){
-            cad=cadena;
-        }
-        else{
-            cad='NULL';
-        }
-        var url = base+cad+'/'+nombre+'/0/0/0/1';
+    function borrar(idc,ids){
+        var base = "<?php echo '/clientes/sucursales/destroy/' ?>";
+        var url = base+udc+'/'+ids;
         location.href=url;
     }
     </script>

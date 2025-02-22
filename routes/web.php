@@ -121,6 +121,7 @@ Route::middleware([
     Route::get('/clientes/sucursales/show/{idc?}/{ids?}', [SucursalController::class, 'show'])->name('showsucursalclientes');
     Route::get('/clientes/sucursales/{idc?}/{ids?}', [SucursalController::class, 'edit'])->name('editsucursalclientes');
     Route::post('/clientes/sucursales/{idc?}/{ids?}', [SucursalController::class, 'update'])->name('upsucursalclientes');
+    Route::get('/clientes/sucursales/destroy/{idc?}/{ids?}', [SucursalController::class, 'destroy'])->name('destroy.sucursalesclientes');
 
     //PROVEEDORES
     Route::get('/proveedores', [ProveedorController::class, 'index'])->name('proveedores');
