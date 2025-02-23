@@ -29,7 +29,9 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
+            @if($proyecto->autorizar == 0)
             <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" onclick="nuevo({{$proyecto->id}})"/>
+            @endif
         </div>
     </div> 
     <div class="card">
@@ -70,10 +72,16 @@
                                             <div class="dropdown">
                                                 <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                                 <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
+                                                    @if($proyecto->autorizar == 0)
                                                     <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
+                                                    @endif
+                                                    @if($proyecto->autorizar == 1)
                                                     <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
                                                     <li><button class="btn align-self-left" id="btnmove" onclick="move({{$proyecto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
+                                                    @endif
+                                                    @if($proyecto->autorizar == 0)
                                                     <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                                    @endif
                                             </div>
                                         </span>
                                     </td>
