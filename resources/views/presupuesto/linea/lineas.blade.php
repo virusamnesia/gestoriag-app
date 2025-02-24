@@ -139,7 +139,7 @@
                         </div>
                         <div class="row">
                             <x-adminlte-input name="costo" id="costo" placeholder="Costo" type="number" fgroup-class="col-md-5"  value="0"
-                            igroup-size="sm" min=1 max=100000 step="0.05">
+                            igroup-size="sm" min=1 max=100000 step="0.01">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
                                         <i class="fas fa-dollar-sign text-lightblue"></i>

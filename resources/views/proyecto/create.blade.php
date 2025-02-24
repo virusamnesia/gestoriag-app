@@ -31,7 +31,7 @@
                 </div>
                 <div class="row">
                     <x-adminlte-input name="año" placeholder="Año" type="number" fgroup-class="col-md-5"
-                        igroup-size="sm" min=2000 max=3000 step="0.05">
+                        igroup-size="sm" min=2000 max=3000 step="0.01">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
                                 <i class="fas fa-calendar-alt"></i>

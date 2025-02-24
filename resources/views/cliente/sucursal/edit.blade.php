@@ -109,7 +109,7 @@
                 </div>
                 <div class="row">
                     <x-adminlte-input name="superficie" placeholder="Superficie" type="number" fgroup-class="col-md-5"  value="{{$suc->superficie}}"
-                        igroup-size="sm" min=1 max=1000 step="0.05">
+                        igroup-size="sm" min=1 max=1000 step="0.01">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
                                 <i class="fas fa-ruler-combined"></i>
