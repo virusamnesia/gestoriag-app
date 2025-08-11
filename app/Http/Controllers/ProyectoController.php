@@ -123,9 +123,9 @@ class ProyectoController extends Controller
     {
         $validacion = $request->validate([
             'nombre' => 'required|string|max:225',
-            'anio' => 'required',
-            'cliente_id' => 'required',
-            'es_agrupado' => 'required',
+            'año' => 'required',
+            'cliente' => 'required',
+            'agrupado' => 'required',
         ]);
         
         $proyecto = new Proyecto();

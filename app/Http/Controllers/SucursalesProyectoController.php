@@ -28,6 +28,7 @@ class SucursalesProyectoController extends Controller
         'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
         'sucursals.id_interno as id_interno','sucursals.marca as marca')
         ->where('proyectos.id','=',$idp)
+        ->where('sucursals.cliente_id','=',$idc)
         ->orderBy('sucursals.nombre')
         ->get();
 

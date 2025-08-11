@@ -85,7 +85,7 @@
                             @php $name = "sel".$row->id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" checked/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" />
                                 </th>
                                 <td>{{$row->marca}}</td>
                                 <td>{{$row->id_interno}}</td>
