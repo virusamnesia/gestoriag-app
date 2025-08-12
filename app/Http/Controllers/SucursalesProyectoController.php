@@ -16,15 +16,18 @@ class SucursalesProyectoController extends Controller
 {
     public function index($idp,$idc){
         
-        $sucursales =DB::table('clientes')
-        ->leftjoin('sucursals', 'sucursals.cliente_id', '=', 'clientes.id')
+        $sucursales =DB::table('sucursales_proyectos')
+        ->join('proyectos', 'proyectos.id', '=', 'sucursales_proyectos.proyecto_id')
+        ->leftjoin('clientes', 'clientes.id', '=', 'sucursales_proyectos.cliente_id')
+        ->leftjoin('sucursals', 'sucursals.id', '=', 'sucursales_proyectos.sucursal_id')
         ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
         ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
         ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-        ->select('sucursals.id as id','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
+        ->select('sucursales_proyectos.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'clientes.nombre as cliente','clientes.id as cliente_id','municipio_contactos.nombre as municipio',
-        'estado_contactos.alias as estado', 'pais_contactos.alias as pais','sucursals.id_interno as id_interno','sucursals.marca as marca')
-        ->where('clientes.id','=',$idc)
+        'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'sucursals.id_interno as id_interno','sucursals.marca as marca')
+        ->where('proyectos.id','=',$idp)
         ->orderBy('sucursals.nombre')
         ->get();
 
