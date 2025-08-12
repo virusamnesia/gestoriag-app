@@ -50,7 +50,7 @@ class ProductosProyectoController extends Controller
                 ->where('productos_proyectos.id','=',$row->id)
                 ->update([
                     'cotizado'=> $cotizado,
-                    'precio'=> $row->$prec,
+                    'precio'=> $prec,
                 ]
             );
         };
