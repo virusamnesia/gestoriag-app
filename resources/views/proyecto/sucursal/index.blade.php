@@ -60,7 +60,7 @@
         </div>
     </form>
     </br>
-    <form method="POST" action="{{ route('proyectos.productos',['idp' => $idp,'idc' => $idc]) }}" >
+    <form method="POST" action="{{ route('update.proyectos.sucursales',['idp' => $idp,'idc' => $idc]) }}" >
             
         @csrf
         <h5>Seleccionar manualmente las sucursales...</h5>
