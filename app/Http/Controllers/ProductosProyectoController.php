@@ -110,6 +110,8 @@ class ProductosProyectoController extends Controller
                     $linea->saldoproveedor = 0;
                     $linea->terminos_pago_cliente_id = $prod->terminos;
                     $linea->estatus_linea_cliente_id = 1; 
+                    $linea->cxc = 0;
+                    $linea->cxp = 0;
 
                     $linea->save();
 
