@@ -102,7 +102,7 @@ class ProductosProyectoController extends Controller
 
                     $linea->proyecto_id = $idp;
                     $linea->cliente_id = $idc;
-                    $linea->sucursal_id = $suc->id;
+                    $linea->sucursal_id = $suc->sucursal_id;
                     $linea->producto_id = $prod->producto_id;
                     $linea->precio = $prod->precio;
                     $linea->saldocliente = $prod->precio;
