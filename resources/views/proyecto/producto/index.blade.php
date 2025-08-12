@@ -60,8 +60,8 @@
                                 <td>{{$row->producto}}</td>
                                 <td>{{$row->tps_nombre}}</td>
                                 <td>
-                                    <x-adminlte-input name="{{$precio}}" id="{{$precio}}" placeholder="$Precio" type="number" fgroup-class="col-md-5"
-                                        igroup-size="sm" min=1 max=1000 value="{{$row->precio}}" step="0.01">
+                                    <x-adminlte-input name="{{$precio}}" id="{{$precio}}" placeholder="$Precio" type="number" 
+                                        igroup-size="m" min=1 max=1000 value="{{$row->precio}}" step="0.01">
                                         <x-slot name="appendSlot">
                                             <div class="input-group-text bg-light">
                                                 <i class="fas fa-dollar-sign"></i>
