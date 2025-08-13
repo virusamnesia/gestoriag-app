@@ -281,6 +281,80 @@ class ProyectoLineaController extends Controller
         return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);
     }
 
+    public function delete($idp,$idl)
+    {
+        $proyecto = DB::table('proyectos')
+        ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
+        ->select('proyectos.*','estados_proyectos.nombre as estado','estados_proyectos.id as estado_id')
+        ->where('proyectos.id','=',$idp)->first();
+
+        if ($proyecto->estado_id != 3){
+            $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
+            
+            $linea = ProyectoLinea::where('id','=',$idl)->first();
+
+            $sucursal = DB::table('sucursals')
+            ->join('ciudad_contactos', 'ciudad_contactos.id', '=', 'sucursals.ciudad_contacto_id')
+            ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+            ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+            ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+            ->select('sucursals.*','ciudad_contactos.nombre as ciudad','municipio_contactos.nombre as municipio','estado_contactos.alias as estado','pais_contactos.alias as pais')
+            ->where('sucursals.id','=',$linea->sucursal_id)
+            ->first();
+
+            $producto = DB::table('productos')
+            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+            ->select('productos.*','tipos_productos.nombre as tipo')
+            ->where('productos.id','=', $linea->producto_id)->first();
+
+            $productos = Producto::all();
+
+            $terminos = TerminosPagoCliente::all();
+
+            return view('proyecto.linea.delete', ['cliente' => $cliente,'linea' => $linea,'proyecto' => $proyecto, 'sucursal' => $sucursal, 'producto' => $producto, 'terminos' => $terminos, 'productos' => $productos]);
+        }
+        else{
+            session()->flash('Error','El estatus del proyecto no permite eliminación de las partidas...');
+            $inf = 1;
+        
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('info',$inf);
+        };
+        
+        
+        
+    }
+
+    public function destroy(Request $request,$idp,$idl)
+    {
+        $proyecto = DB::table('proyectos')
+            ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
+            ->select('proyectos.*','estados_proyectos.nombre as estado','estados_proyectos.id as estado_id')
+            ->where('proyectos.id','=',$idp)->first();
+
+        $linea = ProyectoLinea::where('id','=',$idl)->first();
+
+
+        $prec = $linea->precio;
+        $saldo = $linea->saldocliente;
+        
+        $lineas = DB::table('proyecto_lineas')
+                ->where('id','=',$idl)
+                ->delete();
+
+        $data = [
+            'importe' => $proyecto->importe - $prec,
+            'saldo' => $proyecto->saldo - $saldo,
+        ];
+        
+        $proy = DB::table('proyectos')
+            ->where('id','=',$idp)
+            ->update($data);
+        
+        $inf = 'La partida se eliminó con éxito...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);
+    }
+
     public function import(Request $request,$idp,$idc){
         $request->validate([
             'importfile' => 'required',

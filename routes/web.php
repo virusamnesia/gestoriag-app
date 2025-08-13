@@ -171,6 +171,9 @@ Route::middleware([
     Route::post('/proyectos/lineas/sucursales/store/{idp?}/{idl?}', [ProyectoSucursalLineaController::class, 'store'])->name('save.proyectos.lineas.sucursales');
     Route::post('/proyectos/lineas/import/{idp?}/{idc?}', [ProyectoLineaController::class, 'import'])->name('import.proyectos.lineas');
     Route::get('/proyectos/errores/{id?}', [ProyectoLineaController::class, 'errores'])->name('errores.proyectos');
+    Route::get('/proyectos/lineas/delete/{idp?}/{idl?}', [ProyectoLineaController::class, 'delete'])->name('delete.proyectos.lineas');
+    Route::post('/proyectos/lineas/destroy/{idp?}/{idl?}', [ProyectoLineaController::class, 'destroy'])->name('destroy.proyectos.lineas');
+    
 
     //FACTURACION CLIENTES
     Route::get('/factclientes', [ClientesFacturaController::class, 'index'])->name('factclientes');
