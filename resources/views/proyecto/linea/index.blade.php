@@ -74,14 +74,13 @@
                                                 <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                                     @if($proyecto->autorizar == 0)
                                                     <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
-                                                    <li><button class="btn align-self-left" id="btndel"  onclick="del({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-pint"></i>Eliminar</button></li>
                                                     @endif
                                                     @if($proyecto->autorizar == 1)
                                                     <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-list"></i>Historial</button></li>
                                                     <li><button class="btn align-self-left" id="btnmove" onclick="move({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-play"></i>Actualizar</button></li>
                                                     @endif
                                                     @if($proyecto->autorizar == 0)
-                                                    <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                                     <li><button class="btn align-self-left" id="btndel"  onclick="del({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-pint"></i>Eliminar</button></li>
                                                     @endif
                                             </div>
                                         </span>
