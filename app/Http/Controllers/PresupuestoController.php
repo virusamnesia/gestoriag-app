@@ -64,8 +64,9 @@ class PresupuestoController extends Controller
             $presupuestos =DB::table('presupuestos')
             ->join('proveedors', 'proveedors.id', '=', 'presupuestos.proveedor_id')
             ->leftjoin('estados_presupuestos', 'estados_presupuestos.id', '=', 'presupuestos.estados_presupuesto_id')
+            ->leftjoin('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
             ->select('presupuestos.*','proveedors.nombre as proveedor','proveedors.id as proveedor_id','estados_presupuestos.nombre as estado',
-            'estados_presupuestos.id as estados_presupuesto_id')
+            'estados_presupuestos.id as estados_presupuesto_id','fiscal_positions.id as posicion_id','fiscal_positions.nombre as posicion')
             ->orderBy('presupuestos.id', 'desc')
             ->get();
 
@@ -136,18 +137,38 @@ class PresupuestoController extends Controller
             ->orderBy('clientes.nombre')
             ->get();
 
+        $posicion =DB::table('proveedors')
+            ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proveedors.fiscal_position_id')
+            ->select('fiscal_positions.*')
+            ->where('clientes.id','=',$request->proveedor)
+            ->get();
+
+        foreach ($posicion as $pos){
+            $posicion_id = $pos->id;
+            $iva_t = $pos->iva_t;
+            $isr_r = $pos->isr_r;
+            $iva_r = $pos->iva_r;
+            $imp_c = $pos->imp_c;
+        }
+
         if (count($lineas) > 0){
             $presupuesto = new Presupuesto();
 
             $presupuesto->nombre = $request->nombre;
             $presupuesto->anio = $request->año;
             $presupuesto->proveedor_id = $request->proveedor;
+            $presupuesto->subtotal = 0;
+            $presupuesto->iva_t = 0;
+            $presupuesto->isr_r = 0;
+            $presupuesto->iva_r = 0;
+            $presupuesto->imp_c = 0;
             $presupuesto->importe = 0;
             $presupuesto->saldo = 0;
             $presupuesto->cxp = 0;
             $presupuesto->estados_presupuesto_id = 1;
             $presupuesto->fecha_cotizacion = today();
             $presupuesto->autorizar = 0;
+            $presupuesto->fiscal_position_id = $posicion_id;
 
             $presupuesto->save();
 
@@ -327,33 +348,73 @@ class PresupuestoController extends Controller
                 ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                 ->orderBy('productos.nombre')
                 ->get();
+
+            $posicion =DB::table('presupuestos')
+            ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
+            ->select('fiscal_positions.*')
+            ->where('presupuestos.id','=',$id)
+            ->get();
+
+            foreach ($posicion as $pos){
+                $posicion_id = $pos->id;
+                $iva_t = $pos->iva_t;
+                $isr_r = $pos->isr_r;
+                $iva_r = $pos->iva_r;
+                $imp_c = $pos->imp_c;
+            }
             
             $subtotal = 0;
             $total = 0; 
 
             foreach ($lineas as $row){
                 $input = "costo".$row->producto_id;
+                $cant = "cant".$row->producto_id;
                 if ($request->$input > 0){
                     
-                    $subtotal += $request->$input;
-                    $total += $request->$input;
+                    
+                    $subtotal_linea = $row->cantidad * $request->input;
+                    $iva_t_linea = $subtotal_linea * ($iva_t / 100);
+                    $isr_r_linea = $subtotal_linea * ($isr_r / 100);
+                    $iva_r_linea = $subtotal_linea * ($iva_r / 100);
+                    $imp_c_linea = $subtotal_linea * ($imp_c / 100);
+                    $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+
+                    $subtotal += $subtotal_linea;
+                    $total += $total_linea;
 
                     $line = DB::table('proyecto_lineas')
                         ->where('id','=', $row->linea_id)
                         ->update([
                         'costo'=> $request->$input,
+                        'subtotal_v'=> $subtotal_linea,
+                        'iva_t_c'=> $iva_t_linea,
+                        'isr_r_c'=> $isr_r_linea,
+                        'iva_r_c'=> $iva_r_linea,
+                        'imp_c_c'=> $imp_c_linea,
+                        'total_c'=> $total_linea,
                     ]);
                 }
                 else{
                     if($row->costo > 0){
-                        $subtotal += $row->costo;
-                        $total += $row->costo;
+                        $subtotal += $row->subtotal_c;
+                        $total += $row->total_c;
                     }
                 }
             }
+
+            $iva_t_p = $subtotal * ($iva_t / 100);
+            $isr_r_p = $subtotal * ($isr_r / 100);
+            $iva_r_p = $subtotal * ($iva_r / 100);
+            $imp_c_p = $subtotal * ($imp_c / 100);
+            $total_p = $subtotal + $iva_t_p - $isr_r_p - $iva_r_p - $imp_c_p;
             
             $data = [
-                'importe' => $subtotal,
+                'importe' => $total_p,
+                'subtotal' => $total_p,
+                'iva_t' => $total_p,
+                'isr_r' => $total_p,
+                'iva_r' => $total_p,
+                'imp_c' => $total_p,
             ];
             
             $pres = DB::table('presupuestos')

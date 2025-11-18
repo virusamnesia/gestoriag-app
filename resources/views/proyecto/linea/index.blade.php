@@ -47,7 +47,13 @@
                             <th scope="col">Estado</th>
                             <th scope="col">Producto</th>
                             <th scope="col">Tipo</th>
-                            <th scope="col">Precio</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col">IVA Trasladado</th>
+                            <th scope="col">ISR Retenido</th>
+                            <th scope="col">IVA Retenido</th>
+                            <th scope="col">Impuesto Cedular</th>
+                            <th scope="col">Total</th>
                             <th scope="col">Saldo</th>
                             <th scope="col">Terminos</th>
                             <th scope="col">Estatus</th>
@@ -63,7 +69,14 @@
                                     <td>{{$row->estado}}</td>
                                     <td>{{$row->producto}}</td>
                                     <td>{{$row->tipo}}</td>
+                                    <td>${{number_format($row->cantidad, 2)}}</td>
                                     <td>${{number_format($row->precio, 2)}}</td>
+                                    <td>${{number_format($row->subtotal, 2)}}</td>
+                                    <td>${{number_format($row->iva_t_v, 2)}}</td>
+                                    <td>${{number_format($row->isr_r_v, 2)}}</td>
+                                    <td>${{number_format($row->iva_r_v, 2)}}</td>
+                                    <td>${{number_format($row->imp_c_v, 2)}}</td>
+                                    <td>${{number_format($row->total_v, 2)}}</td>
                                     <td>${{number_format($row->saldocliente, 2)}}</td>
                                     <td>{{$row->terminos}}</td>
                                     <td>{{$row->estatus}}</td>

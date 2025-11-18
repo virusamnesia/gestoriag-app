@@ -5,6 +5,7 @@ use App\Http\Controllers\CiudadContactoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClientesFacturaController;
 use App\Http\Controllers\ClientesFacturaLineaController;
+use App\Http\Controllers\FiscalPositionController;
 use App\Http\Controllers\ImportacionProyectoController;
 use App\Http\Controllers\ImportacionProyectoProductoController;
 use App\Http\Controllers\ListasPrecioController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\ProveedorMunicipioController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\ProyectoLineaController;
 use App\Http\Controllers\ProyectoSucursalLineaController;
+use App\Http\Controllers\RegimenesFiscaleController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\SucursalesProyectoController;
@@ -78,12 +80,21 @@ Route::middleware([
     
     Route::get('/termclie', [TerminosPagoClienteController::class, 'index'])->name('termclie');
     Route::get('/termclie/nuevo', [TerminosPagoClienteController::class, 'create'])->name('new.termclie');
-    Route::post('/termclie/nuevo', [TerminosPagoClienteController::class, 'store'])->name('save.termclie');
+    Route::post('/termclie/store', [TerminosPagoClienteController::class, 'store'])->name('save.termclie');
     Route::get('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'index'])->name('termclie.movimientos');
     Route::get('/termclie/movimientos/show/{id?}', [MovimientosPagoClienteController::class, 'show'])->name('termclie.show.movimientos');
     Route::get('/termclie/movimientos/edit/{id?}', [MovimientosPagoClienteController::class, 'edit'])->name('termclie.edit.movimientos');
     Route::post('/termclie/movimientos/nuevo/{id?}', [MovimientosPagoClienteController::class, 'store'])->name('save.termclie.movimientos');
     Route::post('/termclie/movimientos/{id?}', [MovimientosPagoClienteController::class, 'update'])->name('update.termclie.movimientos');
+
+    Route::get('/posiciones', [FiscalPositionController::class, 'index'])->name('posiciones');
+    Route::get('/posiciones/nuevo', [FiscalPositionController::class, 'create'])->name('new.posiciones');
+    Route::post('/posiciones/store', [FiscalPositionController::class, 'store'])->name('save.posiciones');
+    Route::get('/posiciones/edit', [FiscalPositionController::class, 'edit'])->name('edit.posiciones');
+    Route::post('/posiciones/update', [FiscalPositionController::class, 'update'])->name('update.posiciones');
+    Route::get('/posiciones/regimenes', [RegimenesFiscaleController::class, 'index'])->name('regimenes');
+    Route::post('/posiciones/regimenes/store', [RegimenesFiscaleController::class, 'store'])->name('save.regimenes');
+    Route::post('/posiciones/regimenes/update/{id?}', [RegimenesFiscaleController::class, 'update'])->name('update.regimenes');
         
    
     //USUARIOS

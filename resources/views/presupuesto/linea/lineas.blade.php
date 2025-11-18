@@ -45,7 +45,14 @@
                     <th scope="col">Estado</th>
                     <th scope="col">Producto</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Cantidad</th>
                     <th scope="col">Costo</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">IVA Trasladado</th>
+                    <th scope="col">ISR Retenido</th>
+                    <th scope="col">IVA Retenido</th>
+                    <th scope="col">Impuesto Cedular</th>
+                    <th scope="col">Total</th>
                     <th scope="col">Saldo</th>
                     <th scope="col">Estatus</th>
                     <th scope="col">Acciones</th
@@ -62,7 +69,13 @@
                         <td>{{$row->estado}}</td>
                         <td>{{$row->producto}}</td>
                         <td>{{$row->tipo}}</td>
-                        <td>${{number_format($row->costo, 2)}}</td>
+                        <td>${{number_format($row->cantidad, 2)}}</td>
+                        <td>${{number_format($row->subtotal_c, 2)}}</td>
+                        <td>${{number_format($row->iva_t_c, 2)}}</td>
+                        <td>${{number_format($row->isr_r_c, 2)}}</td>
+                        <td>${{number_format($row->iva_r_c, 2)}}</td>
+                        <td>${{number_format($row->imp_c_c, 2)}}</td>
+                        <td>${{number_format($row->total_c, 2)}}</td>
                         <td>${{number_format($row->saldoproveedor, 2)}}</td>
                         <td>{{$row->estatus}}</td>
                         <td>
@@ -71,7 +84,7 @@
                                     <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                     <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
                                         @if($presupuesto->autorizar == 0)
-                                        <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smeditar"  onclick="editar('{{$row->id}}','{{$row->sucursal}}','{{$row->producto}}','{{$row->costo}}')"><i class="icon ion-md-create"></i>Editar</button></li>
+                                        <li><button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smeditar"  onclick="editar('{{$row->id}}','{{$row->sucursal}}','{{$row->producto}}','{{$row->costo}}','{{$row->cantidad}}')"><i class="icon ion-md-create"></i>Editar</button></li>
                                         @endif
                                         @if($presupuesto->autorizar== 1)
                                         <li><button class="btn align-self-left" id="btnview" onclick="view({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
@@ -133,6 +146,16 @@
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
                                         <i class="fas fa-user text-lightblue"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+                        <div class="row">
+                            <x-adminlte-input name="cantidad" id="cantidad" placeholder="Cantidad" label-class="text-lightblue" disabled
+                            fgroup-class="col-md-12">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-coins text-lightblue"></i>
                                     </div>
                                 </x-slot>
                             </x-adminlte-input>
@@ -209,11 +232,12 @@
             location.href=url;
         }
 
-        function editar(idl,suc,prod,cost){
+        function editar(idl,suc,prod,cost,cant){
             $("#id").val(idl);
             $("#sucursal").val(suc);
             $("#producto").val(prod);
             $("#costo").val(cost);
+            $("#cantidad").val(cant);
         }
 
         function borrar(idp,idl){

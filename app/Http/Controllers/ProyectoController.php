@@ -65,8 +65,9 @@ class ProyectoController extends Controller
             $proyectos =DB::table('proyectos')
                 ->join('clientes', 'clientes.id', '=', 'proyectos.cliente_id')
                 ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
+                ->leftjoin('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
                 ->select('proyectos.*','clientes.nombre as cliente','clientes.id as cliente_id','estados_proyectos.nombre as estado',
-                'estados_proyectos.id as estados_proyecto_id')
+                'estados_proyectos.id as estados_proyecto_id','fiscal_positions.id as posicion_id','fiscal_positions.nombre as posicion')
                 ->orderBy('proyectos.id', 'desc')
                 ->get();
 
@@ -127,12 +128,31 @@ class ProyectoController extends Controller
             'cliente' => 'required',
             'agrupado' => 'required',
         ]);
+
+        $posicion =DB::table('clientes')
+        ->join('fiscal_positions', 'fiscal_positions.id', '=', 'clientes.fiscal_position_id')
+        ->select('fiscal_positions.*')
+        ->where('clientes.id','=',$request->cliente)
+        ->get();
+
+        foreach ($posicion as $pos){
+            $posicion_id = $pos->id;
+            $iva_t = $pos->iva_t;
+            $isr_r = $pos->isr_r;
+            $iva_r = $pos->iva_r;
+            $imp_c = $pos->imp_c;
+        }
         
         $proyecto = new Proyecto();
 
         $proyecto->nombre = $request->nombre;
         $proyecto->anio = $request->año;
         $proyecto->cliente_id = $request->cliente;
+        $proyecto->subtotal = 0;
+        $proyecto->iva_t = 0;
+        $proyecto->isr_r = 0;
+        $proyecto->iva_r = 0;
+        $proyecto->imp_c = 0;
         $proyecto->importe = 0;
         $proyecto->saldo = 0;
         $proyecto->cxc = 0;
@@ -140,6 +160,7 @@ class ProyectoController extends Controller
         $proyecto->fecha_cotizacion = today();
         $proyecto->es_agrupado = $request->agrupado;
         $proyecto->autorizar = 0;
+        $proyecto->fiscal_position_id = $posicion_id;
 
         $proyecto->save();
 
@@ -207,6 +228,21 @@ class ProyectoController extends Controller
                     'fecha_autorizacion' => now(),
                     ]);
 
+                $posicion =DB::table('proyectos')
+                ->join('clientes', 'cliente.id', '=', 'proyectos.cliente_id')
+                ->join('fiscal_positions', 'fiscal_positions.id', '=', 'clientes.fiscal_position_id')
+                ->select('fiscal_positions.*')
+                ->where('proyectos.id','=',$id)
+                ->get();
+
+                foreach ($posicion as $pos){
+                    $posicion_id = $pos->id;
+                    $iva_t = $pos->iva_t;
+                    $isr_r = $pos->isr_r;
+                    $iva_r = $pos->iva_r;
+                    $imp_c = $pos->imp_c;
+                }
+
                 $lineas =DB::table('proyecto_lineas')
                     ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
                     ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
@@ -225,7 +261,17 @@ class ProyectoController extends Controller
                     ->get();
 
                 $total_cliente = 0;
+                $subtotal_cliente = 0;
+                $iva_t_cliente = 0;
+                $isr_r_cliente = 0;
+                $iva_r_cliente = 0;
+                $imp_c_cliente = 0;
                 $total_proveedor = 0;
+                $subtotal_proveedor = 0;
+                $iva_t_proveedor = 0;
+                $isr_r_proveedor = 0;
+                $iva_r_proveedor = 0;
+                $imp_c_proveedor = 0;
 
                 foreach($lineas as $linea){
                     
@@ -239,17 +285,40 @@ class ProyectoController extends Controller
                     }
                     else{
                         $importe_cliente = 0;
+                        $subtotal_v = 0;
                         $saldo_cliente = $linea->saldocliente;
                         $importe_proveedor = 0;
+                        $subtotal_c = 0;
                         $saldo_proveedor = $linea->saldoproveedor;
 
-                        $importe_cliente = $linea->precio * ($movimiento->valor_cliente / 100);
+                        $subtotal_v = $linea->subtotal_v * ($movimiento->valor_cliente / 100);
+                        $iva_t_v = $subtotal_v * ($iva_t / 100);
+                        $isr_r_v = $subtotal_v * ($isr_r / 100);
+                        $iva_r_v = $subtotal_v * ($iva_r / 100);
+                        $imp_c_v = $subtotal_v * ($imp_c / 100);
+                        $importe_cliente = $subtotal_v  + $iva_t_v - $isr_r_v - $iva_r_v -$imp_c_v;
                         $saldo_cliente = $saldo_cliente - $importe_cliente;
-                        $importe_proveedor = $linea->costo * ($movimiento->valor_proveedor / 100);
+                        /** revisar los impuestos del proveedor en el proyecto */
+                        $subtotal_c = $linea->subtotal_c * ($movimiento->valor_proveedor / 100);
+                        $iva_t_c = $subtotal_c * ($iva_t / 100);
+                        $isr_r_c = $subtotal_c * ($isr_r / 100);
+                        $iva_r_c = $subtotal_c * ($iva_r / 100);
+                        $imp_c_c = $subtotal_c * ($imp_c / 100);
+                        $importe_proveedor = $subtotal_c  + $iva_t_c - $isr_r_c - $iva_r_c -$imp_c_c;
                         $saldo_proveedor = $saldo_proveedor - $importe_proveedor;
 
                         $total_cliente = $total_cliente + $importe_cliente;
+                        $subtotal_cliente = $subtotal_cliente + $subtotal_v;
+                        $iva_t_cliente = $iva_t_cliente + $iva_t_v;
+                        $isr_r_cliente = $isr_r_cliente + $isr_r_v;
+                        $iva_r_cliente = $iva_r_cliente + $iva_r_v;
+                        $imp_c_cliente = $imp_c_cliente + $imp_c_v;
                         $total_proveedor = $total_proveedor + $importe_proveedor;
+                        $subtotal_proveedor = $subtotal_proveedor + $subtotal_c;
+                        $iva_t_proveedor = $iva_t_proveedor + $iva_t_c;
+                        $isr_r_proveedor = $isr_r_proveedor + $isr_r_c;
+                        $iva_r_proveedor = $iva_r_proveedor + $iva_r_c;
+                        $imp_c_proveedor = $imp_c_proveedor + $imp_c_c;
 
                         $facturable = 0;
                         if ($importe_cliente >  0 or $importe_proveedor > 0 ){

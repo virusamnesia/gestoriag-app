@@ -45,12 +45,14 @@
                         <th scope="col">Cotizar</th>
                         <th scope="col">Producto</th>
                         <th scope="col">Categoría</th>
+                        <th scope="col">Cantidad</th>
                         <th scope="col">Precio</th>
                     </tr>
                     </thead>
                     <tbody>
                         @foreach ($productos as $row) {{-- Add here extra stylesheets --}}
                             @php $name = "sel".$row->id;
+                                $cantidad = "cant".$row->id; 
                                 $precio = "prec".$row->id; 
                             @endphp
                             <tr>
@@ -59,6 +61,16 @@
                                 </th>
                                 <td>{{$row->producto}}</td>
                                 <td>{{$row->tps_nombre}}</td>
+                                <td>
+                                    <x-adminlte-input name="{{$cantidad}}" id="{{$cantidad}}" placeholder="$Precio" type="number" 
+                                        igroup-size="m" min=0 max=100000 value="0" step="1">
+                                        <x-slot name="appendSlot">
+                                            <div class="input-group-text bg-light">
+                                                <i class="fas fa-coins"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-input>
+                                </td>
                                 <td>
                                     <x-adminlte-input name="{{$precio}}" id="{{$precio}}" placeholder="$Precio" type="number" 
                                         igroup-size="m" min=0 max=100000 value="{{$row->precio}}" step="0.01">
@@ -157,7 +169,7 @@
 
     <script type="text/javascript">
         function edit(id){
-            var base = "<?php echo '/Proyectos/'?>";
+            var base = "<?php echo '/proyectos/'?>";
             var url = base+id;
             location.href=url;
         }
@@ -184,13 +196,13 @@
         }
 
         function view(id){
-            var base = "<?php echo '/Proyectos/show/'?>";
+            var base = "<?php echo '/proyectos/show/'?>";
             var url = base+id;
             location.href=url;
         }
 
         function municipios(id){
-            var base = "<?php echo '/Proyectos/municipios/'?>";
+            var base = "<?php echo '/proyectos/municipios/'?>";
             var url = base+id;
             location.href=url;
         }

@@ -71,6 +71,16 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
+                    <x-adminlte-input name="cant" id="cant" placeholder="Cantidad" type="number" fgroup-class="col-md-5"
+                        igroup-size="sm" min=1 max=100000 step="1">
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text bg-light">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+                <div class="row">
                     <x-adminlte-input name="precio" id="precio" placeholder="$Precio" type="number" fgroup-class="col-md-5"
                         igroup-size="sm" min=1 max=100000 step="0.01">
                         <x-slot name="appendSlot">
@@ -156,15 +166,6 @@
         var url = base+cad+'/'+nombre+'/0/0/0/1';
         location.href=url;
     }
-    </script>
-
-    <script type="text/javascript">
-        function edit(id){
-            $("#idcadc").val(cad);
-            $("#cadc").val(cad);
-            $("#nacadc").val(nombre);
-            $("#ncadc").val(nombre);
-        }
     </script>
 
     <script type="text/javascript">

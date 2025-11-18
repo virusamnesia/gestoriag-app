@@ -43,6 +43,20 @@
                         fgroup-class="col-md-4" disable-feedback/>
                 </div>
                 <div class="row">
+                    <x-adminlte-select2 name="posicion" label-class="text-lightblue"  fgroup-class="col-md-12"
+                        igroup-size="sm" data-placeholder="Selecciona una Posición Fiscal...">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                        </x-slot>
+                        <option/>
+                        @foreach ($posiciones as $rowp)
+                        <option value="{{$rowp->id}}">{{$rowp->nombre}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
+                <div class="row">
                     <x-adminlte-input name="domicilio" placeholder="Domicilio"  fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
                             <div class="input-group-text text-purple">

@@ -134,6 +134,25 @@ class ProyectoLineaController extends Controller
             ->select('terminos_pago_clientes.*','movimientos_pago_clientes.estatus_linea_cliente_id as estatus')
             ->where('terminos_pago_clientes.id','=',$request->termino)
             ->first();
+
+        $posicion =DB::table('proyectos')
+        ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
+        ->select('fiscal_positions.*')
+        ->where('proyectos.id','=',$id)
+        ->get();
+
+        foreach ($posicion as $pos){
+            $posicion_id = $pos->id;
+            $iva_t = $pos->iva_t;
+            $isr_r = $pos->isr_r;
+            $iva_r = $pos->iva_r;
+            $imp_c = $pos->imp_c;
+        }
+        
+        if($producto->iva <> 16){
+            $iva_t = $producto->iva;
+            $iva_r = $producto->iva;    
+        }
         
         $rev = ProyectoLinea::where('sucursal_id','=',$request->sucursal)
             ->where('producto_id','=', $request->producto)
@@ -142,15 +161,35 @@ class ProyectoLineaController extends Controller
 
         if (!$rev){
 
+            $subtotal_linea = $request->cantidad * $request->precio;
+            $iva_t_linea = $subtotal_linea * ($iva_t / 100);
+            $isr_r_linea = $subtotal_linea * ($isr_r / 100);
+            $iva_r_linea = $subtotal_linea * ($iva_r / 100);
+            $imp_c_linea = $subtotal_linea * ($imp_c / 100);
+            $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+            
             $linea = new ProyectoLinea();
 
             $linea->proyecto_id = $id;
             $linea->cliente_id = $cliente->id;
             $linea->sucursal_id = $request->sucursal;
             $linea->producto_id = $request->producto;
+            $linea->cantidad = $request->cant;
             $linea->precio = $request->precio;
-            $linea->saldocliente = $request->precio;
+            $linea->subtotal_v = $subtotal_linea;
+            $linea->iva_t_v = $iva_t_linea;
+            $linea->isr_r_v = $isr_r_linea;
+            $linea->iva_r_v = $iva_r_linea;
+            $linea->imp_c_v = $imp_c_linea;
+            $linea->total_v = $total_linea;
+            $linea->saldocliente = $total_linea;
             $linea->costo = 0;
+            $linea->subtotal_c = 0;
+            $linea->iva_t_c = 0;
+            $linea->isr_r_c = 0;
+            $linea->iva_r_c = 0;
+            $linea->imp_c_c = 0;
+            $linea->total_c = 0;
             $linea->cxc = 0;
             $linea->cxp = 0;
             $linea->saldoproveedor = 0;
@@ -160,8 +199,13 @@ class ProyectoLineaController extends Controller
             $linea->save();
 
             $data = [
-                'importe' => $proyecto->importe + $request->precio,
-                'saldo' => $proyecto->saldo + $request->precio,
+                'importe' => $proyecto->importe + $total_linea,
+                'saldo' => $proyecto->saldo + $total_linea,
+                'subtotal' => $proyecto->subtotal + $subtotal_linea,
+                'iva_t' => $proyecto->iva_t + $iva_t_linea,
+                'isr_r' => $proyecto->isr_r + $isr_r_linea,
+                'iva_r' => $proyecto->iva_r + $iva_r_linea,
+                'imp_c' => $proyecto->imp_c + $imp_c_linea,
             ];
             
             $proy = DB::table('proyectos')
@@ -244,6 +288,8 @@ class ProyectoLineaController extends Controller
 
         $linea = ProyectoLinea::where('id','=',$idl)->first();
 
+        $producto = Producto::where('id','=',$linea->producto_id)->first();
+
         $terminos =DB::table('terminos_pago_clientes')
             ->Join('movimientos_pago_clientes', function (JoinClause $join) {
                 $join->on('terminos_pago_clientes.id', '=', 'movimientos_pago_clientes.terminos_pago_cliente_id')
@@ -253,23 +299,69 @@ class ProyectoLineaController extends Controller
             ->where('terminos_pago_clientes.id','=',$request->termino)
             ->first();
 
-        $dif = $request->precio - $linea->precio;
-        $saldo = $linea->saldocliente + $dif;
+        $posicion =DB::table('proyectos')
+        ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
+        ->select('fiscal_positions.*')
+        ->where('proyectos.id','=',$idp)
+        ->get();
+
+        foreach ($posicion as $pos){
+            $posicion_id = $pos->id;
+            $iva_t = $pos->iva_t;
+            $isr_r = $pos->isr_r;
+            $iva_r = $pos->iva_r;
+            $imp_c = $pos->imp_c;
+        }
+
+        if($producto->iva <> 16){
+            $iva_t = $producto->iva;
+            $iva_r = $producto->iva;    
+        }
+
+        $subtotal_linea = $request->cantidad * $request->precio;
+        $iva_t_linea = $subtotal_linea * ($iva_t / 100);
+        $isr_r_linea = $subtotal_linea * ($isr_r / 100);
+        $iva_r_linea = $subtotal_linea * ($iva_r / 100);
+        $imp_c_linea = $subtotal_linea * ($imp_c / 100);
+        $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+
+        $difs = $subtotal_linea - $linea->subtotal;
+        $dift = $total_linea - $linea->total;
+        $saldo = $linea->saldocliente + $dift;
         
         $lineas = DB::table('proyecto_lineas')
                 ->where('id','=',$idl)
                 ->update([
+                    'cantidad'=> $request->cantidad,
                     'precio'=> $request->precio,
+                    'subtotal_v'=> $subtotal_linea,
+                    'iva_t_v'=> $iva_t_linea,
+                    'isr_r_v'=> $isr_r_linea,
+                    'iva_r_v'=> $iva_r_linea,
+                    'imp_c_v'=> $imp_c_linea,
+                    'total_v'=> $total_linea,
                     'saldocliente'=> $saldo,
                     'terminos_pago_cliente_id'=> $request->termino,
                     'estatus_linea_cliente_id'=> $terminos->estatus,
                     'producto_id'=> $request->producto,
                 ]
             );
+        
+        $subtotal_p = $proyecto->subtotal + $difs;
+        $iva_t_p = $subtotal_p * ($iva_t / 100);
+        $isr_r_p = $subtotal_p * ($isr_r / 100);
+        $iva_r_p = $subtotal_p * ($iva_r / 100);
+        $imp_c_p = $subtotal_p * ($imp_c / 100);
+        $total_p = $subtotal_p + $iva_t_p - $isr_r_p - $iva_r_p - $imp_c_p;
 
         $data = [
-            'importe' => $proyecto->importe + $dif,
-            'saldo' => $proyecto->saldo + $dif,
+            'subtotal' => $subtotal_p,
+            'iva_t' => $iva_t_p,
+            'isr_r' => $isr_r_p,
+            'iva_r' => $iva_r_p,
+            'imp_c' => $imp_c_p,
+            'importe' => $total_p,
+            'saldo' => $proyecto->saldo + $dift,
         ];
         
         $proy = DB::table('proyectos')
@@ -280,6 +372,7 @@ class ProyectoLineaController extends Controller
         session()->flash('Exito',$inf);
         return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);
     }
+
 
     public function delete($idp,$idl)
     {
@@ -331,24 +424,94 @@ class ProyectoLineaController extends Controller
             ->select('proyectos.*','estados_proyectos.nombre as estado','estados_proyectos.id as estado_id')
             ->where('proyectos.id','=',$idp)->first();
 
-        $linea = ProyectoLinea::where('id','=',$idl)->first();
+        $posicion =DB::table('proyectos')
+        ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
+        ->select('fiscal_positions.*')
+        ->where('proyectos.id','=',$idp)
+        ->get();
 
+        foreach ($posicion as $pos){
+            $posicion_id = $pos->id;
+            $iva_t = $pos->iva_t;
+            $isr_r = $pos->isr_r;
+            $iva_r = $pos->iva_r;
+            $imp_c = $pos->imp_c;
+        }
+    
+        $linea = ProyectoLinea::where('id','=',$idl)->first();        
 
-        $prec = $linea->precio;
+        $subtotal = $linea->subtotal_v;
         $saldo = $linea->saldocliente;
+
+        $subtotal_p = $proyecto->subtotal - $subtotal;
+        $iva_t_p = $subtotal_p * ($iva_t / 100);
+        $isr_r_p = $subtotal_p * ($isr_r / 100);
+        $iva_r_p = $subtotal_p * ($iva_r / 100);
+        $imp_c_p = $subtotal_p * ($imp_c / 100);
+        $total_p = $subtotal_p + $iva_t_p - $isr_r_p - $iva_r_p - $imp_c_p;
         
         $lineas = DB::table('proyecto_lineas')
                 ->where('id','=',$idl)
                 ->delete();
-
+        
         $data = [
-            'importe' => $proyecto->importe - $prec,
+            'subtotal' => $subtotal_p,
+            'iva_t' => $iva_t_p,
+            'isr_r' => $isr_r_p,
+            'iva_r' => $iva_r_p,
+            'imp_c' => $imp_c_p,
+            'importe' => $total_p,
             'saldo' => $proyecto->saldo - $saldo,
         ];
         
         $proy = DB::table('proyectos')
             ->where('id','=',$idp)
             ->update($data);
+        
+        //Actualizción de saldos en el presupuesto
+        if($linea->presupuesto_id > 0){
+            $presupuesto = DB::table('presupuestos')
+            ->select('presupuestos.*')
+            ->where('presupuesto.id','=',$linea->presupuesto_id)->first();
+
+            $posicion_pv =DB::table('presupuestos')
+            ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
+            ->select('fiscal_positions.*')
+            ->where('presupuestos.id','=',$linea->presupuesto_id)
+            ->get();
+
+            foreach ($posicion_pv as $pos_pv){
+                $posicion_id_pv = $pos_pv->id;
+                $iva_t_pv = $pos_pv->iva_t;
+                $isr_r_pv = $pos_pv->isr_r;
+                $iva_r_pv = $pos_pv->iva_r;
+                $imp_c_pv = $pos_pv->imp_c;
+            }
+
+            $subtotal_pv = $linea->subtotal_c;
+            $saldo_pv = $linea->saldoproveedor;
+
+            $subtotal_r = $presupuesto->subtotal_c - $subtotal_pv;
+            $iva_t_r = $subtotal_pv * ($iva_t / 100);
+            $isr_r_r = $subtotal_pv * ($isr_r / 100);
+            $iva_r_r = $subtotal_pv * ($iva_r / 100);
+            $imp_c_r = $subtotal_pv * ($imp_c / 100);
+            $total_r = $subtotal_pv + $iva_t_r - $isr_r_r - $iva_r_r - $imp_c_r;
+            
+            $data = [
+                'subtotal' => $subtotal_r,
+                'iva_t' => $iva_t_r,
+                'isr_r' => $isr_r_r,
+                'iva_r' => $iva_r_r,
+                'imp_c' => $imp_c_r,
+                'importe' => $total_r,
+                'saldo' => $presupuesto->saldo - $saldo_pv,
+            ];
+            
+            $pres = DB::table('presupuestos')
+                ->where('id','=',$linea->presupuesto_id)
+                ->update($data);
+        }
         
         $inf = 'La partida se eliminó con éxito...';
         session()->flash('Exito',$inf);

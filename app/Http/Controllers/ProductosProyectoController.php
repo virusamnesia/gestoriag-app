@@ -44,6 +44,7 @@ class ProductosProyectoController extends Controller
         foreach ($productos as $row){
             $sel = "sel".$row->id;
             $prec = "prec".$row->id;
+            $cant = "cant".$row->id;
             if ($request->$sel){$cotizado = 1;}
             else {$cotizado = 0;}
             $sucursal = DB::table('productos_proyectos')
@@ -51,6 +52,7 @@ class ProductosProyectoController extends Controller
                 ->update([
                     'cotizado'=> $cotizado,
                     'precio'=> $request->$prec,
+                    'cantidad'=> $request->$cant,
                 ]
             );
         };
@@ -86,7 +88,26 @@ class ProductosProyectoController extends Controller
             ->orderBy('productos.nombre')
             ->get();
 
-        $importe = 0;
+        $posicion =DB::table('proyectos')
+        ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
+        ->select('fiscal_positions.*')
+        ->where('proyectos.id','=',$idp)
+        ->get();
+
+        foreach ($posicion as $pos){
+            $posicion_id = $pos->id;
+            $iva_t = $pos->iva_t;
+            $isr_r = $pos->isr_r;
+            $iva_r = $pos->iva_r;
+            $imp_c = $pos->imp_c;
+        }
+
+        $subtotal_p = 0;
+        $iva_t_p = 0;
+        $isr_r_p = 0;
+        $iva_r_p = 0;
+        $imp_c_p = 0;
+        $importe = 0
 
         foreach ($sucursales as $suc){
             foreach ($productos as $prod){
@@ -98,15 +119,35 @@ class ProductosProyectoController extends Controller
 
                 if ($rev == null){
 
+                    $subtotal_linea = $prod->cantidad * $prod->precio;
+                    $iva_t_linea = $subtotal_linea * ($iva_t / 100);
+                    $isr_r_linea = $subtotal_linea * ($isr_r / 100);
+                    $iva_r_linea = $subtotal_linea * ($iva_r / 100);
+                    $imp_c_linea = $subtotal_linea * ($imp_c / 100);
+                    $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+
                     $linea = new ProyectoLinea();
 
                     $linea->proyecto_id = $idp;
                     $linea->cliente_id = $idc;
                     $linea->sucursal_id = $suc->sucursal_id;
                     $linea->producto_id = $prod->producto_id;
+                    $linea->cantidad = $prod->cantidad;
                     $linea->precio = $prod->precio;
-                    $linea->saldocliente = $prod->precio;
+                    $linea->subtotal_v = $subtotal_linea;
+                    $linea->iva_t_v = $iva_t_linea;
+                    $linea->isr_r_v = $isr_r_linea;
+                    $linea->iva_r_v = $iva_r_linea;
+                    $linea->imp_c_v = $imp_c_linea;
+                    $linea->total_v = $total_linea;
+                    $linea->saldocliente = $total_linea;
                     $linea->costo = 0;
+                    $linea->subtotal_c = 0;
+                    $linea->iva_t_c = 0;
+                    $linea->isr_r_c = 0;
+                    $linea->iva_r_c = 0;
+                    $linea->imp_c_c = 0;
+                    $linea->total_c = 0;
                     $linea->saldoproveedor = 0;
                     $linea->terminos_pago_cliente_id = $prod->terminos;
                     $linea->estatus_linea_cliente_id = 1; 
@@ -115,12 +156,24 @@ class ProductosProyectoController extends Controller
 
                     $linea->save();
 
-                    $importe += $prod->precio;
+                    $subtotal_p += $prod->precio;
+                    $iva_t_p += $subtotal_p * ($iva_t / 100);
+                    $isr_r_p += $subtotal_p * ($isr_r / 100);
+                    $iva_r_p += $subtotal_p * ($iva_r / 100);
+                    $imp_c_p += $subtotal_p * ($imp_c / 100);
+                    $importe += $subtotal_p + $iva_t_p - $isr_r_p - $iva_r_p - $imp_c_p;
                 };
             };
         };
 
+        
+
         $data = [
+            'subtotal' => $subtotal_p,
+            'iva_t' => $iva_t_p,
+            'isr_r' => $isr_r_p,
+            'iva_r' => $iva_r_p,
+            'imp_c' => $imp_c_p,
             'importe' => $importe,
             'saldo' => $importe,
         ];

@@ -45,18 +45,28 @@
                         <th scope="col">Producto</th>
                         <th scope="col">Clave</th>
                         <th scope="col">Tipo</th>
+                        <th scope="col">Cantidad</th>
                         <th scope="col">Costo</th>
                     </tr>
                     </thead>
                     <tbody>
                         @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
-                            @php $name = "costo".$row->producto_id; @endphp
+                            @php $name = "costo".$row->producto_id; 
+                                $cantidad = "cant".$row->producto_id;  @endphp
                             <tr>
                                 <th scope="row">
                                     {{$row->producto}}
                                 </th>
                                 <td>{{$row->alias}}</td>
                                 <td>{{$row->tipo}}</td>
+                                <td><x-adminlte-input name="{{$cantidad}}" id="{{$cantidad}}" placeholder="Cantidad" type="number" fgroup-class="col-md-12"  value="0"
+                                    igroup-size="sm" min=0 max=100000 step="1">
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text bg-light">
+                                            <i class="fas fa-dollar-sign text-lightblue"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input></td>
                                 <td><x-adminlte-input name="{{$name}}" id="{{$name}}" placeholder="Costo" type="number" fgroup-class="col-md-12"  value="0"
                                     igroup-size="sm" min=0 max=100000 step="0.05">
                                     <x-slot name="appendSlot">

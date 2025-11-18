@@ -46,6 +46,7 @@
                     <th scope="col">Facturable</th>
                     <th scope="col">Fecha Factura</th>
                     <th scope="col">Factura</th>
+                    <th scope="col">Subtotal</th>
                     <th scope="col">Importe</th>
                     <th scope="col">Saldo</th>
                 </tr>
@@ -60,6 +61,7 @@
                             <td>{{$row->es_facturable}}</td>
                             <td>{{$row->fecha_factura}}</td>
                             <td>{{$row->factura}}</td>
+                            <td>${{number_format($row->subtotal_cliente, 2)}}</td>
                             <td>${{number_format($row->importe_cliente, 2)}}</td>
                             <td>${{number_format($row->saldo_cliente, 2)}}</td>
                         </tr>

@@ -367,6 +367,12 @@ return [
                             'icon_color' => 'green',
                         ],
                         [
+                            'text' => 'Posiciones Fiscales',
+                            'url' => '/posiciones',
+                            'icon' => 'fas fa-coins',
+                            'icon_color' => 'blue',
+                        ],
+                        [
                             'text' => 'Terminos de Pago',
                             'url' => '/termclie',
                             'icon' => 'fas fa-list-ol',

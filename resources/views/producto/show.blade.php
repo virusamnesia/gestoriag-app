@@ -79,6 +79,16 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
+                    <x-adminlte-input name="iva" id="iva" placeholder="IVA" type="number" fgroup-class="col-md-5" value="{{$prod->iva}}" disabled
+                        igroup-size="sm" min=1 max=100000 step="1">
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text bg-light">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+                <div class="row">
                     <x-adminlte-select name="activo" disabled>
                         <option value=0 @php if ($prod->es_activo == False) { echo "selected";} @endphp>Inactivo</option>
                         <option value=1 @php if ($prod->es_activo == True) { echo "selected";} @endphp>Activo</option>

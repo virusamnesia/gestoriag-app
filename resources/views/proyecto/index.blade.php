@@ -39,7 +39,13 @@
                         <tr>
                             <th scope="col">Proyecto</th>
                             <th scope="col">Cliente</th>
+                            <th scope="col">Posición Fiscal</th>
                             <th scope="col">Año</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col">IVA Trasladado</th>
+                            <th scope="col">ISR Retenido</th>
+                            <th scope="col">IVA Retenido</th>
+                            <th scope="col">Impuesto Cedular</th>
                             <th scope="col">Importe</th>
                             <th scope="col">Saldo</th>
                             <th scope="col">Estado</th>
@@ -55,7 +61,13 @@
                                 <tr>
                                     <th scope="row">{{$row->nombre}}</th>
                                     <td>{{$row->cliente}}</td>
+                                    <td>{{$row->posicion}}</td>
                                     <td>{{$row->anio}}</td>
+                                    <td>${{number_format($row->subtotal, 2)}}</td>
+                                    <td>${{number_format($row->iva_t, 2)}}</td>
+                                    <td>${{number_format($row->isr_r, 2)}}</td>
+                                    <td>${{number_format($row->iva_r, 2)}}</td>
+                                    <td>${{number_format($row->imp_c, 2)}}</td>
                                     <td>${{number_format($row->importe, 2)}}</td>
                                     <td>${{number_format($row->saldo, 2)}}</td>
                                     <td>{{$row->estado}}</td>

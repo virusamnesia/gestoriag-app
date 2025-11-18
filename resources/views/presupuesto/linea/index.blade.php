@@ -46,6 +46,7 @@
                         <th scope="col">Cotizar</th>
                         <th scope="col">Sucursal</th>
                         <th scope="col">Producto</th>
+                        <th scope="col">Cantidad</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Dirección</th>
                         <th scope="col">Municipio</th>
@@ -61,6 +62,7 @@
                                 </th>
                                 <td>{{$row->sucursal}}</td>
                                 <td>{{$row->producto}}</td>
+                                <td>{{$row->cantidad}}</td>
                                 <td>{{$row->tipo}}</td>
                                 <td>{{$row->direccion}}</td>
                                 <td>{{$row->municipio}}</td>

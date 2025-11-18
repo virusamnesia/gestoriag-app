@@ -45,6 +45,16 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
+                    <x-adminlte-input name="cant" placeholder="Cantidad" label-class="text-lightblue" 
+                    fgroup-class="col-md-12" value="{{$linea->cantidad}}" disabled>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text">
+                                <i class="fas fa-coins text-lightblue"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+                <div class="row">
                     <x-adminlte-input name="precio" placeholder="Precio del producto" label-class="text-lightblue" 
                     fgroup-class="col-md-12" value="{{$linea->precio}}" disabled>
                         <x-slot name="prependSlot">

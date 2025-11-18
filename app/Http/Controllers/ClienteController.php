@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CiudadContacto;
 use App\Models\Cliente;
 use App\Models\EstadoContacto;
+use App\Models\FiscalPosition;
 use App\Models\MunicipioContacto;
 use App\Models\PaisContacto;
 use Illuminate\Http\Request;
@@ -29,8 +30,13 @@ class ClienteController extends Controller
             ->first();
         
         if ($permiso){
-            $clientes =Cliente::select('id', 'clave', 'nombre', 'rfc','email','telefono')
-            ->orderBy('nombre')
+            $clientes = DB::table('clientes')
+            ->join('ciudad_contactos', 'ciudad_contactos.id', '=', 'clientes.ciudad_contacto_id')
+            ->join('municipio_contactos', 'municipio_contactos.id', '=', 'clientes.municipio_contacto_id')
+            ->join('estado_contactos', 'estado_contactos.id', '=', 'clientes.estado_contacto_id')
+            ->join('pais_contactos', 'pais_contactos.id', '=', 'clientes.pais_contacto_id')
+            ->leftjoin('fiscal_positions', 'fiscal_positions.id', '=', 'clientes.fiscal_position_id')
+            ->select('clientes.*','fiscal_positions.id as posicion_id','fiscal_positions.nombre as posicion')
             ->get();
             return view('cliente.index', ['clientes' => $clientes]);
         }
@@ -55,7 +61,9 @@ class ClienteController extends Controller
             ->orderBy('municipio_contactos.nombre')
             ->get();
 
-        return view('cliente.create', ['municipios' => $municipios]);
+        $posiciones = FiscalPosition::all();
+
+        return view('cliente.create', ['municipios' => $municipios,'posiciones' => $posiciones]);
     }
 
     /**
@@ -96,6 +104,7 @@ class ClienteController extends Controller
         $cliente->cp = $request->cp;
         $cliente->telefono = $request->telefono;
         $cliente->email = $request->email;
+        $cliente->fiscal_position_id = $request->posicion;
 
         $cliente->save();
         $inf = 1;
@@ -128,7 +137,9 @@ class ClienteController extends Controller
             ->where('clientes.id','=',$id)
             ->get();
 
-        return view('cliente.show', ['cliente' => $cliente,'municipios' => $municipios]);
+            $posiciones = FiscalPosition::all();
+
+        return view('cliente.show', ['cliente' => $cliente,'municipios' => $municipios,'posiciones' => $posiciones]);
     }
 
     /**
@@ -156,7 +167,9 @@ class ClienteController extends Controller
             ->where('clientes.id','=',$id)
             ->get();
 
-        return view('cliente.edit', ['cliente' => $cliente,'municipios' => $municipios]);
+            $posiciones = FiscalPosition::all();
+
+        return view('cliente.edit', ['cliente' => $cliente,'municipios' => $municipios,'posiciones' => $posiciones]);
     }
 
     /**
@@ -199,6 +212,7 @@ class ClienteController extends Controller
             'cp'=> $request->cp,
             'telefono'=> $request->telefono,
             'email'=> $request->email,
+            'fiscal_position_id' => $request->posicion,
         ]);
 
         $inf = 1;

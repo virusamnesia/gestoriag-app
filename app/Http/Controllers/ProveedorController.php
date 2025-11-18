@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Banco;
 use App\Models\EstadoContacto;
+use App\Models\FiscalPosition;
 use App\Models\MunicipioContacto;
 use App\Models\PaisContacto;
 use App\Models\Proveedor;
@@ -30,8 +31,13 @@ class ProveedorController extends Controller
             ->first();
         
         if ($permiso){
-            $proveedores =Proveedor::select('id', 'clave', 'nombre', 'rfc','email','telefono')
-            ->orderBy('nombre') 
+            $proveedores = DB::table('proveedors')
+            ->join('ciudad_contactos', 'ciudad_contactos.id', '=', 'proveedors.ciudad_contacto_id')
+            ->join('municipio_contactos', 'municipio_contactos.id', '=', 'proveedors.municipio_contacto_id')
+            ->join('estado_contactos', 'estado_contactos.id', '=', 'proveedors.estado_contacto_id')
+            ->join('pais_contactos', 'pais_contactos.id', '=', 'proveedors.pais_contacto_id')
+            ->leftjoin('fiscal_positions', 'fiscal_positions.id', '=', 'proveedors.fiscal_position_id')
+            ->select('proveedors.*','fiscal_positions.id as posicion_id','fiscal_positions.nombre as posicion')
             ->get();
 
             return view('Proveedor.index', ['proveedores' => $proveedores]);
@@ -59,7 +65,9 @@ class ProveedorController extends Controller
             ->orderBy('municipio_contactos.nombre')
             ->get();
 
-        return view('Proveedor.create', ['municipios' => $municipios, 'bancos' => $bancos]);
+        $posiciones = FiscalPosition::all();
+
+        return view('Proveedor.create', ['municipios' => $municipios, 'bancos' => $bancos,'posiciones' => $posiciones]);
     }
 
     /**
@@ -107,6 +115,7 @@ class ProveedorController extends Controller
         $proveedor->email = $request->email;
         $proveedor->banco_id = $banco->id;
         $proveedor->cuenta = $request->cuenta;
+        $proveedor->fiscal_position_id = $request->posicion;
 
         $proveedor->save();
 
@@ -132,6 +141,8 @@ class ProveedorController extends Controller
             ->get();
 
         $bancos = Banco::all();
+
+        $posiciones = FiscalPosition::all();
         
         $proveedor = DB::table('proveedors')
             ->join('ciudad_contactos', 'ciudad_contactos.id', '=', 'proveedors.ciudad_contacto_id')
@@ -142,7 +153,7 @@ class ProveedorController extends Controller
             ->where('proveedors.id','=',$id)
             ->get();
 
-        return view('Proveedor.show', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos]);
+        return view('Proveedor.show', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos,'posiciones' => $posiciones]);
     }
 
     /**
@@ -172,7 +183,9 @@ class ProveedorController extends Controller
             ->where('proveedors.id','=',$id)
             ->get();
 
-        return view('Proveedor.edit', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos]);
+        $posiciones = FiscalPosition::all();
+
+        return view('Proveedor.edit', ['proveedor' => $proveedor,'municipios' => $municipios, 'bancos' => $bancos,'posiciones' => $posiciones]);
     }
 
     /**
@@ -221,6 +234,7 @@ class ProveedorController extends Controller
             'email'=> $request->email,
             'banco_id' => $banco->id,
             'cuenta' => $request->cuenta,
+            'fiscal_position_id' => $request->posicion,
         ]
         );
 

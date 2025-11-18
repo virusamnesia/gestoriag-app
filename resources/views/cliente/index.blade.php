@@ -40,6 +40,7 @@
                     <th scope="col">Clave</th>
                     <th scope="col">Razón Social</th>
                     <th scope="col">RFC</th>
+                    <th scope="col">Posición Fiscal</th>
                     <th scope="col">Correo</th>
                     <th scope="col">Teléfono</th>
                     <th scope="col">Acciones</th>
@@ -51,6 +52,7 @@
                             <th scope="row">{{$row->clave}}</th>
                             <td>{{$row->nombre}}</td>
                             <td>{{$row->rfc}}</td>
+                            <td>{{$row->posicion}}</td>
                             <td>{{$row->email}}</td>
                             <td>{{$row->telefono}}</td>
                             <td>

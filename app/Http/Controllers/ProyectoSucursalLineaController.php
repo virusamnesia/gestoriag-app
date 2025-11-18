@@ -133,7 +133,7 @@ class ProyectoSucursalLineaController extends Controller
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
-        'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+        'productos.id as producto_id', 'productos.nombre as producto', 'productos.iva', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
         'presupuestos.id as presupuesto_id','presupuestos.saldo as presupuesto_saldo','presupuestos.cxp as presupuestos_cxp','tipos_productos.nombre as tipo')
         ->where('proyecto_lineas.id','=',$idl)
         ->first();
@@ -146,18 +146,85 @@ class ProyectoSucursalLineaController extends Controller
             return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
         }
         else{
-            $importec = 0;
-            $saldoc = $linea->saldocliente;
-            $importep = 0;
-            $saldop = $linea->saldoproveedor;
+            $posicion =DB::table('proyectos')
+            ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
+            ->select('fiscal_positions.*')
+            ->where('proyectos.id','=',$idp)
+            ->get();
 
-            $importec = $linea->precio * ($movimiento->valor_cliente / 100);
-            $saldoc = $saldoc - $importec;
-            $importep = $linea->costo * ($movimiento->valor_proveedor / 100);
-            $saldop = $saldop - $importep;
+            foreach ($posicion as $pos){
+                $posicion_id = $pos->id;
+                $iva_t = $pos->iva_t;
+                $isr_r = $pos->isr_r;
+                $iva_r = $pos->iva_r;
+                $imp_c = $pos->imp_c;
+            } 
+
+            if($linea->iva <> 16){
+                $iva_t = $linea->iva;
+                $iva_r = $linea->iva;    
+            }
+            
+            $subtotal_linea = $linea->subtotal_v * ($movimiento->valor_cliente / 100);
+            $iva_t_linea = $subtotal_linea * ($iva_t / 100);
+            $isr_r_linea = $subtotal_linea * ($isr_r / 100);
+            $iva_r_linea = $subtotal_linea * ($iva_r / 100);
+            $imp_c_linea = $subtotal_linea * ($imp_c / 100);
+            $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+            $saldoc = $linea->saldocliente - $total_linea;
+
+            // Posicion del proveedor
+            $total_r = 0;
+            $subtotal_r = 0;
+            if($linea->presupuesto_id > 0){
+                $presupuesto = DB::table('presupuestos')
+                ->select('presupuestos.*')
+                ->where('presupuesto.id','=',$linea->presupuesto_id)->first();
+
+                $posicion_pv =DB::table('presupuestos')
+                ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
+                ->select('fiscal_positions.*')
+                ->where('presupuestos.id','=',$linea->presupuesto_id)
+                ->get();
+
+                foreach ($posicion_pv as $pos_pv){
+                    $posicion_id_pv = $pos_pv->id;
+                    $iva_t_pv = $pos_pv->iva_t;
+                    $isr_r_pv = $pos_pv->isr_r;
+                    $iva_r_pv = $pos_pv->iva_r;
+                    $imp_c_pv = $pos_pv->imp_c;
+                }
+
+                $subtotal_pv = $linea->subtotal_c;
+                $saldo_pv = $linea->saldoproveedor;
+
+                $subtotal_r = $presupuesto->subtotal_c - $subtotal_pv;
+                $iva_t_r = $subtotal_pv * ($iva_t / 100);
+                $isr_r_r = $subtotal_pv * ($isr_r / 100);
+                $iva_r_r = $subtotal_pv * ($iva_r / 100);
+                $imp_c_r = $subtotal_pv * ($imp_c / 100);
+                $total_r = $subtotal_pv + $iva_t_r - $isr_r_r - $iva_r_r - $imp_c_r;
+                
+                $data = [
+                    'subtotal' => $subtotal_r,
+                    'iva_t' => $iva_t_r,
+                    'isr_r' => $isr_r_r,
+                    'iva_r' => $iva_r_r,
+                    'imp_c' => $imp_c_r,
+                    'importe' => $total_r,
+                    'saldo' => $presupuesto->saldo - $saldo_pv,
+                ];
+                
+                $pres = DB::table('presupuestos')
+                    ->where('id','=',$linea->presupuesto_id)
+                    ->update($data);
+
+               $saldop = $linea->saldoproveedor - $total_r;
+            }
+            
 
             $facturable = 0;
-            if ($importec >  0 or $importep > 0 ){
+            if ($total_linea >  0 or $total_r > 0 ){
                 $facturable = 1;
             }
             
@@ -171,9 +238,11 @@ class ProyectoSucursalLineaController extends Controller
             $mov->fecha_mov = $request->fecha;
             $mov->cliente_id = $cliente->id;
             $mov->proveedor_id = $linea->proveedor_id;
-            $mov->importe_cliente = $importec;
+            $mov->subtotal_cliente = $subtotal_linea;
+            $mov->importe_cliente = $total_linea;
             $mov->saldo_cliente = $saldoc;
-            $mov->importe_proveedor = $importep;
+            $mov->importe_proveedor = $total_r;
+            $mov->subtotal_proveedor = $subtotal_r;
             $mov->saldo_proveedor = $saldop;
             $mov->observaciones = $request->observaciones;
             $mov->url = $request->url;
@@ -181,10 +250,10 @@ class ProyectoSucursalLineaController extends Controller
             $mov->save();
 
             $data = [
-                'saldocliente' => $linea->saldocliente - $importec,
-                'cxc' => $linea->cxc + $importec,
-                'saldoproveedor' => $linea->saldoproveedor - $importep,
-                'cxp' => $linea->cxc + $importep,
+                'saldocliente' => $linea->saldoc,
+                'cxc' => $linea->cxc + $total_linea,
+                'saldoproveedor' => $saldop,
+                'cxp' => $linea->cxc + $total_r,
                 'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
             ];
 
@@ -193,8 +262,8 @@ class ProyectoSucursalLineaController extends Controller
                 ->update($data);
 
             $data = [
-                'saldo' => $proyecto->saldo - $importec,
-                'cxc' => $proyecto->cxc + $importec,
+                'saldo' => $proyecto->saldo - $total_linea,
+                'cxc' => $proyecto->cxc + $total_linea,
             ];
 
             $proy = DB::table('proyectos')
@@ -203,8 +272,8 @@ class ProyectoSucursalLineaController extends Controller
 
             if($linea->presupuesto_id > 0){
                 $data = [
-                    'saldo' => $linea->presupuesto_saldo - $importep,
-                    'cxp' => $linea->presupuesto_cxp + $importep,
+                    'saldo' => $linea->presupuesto_saldo - $total_r,
+                    'cxp' => $linea->presupuesto_cxp + $total_r,
                 ];
         
                 $pres = DB::table('presupuestos')
