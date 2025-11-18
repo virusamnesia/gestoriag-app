@@ -121,8 +121,8 @@
                             </x-adminlte-select2>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="iva_t" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                            <x-adminlte-input name="iva_t" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5" value="0"
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
@@ -131,8 +131,8 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="isr_r" placeholder="ISR Retenido" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                            <x-adminlte-input name="isr_r" placeholder="ISR Retenido" type="number" fgroup-class="col-md-5" value="0"
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
@@ -141,8 +141,8 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="iva_r" placeholder="IVA Retenido" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                            <x-adminlte-input name="iva_r" placeholder="IVA Retenido" type="number" fgroup-class="col-md-5" value="0"
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
@@ -151,8 +151,8 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="imp_c" placeholder="Impuesto Cedular" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                            <x-adminlte-input name="imp_c" placeholder="Impuesto Cedular" type="number" fgroup-class="col-md-5" value="0"
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
