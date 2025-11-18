@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Producto;
 use App\Models\productos_proyecto;
 use App\Models\Proyecto;
 use App\Models\ProyectoLinea;
@@ -82,7 +83,7 @@ class ProductosProyectoController extends Controller
             })
             ->select('productos_proyectos.*','productos.nombre as producto','tipos_productos.id as tps_id',
             'proyectos.nombre as proyecto','tipos_productos.nombre as tps_nombre', 'terminos_pago_clientes.id as terminos',
-            'movimientos_pago_clientes.estatus_linea_cliente_id as estatus')
+            'movimientos_pago_clientes.estatus_linea_cliente_id as estatus','productos.iva')
             ->where('proyectos.id','=',$idp)
             ->where('productos_proyectos.cotizado','=',true)
             ->orderBy('productos.nombre')
@@ -107,7 +108,7 @@ class ProductosProyectoController extends Controller
         $isr_r_p = 0;
         $iva_r_p = 0;
         $imp_c_p = 0;
-        $importe = 0
+        $importe = 0;
 
         foreach ($sucursales as $suc){
             foreach ($productos as $prod){
@@ -118,6 +119,10 @@ class ProductosProyectoController extends Controller
                     ->first();
 
                 if ($rev == null){
+                    if($prod->iva <> 16){
+                        $iva_t = $prod->iva;
+                        $iva_r = $prod->iva;    
+                    }
 
                     $subtotal_linea = $prod->cantidad * $prod->precio;
                     $iva_t_linea = $subtotal_linea * ($iva_t / 100);
@@ -156,12 +161,12 @@ class ProductosProyectoController extends Controller
 
                     $linea->save();
 
-                    $subtotal_p += $prod->precio;
-                    $iva_t_p += $subtotal_p * ($iva_t / 100);
-                    $isr_r_p += $subtotal_p * ($isr_r / 100);
-                    $iva_r_p += $subtotal_p * ($iva_r / 100);
-                    $imp_c_p += $subtotal_p * ($imp_c / 100);
-                    $importe += $subtotal_p + $iva_t_p - $isr_r_p - $iva_r_p - $imp_c_p;
+                    $subtotal_p += $subtotal_linea;
+                    $iva_t_p += $iva_t_linea;
+                    $isr_r_p += $isr_r_linea;
+                    $iva_r_p += $iva_r_linea;
+                    $imp_c_p += $imp_c_linea;
+                    $importe += $total_linea;
                 };
             };
         };

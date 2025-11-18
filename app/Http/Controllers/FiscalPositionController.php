@@ -11,7 +11,10 @@ class FiscalPositionController extends Controller
 {
     public function index(){
         
-        $posiciones = FiscalPosition::all();
+        $posiciones =  DB::table('fiscal_positions')
+                ->join('regimenes_fiscales', 'regimenes_fiscales.id', '=', 'fiscal_positions.regimenes_fiscale_id')
+                ->select('fiscal_positions.*', 'regimenes_fiscales.nombre as regimen', 'regimenes_fiscales.id as regimen_id')
+                ->get();
         $regimenes = RegimenesFiscale::all();
 
         return view('posiciones.index', ['posiciones' => $posiciones,'regimenes' => $regimenes]);
@@ -21,7 +24,7 @@ class FiscalPositionController extends Controller
     public function store(Request $request)
     {
         $validacion = $request->validate([
-            'nombre' => 'required|string|max:225|unique:name',
+            'nombre' => 'required|string|max:225|unique:fiscaL_positions',
             'iva_t' => 'required',
             'isr_r' => 'required',
             'iva_r' => 'required',
@@ -46,7 +49,7 @@ class FiscalPositionController extends Controller
     public function update(Request $request)
     {
         $validacion = $request->validate([
-            'nombre_e' => 'required|string|max:225|unique:name',
+            'nombre_e' => 'required|string|max:225|unique:fislcaL_positions',
             'iva_t_e' => 'required',
             'isr_r_e' => 'required',
             'iva_r_e' => 'required',

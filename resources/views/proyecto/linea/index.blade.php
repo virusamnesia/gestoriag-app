@@ -48,6 +48,7 @@
                             <th scope="col">Producto</th>
                             <th scope="col">Tipo</th>
                             <th scope="col">Cantidad</th>
+                            <th scope="col">Precio</th>
                             <th scope="col">Subtotal</th>
                             <th scope="col">IVA Trasladado</th>
                             <th scope="col">ISR Retenido</th>
@@ -71,7 +72,7 @@
                                     <td>{{$row->tipo}}</td>
                                     <td>${{number_format($row->cantidad, 2)}}</td>
                                     <td>${{number_format($row->precio, 2)}}</td>
-                                    <td>${{number_format($row->subtotal, 2)}}</td>
+                                    <td>${{number_format($row->subtotal_v, 2)}}</td>
                                     <td>${{number_format($row->iva_t_v, 2)}}</td>
                                     <td>${{number_format($row->isr_r_v, 2)}}</td>
                                     <td>${{number_format($row->iva_r_v, 2)}}</td>

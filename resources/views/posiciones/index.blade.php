@@ -90,7 +90,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form class="form p-3" action="/posiciones/nuevo" method="POST">
+                <form class="form p-3" action="/posiciones/store" method="POST">
                     @csrf
                     <div class="modal-body">
                         <br>
