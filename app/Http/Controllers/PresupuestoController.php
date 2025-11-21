@@ -140,7 +140,7 @@ class PresupuestoController extends Controller
         $posicion =DB::table('proveedors')
             ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proveedors.fiscal_position_id')
             ->select('fiscal_positions.*')
-            ->where('clientes.id','=',$request->proveedor)
+            ->where('proveedors.id','=',$request->proveedor)
             ->get();
 
         foreach ($posicion as $pos){

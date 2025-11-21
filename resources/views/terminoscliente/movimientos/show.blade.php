@@ -29,6 +29,7 @@
         <div class="col-md-11">
         </div>
         <div class="col-md-1">
+            <x-adminlte-button label="Nuevo" theme="info" icon="fas fa-info-circle" id="btnagregar" data-toggle="modal" data-target="#smagregar" onclick="nuevo()"/>
         </div>
     </div>
     <div class="row">
@@ -39,24 +40,18 @@
                 <thead class="bg-dark text-white">
                 <tr>
                     <th scope="col">Secuencia</th>
-                    <th scope="col">Nombre</th>
                     <th scope="col">Estatus Pago</th>
-                    <th scope="col">Facturable</th>
-                    <th scope="col">Porcentaje</th>
+                    <th scope="col">Porcentaje Cliente</th>
+                    <th scope="col">Porcentaje Proveedor</th>
                 </tr>
                 </thead>
                 <tbody>
                     @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
                         <tr>
                             <th scope="row">{{$row->secuencia}}</th>
-                            <td>{{$row->nombre}}</td>
                             <td>{{$row->estatus}}</td>
-                            @if ($row->facturable == False)
-                            <td>No</td>
-                            @else
-                            <td>Sí</td>
-                            @endif
-                            <td>{{$row->porcentaje}}</td>
+                            <td>{{$row->valor_cliente}}</td>
+                            <td>{{$row->valor_proveedor}}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -75,7 +70,7 @@
         </div>
     </div>
 
-    
+   
 @stop
 
 @section('css')
@@ -122,15 +117,4 @@
         }
     </script>
 
-    <script type="text/javascript">
-    function delete(id){
-       
-    }
-    </script>
-
-    <script type="text/javascript">
-        function edit(id){
-            
-        }
-    </script>
 @stop

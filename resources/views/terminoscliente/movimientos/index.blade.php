@@ -43,7 +43,7 @@
                     <th scope="col">Estatus Pago</th>
                     <th scope="col">Porcentaje Cliente</th>
                     <th scope="col">Porcentaje Proveedor</th>
-                    <th scope="col">Acciones</th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,7 +53,7 @@
                             <td>{{$row->estatus}}</td>
                             <td>{{$row->valor_cliente}}</td>
                             <td>{{$row->valor_proveedor}}</td>
-                            <td><x-adminlte-button label="Editar" theme="warning" icon="fas fa-info-circle" id="btneditar" data-toggle="modal" data-target="#smeditar" onclick="edit('{{$row->id}}','{{$row->secuencia}}','{{$row->estatus}}','{{$row->valor_cliente}}','{{$row->valor_proveedor}}')"/></td>
+                            <td><x-adminlte-button label="Editar" theme="warning" id="btneditar" data-toggle="modal" data-target="#smeditar" onclick="editar('{{$row->id}}','{{$row->secuencia}}','{{$row->estatus}}','{{$row->valor_cliente}}','{{$row->valor_proveedor}}')"/></td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -115,7 +115,7 @@
                             </div>
                             <div class="row">
                                 <x-adminlte-input name="vproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
-                                    igroup-size="sm" min=0 max=1000 label="% Proveedor" label-class="text-lightblue">
+                                    igroup-size="sm" min=0 max=1000  label="% Proveedor" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
                                             <i class="fas fa-percent"></i>
@@ -155,7 +155,7 @@
                                     fgroup-class="col-md-8" disable-feedback/>
                             </div>
                             <div class="row">
-                                <x-adminlte-input name="estatus" id="estatus" placeholder="Estado" disabled label="Estatus" label-class="text-lightblue"
+                                <x-adminlte-input name="eestatus" id="eestatus" placeholder="Estado" disabled label="Estatus" label-class="text-lightblue"
                                     fgroup-class="col-md-8" disable-feedback/>
                             </div>
                             <div class="row">
@@ -241,12 +241,12 @@
     </script>
 
     <script type="text/javascript">
-        function edit(id,sec,edo,clie,prov){
-            $("#eid").value(id);
-            $("#esecuencia").value(sec);
-            $("#estatus").value(edo);
-            $("#evcliente").value(clie);
-            $("#evproveedor").value(prov);
+        function editar(id,sec,est,cli,pro){
+            $("#eid").val(id);
+            $("#esecuencia").val(sec);
+            $("#eestatus").val(est).trigger('change');
+            $("#evcliente").val(cli);
+            $("#evproveedor").val(pro);
         }
     </script>
 @stop

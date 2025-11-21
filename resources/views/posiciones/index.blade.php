@@ -59,7 +59,7 @@
                             <td>{{$row->iva_r}}</td>
                             <td>{{$row->imp_c}}</td>
                             <td>
-                                 <button class="btn align-self-left" id="btnedit" data-toggle="modal" data-target="#smeditar" onclick="edit({{$row->id}},'{{$row->nombre}}','{{$row->regimen_id}}','{{$row->regimen}}','{{$row->iva_t}}','{{$row->isr_r}}','{{$row->iva_r}}','{{$row->imp_c}}')"><i class="icon ion-md-create"></i>Editar</button>
+                                 <x-adminlte-button label="Editar" theme="warning" id="btnedit" data-toggle="modal" data-target="#smeditar" onclick="edit('{{$row->id}}','{{$row->nombre}}','{{$row->regimen_id}}','{{$row->regimen}}','{{$row->iva_t}}','{{$row->isr_r}}','{{$row->iva_r}}','{{$row->imp_c}}')"/>
                             </td>
                         </tr>
                     @endforeach
@@ -188,8 +188,8 @@
                         <h6>Editar Posición Fiscal</h6>
                         <br>
                         <div class="row">
-                            <x-adminlte-input name="nombre_e" placeholder="Nombre de la Posición Fiscal" label-class="text-lightblue" 
-                            fgroup-class="col-md-12" required>
+                            <x-adminlte-input name="nombre_e" id="nombre_e" placeholder="Nombre de la Posición Fiscal" label-class="text-lightblue" 
+                            fgroup-class="col-md-12" required disabled>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
                                         <i class="fas fa-highlighter text-lightblue"></i>
@@ -199,8 +199,8 @@
                             <input type="hidden" id="id" name="id">
                         </div>
                         <div class="row">
-                            <x-adminlte-select2 name="regimen_e" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                igroup-size="sm" data-placeholder="Selecciona un Regimen Fiscal..." >
+                            <x-adminlte-select2 name="regimen_e" id="regimen_e" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                igroup-size="sm" disabled data-placeholder="Selecciona un Regimen Fiscal..." >
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text bg-gradient-info">
                                         <i class="fas fa-location-dot"></i>
@@ -213,8 +213,8 @@
                             </x-adminlte-select2>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="iva_t_e" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                            <x-adminlte-input name="iva_t_e" id="iva_t_e" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5"
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
@@ -224,7 +224,7 @@
                         </div>
                         <div class="row">
                             <x-adminlte-input name="isr_r_e" placeholder="ISR Retenido" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
@@ -234,7 +234,7 @@
                         </div>
                         <div class="row">
                             <x-adminlte-input name="iva_r_e" placeholder="IVA Retenido" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
@@ -244,7 +244,7 @@
                         </div>
                         <div class="row">
                             <x-adminlte-input name="imp_c_e" placeholder="Impuesto Cedular" type="number" fgroup-class="col-md-5"
-                                igroup-size="sm" min=1 max=100>
+                                igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
                                         <i class="fas fa-percentage"></i>
@@ -310,14 +310,14 @@
     </script>
 
     <script type="text/javascript">
-        function edit(id,nombre,regimen_id,regimen,iva_t,isr_r,iva_t,imp_c){
+        function edit(id,nombre,regimen_id,regimen,iva_t,isr_r,iva_r,imp_c){
             $("#nombre_e").val(nombre);
             $("#regimen_e").val(regimen_id).trigger('change');
-            $("#id").val(id)
             $("#iva_t_e").val(iva_t);
             $("#isr_r_e").val(isr_r);
-            $("#iva_r_e").val(iva_t);
+            $("#iva_r_e").val(iva_r);
             $("#imp_c_e").val(imp_c);
+            $("#id").val(id);
         }
     </script>
 @stop

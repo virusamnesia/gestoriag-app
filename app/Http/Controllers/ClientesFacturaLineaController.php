@@ -78,6 +78,7 @@ class ClientesFacturaLineaController extends Controller
             ->join('proyecto_sucursal_lineas','proyecto_lineas.id','=','proyecto_sucursal_lineas.proyecto_linea_id')
             ->join('productos','proyecto_lineas.producto_id','=','productos.id')
             ->join('sucursals','sucursals.id','=','proyecto_lineas.sucursal_id')
+            ->join('fiscal_positions','proyectos.fiscal_position_id','=','fiscal_positions.id')
             ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
             ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
             ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
@@ -90,7 +91,8 @@ class ClientesFacturaLineaController extends Controller
             'clientes.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'proyectos.id as proyecto_id','proyectos.nombre as proyecto', 'productos.id as producto_id', 'productos.nombre as producto', 'agrupador_facturas.nombre as agrupador', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha',
-            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
+            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje',
+            'productos.iva','proyectos.fiscal_position_id as posicion_id','fiscal_positions.iva_t','fiscal_positions.isr_r','fiscal_positions.iva_r','fiscal_positions.imp_c','proyecto_sucursal_lineas.subtotal_cliente as subtotal_c')
             ->where('proyectos.id', '=',$idp)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
             ->where('proyecto_sucursal_lineas.importe_cliente', '>', 0)
@@ -99,6 +101,10 @@ class ClientesFacturaLineaController extends Controller
         
         $subtotal = 0;
         $impuestos = 0;
+        $iva_t_p = 0;
+        $isr_r_p = 0;
+        $iva_r_p = 0;
+        $imp_c_p = 0;
         $total = 0;
 
         $fact = new ClientesFactura();
@@ -106,25 +112,50 @@ class ClientesFacturaLineaController extends Controller
         $fact->proyecto_id = $idp;
         $fact->fecha = now();
         $fact->subtotal = $subtotal;
-        $fact->impuestos = 0;
-        $fact->total = $subtotal;
+        $fact->impuestos = $impuestos;
+        $fact->iva_t = $impuestos;
+        $fact->isr_r = $impuestos;
+        $fact->iva_r = $impuestos;
+        $fact->imp_c = $impuestos;
+        $fact->total = $total;
         $fact->es_activo = 1;
+        $fact->fiscal_position_id = $impuestos;
         $fact->save();
 
         foreach ($movimientos as $row){
             $sel = "sel".$row->mov_id;
             if ($request->$sel){
+                if($row->iva <> 16){
+                    $iva_t_linea = $row->subtotal_c * ($row->iva/100);
+                    $iva_r_linea = $row->subtotal_c * ($row->iva/100);
+                } 
+                else{
+                    $iva_t_linea = $row->subtotal_c * ($row->iva_t/100);
+                    $iva_r_linea = $row->subtotal_c * ($row->iva_r/100);
+                }
+                $isr_r_linea = $row->subtotal_c * ($row->isr_r/100);
+                $imp_c_linea = $row->subtotal_c * ($row->imp_c/100);
+                $posicion_id = $row->posicion_id;
                 $linea = new ClientesFacturaLinea();
                 $linea->clientes_factura_id = $fact->id;
                 $linea->proyecto_sucursal_linea_id = $row->mov_id;
-                $linea->subtotal = $row->cxc;
-                $linea->impuestos = 0;
-                $linea->total = $row->cxc;
+                $linea->subtotal = $row->subtotal_c;
+                $linea->iva_t = $iva_t_linea;
+                $linea->isr_r = $isr_r_linea;
+                $linea->iva_r = $iva_r_linea;
+                $linea->imp_c = $imp_c_linea;
+                $linea->impuestos = $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+                $linea->total = $row->subtotal_c + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
                 $linea->fecha = today();
                 $linea->save();
 
-                $subtotal += $row->cxc;
-                $total += $row->cxc;
+                $subtotal += $row->subtotal_c;
+                $iva_t_p += $iva_t_linea;
+                $isr_r_p += $isr_r_linea;
+                $iva_r_p += $iva_r_linea;
+                $imp_c_p += $imp_c_linea;
+                $impuestos += $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+                $total += $row->subtotal_c + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
 
                 $mov = DB::table('proyecto_sucursal_lineas')
                     ->where('id','=', $row->mov_id)
@@ -146,7 +177,7 @@ class ClientesFacturaLineaController extends Controller
                 $proy = DB::table('proyectos')
                     ->where('id','=', $proyecto->id)
                     ->update([
-                    'cxc'=> $proyecto->cxc - $row->cxc,
+                    'cxc'=> $proyecto->cxc - $row->subtotal_c + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea,
                 ]);
             } 
         };
@@ -155,8 +186,13 @@ class ClientesFacturaLineaController extends Controller
             ->where('id','=',$fact->id)
             ->update([
             'subtotal'=> $subtotal,
+            'iva_t'=> $iva_t_p,
+            'isr_r'=> $isr_r_p,
+            'iva_r'=> $iva_r_p,
+            'imp_c'=> $imp_c_p,
             'impuestos'=> $impuestos,
             'total'=> $total,
+            'fiscal_position_id'=> $posicion_id,
         ]);
 
         $inf = 1;

@@ -41,7 +41,7 @@
                     <th scope="col">RFC</th>
                     <th scope="col">Proyecto</th>
                     <th scope="col">Año</th>
-                    <th scope="col">Importe Facturable</th>
+                    <th scope="col">A facturar</th>
                     <th scope="col">Acciones</th>
                 </tr>
                 </thead>
