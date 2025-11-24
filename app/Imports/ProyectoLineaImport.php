@@ -52,6 +52,11 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
 
             $importe = $proyecto->importe;
             $saldo = $proyecto->saldo;
+            $subtotal = $proyecto->subtotal;
+            $iva_t = $proyecto->iva_t;
+            $isr_r = $proyecto->isr_r;
+            $iva_r = $proyecto->iva_r;
+            $imp_c = $proyecto->imp_c;
             
             if($sucursal == null){
                 $mensaje = $row['id']."-".$row['marca']."-".$row['sucursal']." sucursal no existente";
@@ -79,6 +84,19 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     ->where('productos.es_activo','=',1)
                     ->where('importacion_proyecto_productos.importacion_proyecto_id','=',$importacion->importacion_proyecto_id)
                     ->get();
+
+                $posicion =DB::table('proyectos')
+                    ->join('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
+                    ->select('fiscal_positions.*')
+                    ->where('proyectos.id','=',$importacion->proyecto_id)
+                    ->get();
+
+                foreach ($posicion as $pos){
+                    $iva_t = $pos->iva_t;
+                    $isr_r = $pos->isr_r;
+                    $iva_r = $pos->iva_r;
+                    $imp_c = $pos->imp_c;
+                }
                 
                 foreach ($productos as $producto){
                     $prod = str_replace(' ', '_', strtolower($producto->nombre));
@@ -90,14 +108,38 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     $prod = str_replace('.', '', $prod);
                     $prod = str_replace('ñ', 'n', $prod);
                     if($row[$prod] > 0){
+
+                        if($producto->iva <> 16){
+                            $iva_t = $producto->iva;
+                            $iva_r = $producto->iva;    
+                        }
+
+                        $subtotal_linea = $row[$prod];
+                        $iva_t_linea = $subtotal_linea * ($iva_t / 100);
+                        $isr_r_linea = $subtotal_linea * ($isr_r / 100);
+                        $iva_r_linea = $subtotal_linea * ($iva_r / 100);
+                        $imp_c_linea = $subtotal_linea * ($imp_c / 100);
+                        $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
                         ProyectoLinea::create([
                             'proyecto_id' => $proyecto->id,
                             'cliente_id' => $sucursal->cliente_id,
                             'sucursal_id' => $sucursal->id,
                             'producto_id' => $producto->id,
-                            'precio' => $row[$prod],
-                            'saldocliente' => $row[$prod],
-                            'costo' => 0,
+                            'cantidad' => 1,
+                            'subtotal_v' => $subtotal_linea,
+                            'iva_t_v' => $iva_t_linea,
+                            'isr_r_v' => $isr_r_linea,
+                            'iva_r_v' => $iva_r_linea,
+                            'imp_c_v' => $imp_c_linea,
+                            'total_v' => $total_linea,
+                            'saldocliente' => $total_linea,
+                            'subtotal_c' => 0,
+                            'iva_t_c' => 0,
+                            'isr_r_c' => 0,
+                            'iva_r_c' => 0,
+                            'imp_c_c' => 0,
+                            'total_c' => 0,
+                            'saldoproveedor' => 0,
                             'cxc' => 0,
                             'cxp' => 0,
                             'saldoproveedor' => 0,
@@ -105,9 +147,20 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                             'estatus_linea_cliente_id' => 1,
                         ]);
 
-                        $importe += $row[$prod];
-                        $saldo += $row[$prod];
+                        $subtotal_p += $subtotal_linea;
+                        $iva_t_p += $iva_t_linea;
+                        $isr_r_p += $isr_r_linea;
+                        $iva_r_p += $iva_r_linea;
+                        $imp_c_p += $imp_c_linea;
+                        $importe += $total_linea;
+                        $saldo += $$total_linea:
+
                         $data = [
+                            'subtotal' => $subtotal_p,
+                            'iva_t' => $iva_t_p,
+                            'isr_r' => $isr_r_p,
+                            'iva_r' => $iva_r_p,
+                            'imp_c' => $imp_c_p,
                             'importe' => $importe,
                             'saldo' => $saldo,
                         ];

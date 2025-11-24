@@ -86,11 +86,13 @@ class ProveedorFacturaLineaController extends Controller
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->join('movimientos_pago_proveedors', 'movimientos_pago_proveedors.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_proveedor_id')
+            ->join('fiscal_positions','presupuestos.fiscal_position_id','=','fiscal_positions.id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','proveedors.id as proveedor_id','proveedors.nombre as proveedor',
             'proveedors.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'presupuestos.id as presupuesto_id','presupuestos.nombre as presupuesto', 'productos.id as producto_id', 'productos.nombre as producto', 'agrupador_facturas.nombre as agrupador', 
-            'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha',
-            'movimientos_pago_proveedors.secuencia as secuencia','proyecto_sucursal_lineas.importe_proveedor as cxp','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_proveedors.valor_proveedor as porcentaje')
+            'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha', 'movimientos_pago_clientes.subtotal_proveedor as subtotal_c',
+            'movimientos_pago_proveedors.secuencia as secuencia','proyecto_sucursal_lineas.importe_proveedor as cxp','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_proveedors.valor_proveedor as porcentaje',
+            'productos.iva','proyectos.fiscal_position_id as posicion_id','fiscal_positions.iva_t','fiscal_positions.isr_r','fiscal_positions.iva_r','fiscal_positions.imp_c')
             ->where('presupuestos.id', '=',$idp)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
             ->where('proyecto_sucursal_lineas.importe_proveedor', '>', 0)
@@ -99,6 +101,10 @@ class ProveedorFacturaLineaController extends Controller
         
         $subtotal = 0;
         $impuestos = 0;
+        $iva_t_p = 0;
+        $isr_r_p = 0;
+        $iva_r_p = 0;
+        $imp_c_p = 0;
         $total = 0;
 
         $fact = new ProveedorFactura();
@@ -106,25 +112,51 @@ class ProveedorFacturaLineaController extends Controller
         $fact->presupuesto_id = $idp;
         $fact->fecha = now();
         $fact->subtotal = $subtotal;
-        $fact->impuestos = 0;
-        $fact->total = $subtotal;
+        $fact->impuestos = $impuestos;
+        $fact->iva_t = $impuestos;
+        $fact->isr_r = $impuestos;
+        $fact->iva_r = $impuestos;
+        $fact->imp_c = $impuestos;
+        $fact->total = $total;
         $fact->es_activo = 1;
         $fact->save();
 
         foreach ($movimientos as $row){
             $sel = "sel".$row->mov_id;
             if ($request->$sel){
+                if($row->iva <> 16){
+                    $iva_t_linea = $row->subtotal_c * ($row->iva/100);
+                    $iva_r_linea = $row->subtotal_c * ($row->iva/100);
+                } 
+                else{
+                    $iva_t_linea = $row->subtotal_c * ($row->iva_t/100);
+                    $iva_r_linea = $row->subtotal_c * ($row->iva_r/100);
+                }
+                $isr_r_linea = $row->subtotal_c * ($row->isr_r/100);
+                $imp_c_linea = $row->subtotal_c * ($row->imp_c/100);
+                $posicion_id = $row->posicion_id;
+
                 $linea = new ProveedorFacturaLinea();
                 $linea->proveedor_factura_id = $fact->id;
                 $linea->proyecto_sucursal_linea_id = $row->mov_id;
-                $linea->subtotal = $row->cxp;
-                $linea->impuestos = 0;
-                $linea->total = $row->cxp;
+                
+                $linea->subtotal = $row->subtotal_c;
+                $linea->iva_t = $iva_t_linea;
+                $linea->isr_r = $isr_r_linea;
+                $linea->iva_r = $iva_r_linea;
+                $linea->imp_c = $imp_c_linea;
+                $linea->impuestos = $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+                $linea->total = $row->subtotal_c + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
                 $linea->fecha = today();
                 $linea->save();
 
-                $subtotal += $row->cxp;
-                $total += $row->cxp;
+                $subtotal += $row->subtotal_c;
+                $iva_t_p += $iva_t_linea;
+                $isr_r_p += $isr_r_linea;
+                $iva_r_p += $iva_r_linea;
+                $imp_c_p += $imp_c_linea;
+                $impuestos += $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+                $total += $row->subtotal_c + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
 
                 $mov = DB::table('proyecto_sucursal_lineas')
                     ->where('id','=', $row->mov_id)
@@ -145,7 +177,7 @@ class ProveedorFacturaLineaController extends Controller
                 $proy = DB::table('presupuestos')
                     ->where('id','=', $presupuesto->id)
                     ->update([
-                    'cxp'=> $presupuesto->cxp - $row->cxp,
+                    'cxp'=> $presupuesto->cxc - $row->subtotal_c + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea,
                 ]);
             } 
         };
@@ -165,10 +197,14 @@ class ProveedorFacturaLineaController extends Controller
 
     public function lineas($id){
         
-        $movimientos = DB::table('presupuestos')
+        $movimientos = DB::table('proveedor_facturas')
+            ->join('proveedor_factura_lineas','proveedor_facturas.id','=','proveedor_factura_lineas.proveedor_factura_id')
+            ->join('proyecto_sucursal_lineas','proyecto_sucursal_lineas.id','=','proveedor_factura_lineas.proyecto_sucursal_linea_id')
+            ->join('proyecto_lineas','proyecto_sucursal_lineas.proyecto_linea_id','=','proyecto_lineas.id')
+            ->join('presupuestos','presupuestos.id','=','proyecto_lineas.presupuesto_id')
+            ->join('proyectos','proyectos.id','=','proyecto_lineas.proyecto_id')
             ->join('proveedors','proveedors.id','=','presupuestos.proveedor_id')
-            ->join('proyecto_lineas','proyecto_lineas.presupuesto_id','=','presupuestos.id')
-            ->join('proyecto_sucursal_lineas','proyecto_lineas.id','=','proyecto_sucursal_lineas.proyecto_linea_id')
+            ->join('clientes','clientes.id','=','proyecto.cliente_id')
             ->join('productos','proyecto_lineas.producto_id','=','productos.id')
             ->join('sucursals','sucursals.id','=','proyecto_lineas.sucursal_id')
             ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
@@ -178,8 +214,8 @@ class ProveedorFacturaLineaController extends Controller
             ->leftJoin('agrupador_facturas', 'productos.agrupador_factura_id', '=', 'agrupador_facturas.id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->join('movimientos_pago_proveedors', 'movimientos_pago_proveedors.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_proveedor_id')
-            ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','proveedors.id as proveedor_id','proveedors.nombre as proveedor',
+            ->join('movimientos_pago_proveedors','proyecto_lineas.cantidad', 'movimientos_pago_proveedors.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_proveedor_id')
+            ->select('proveedor_factura_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','proveedors.id as proveedor_id','proveedors.nombre as proveedor',
             'proveedors.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'presupuestos.id as presupuesto_id','presupuestos.nombre as presupuesto', 'productos.id as producto_id', 'productos.nombre as producto', 'agrupador_facturas.nombre as agrupador', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha',

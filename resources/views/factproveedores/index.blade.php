@@ -42,6 +42,11 @@
                     <th scope="col">RFC</th>
                     <th scope="col">Presupuesto</th>
                     <th scope="col">Subtotal</th>
+                    <th scope="col">IVA Trasladado</th>
+                    <th scope="col">ISR Retenido</th>
+                    <th scope="col">IVA Retenido</th>
+                    <th scope="col">Impuesto Cedular</th>
+                    <th scope="col">Total</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Estatus</th>
                     <th scope="col">Factura Odoo</th>
@@ -56,6 +61,11 @@
                             <td>{{$row->rfc}}</td>
                             <td>{{$row->presupuesto}}</td>
                             <td>${{number_format($row->subtotal,2)}}</td>
+                            <td>${{number_format($row->iva_t,2)}}</td>
+                            <td>${{number_format($row->isr_r,2)}}</td>
+                            <td>${{number_format($row->iva_r,2)}}</td>
+                            <td>${{number_format($row->imp_c,2)}}</td>
+                            <td>${{number_format($row->total,2)}}</td>
                             <td>{{$row->fecha}}</td>
                             <td>{{$row->es_activo}}</td>
                             <td>{{$row->factura_odoo}}</td>

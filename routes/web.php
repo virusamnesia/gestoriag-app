@@ -85,7 +85,7 @@ Route::middleware([
     Route::get('/termclie/movimientos/show/{id?}', [MovimientosPagoClienteController::class, 'show'])->name('termclie.show.movimientos');
     Route::get('/termclie/movimientos/edit/{id?}', [MovimientosPagoClienteController::class, 'edit'])->name('termclie.edit.movimientos');
     Route::post('/termclie/movimientos/nuevo/{id?}', [MovimientosPagoClienteController::class, 'store'])->name('save.termclie.movimientos');
-    Route::post('/termclie/movimientos/update', [MovimientosPagoClienteController::class, 'update'])->name('update.termclie.movimientos');
+    Route::post('/termclie/movimientos/update/{id?}', [MovimientosPagoClienteController::class, 'update'])->name('update.termclie.movimientos');
 
     Route::get('/posiciones', [FiscalPositionController::class, 'index'])->name('posiciones');
     Route::get('/posiciones/nuevo', [FiscalPositionController::class, 'create'])->name('new.posiciones');

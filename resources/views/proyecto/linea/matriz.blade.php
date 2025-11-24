@@ -67,11 +67,11 @@
                                 @php $valprod =0; @endphp
                                 @foreach ($lineas as $lin)
                                     @if ($lin->sucursal_id == $row->sucursal_id and $lin->producto == $prod->producto)
-                                        <td>${{number_format($lin->precio, 2)}}</td>
+                                        <td>${{number_format($lin->total_v, 2)}}</td>
                                         @php 
-                                            $totalcliente += $lin->precio; 
+                                            $totalcliente += $lin->total_v; 
                                             $valprod = 1;
-                                            $totalproducto[$prod->producto] += $lin->precio;
+                                            $totalproducto[$prod->producto] += $lin->total_v;
                                         @endphp
                                     @endif
                                 @endforeach

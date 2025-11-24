@@ -700,7 +700,7 @@ class ProyectoLineaController extends Controller
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
-        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',DB::raw('proyecto_lineas.precio - proyecto_lineas.costo as margen'),
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',DB::raw('proyecto_lineas.subtotal_v - proyecto_lineas.subtotal_c as margen'),
         'tipos_productos.nombre as tipo')
         ->where('proyectos.id','=',$id)
         ->orderBy('sucursals.marca','asc')

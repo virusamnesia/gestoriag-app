@@ -42,7 +42,13 @@
                     <th scope="col">Motivo</th>
                     <th scope="col">Porcentaje aplicado</th>
                     <th scope="col">Fecha aplicación</th>
-                    <th scope="col">Importe</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">IVA Trasladado</th>
+                    <th scope="col">ISR Retenido</th>
+                    <th scope="col">IVA Retenido</th>
+                    <th scope="col">Impuesto Cedular</th>
+                    <th scope="col">Total</th>
                     <th scope="col">Agrupador de Facturación</th>
                     <th scope="col">Tipo de Producto</th>
                 </tr>
@@ -57,7 +63,13 @@
                             <td>{{$row->estatus}}</td>
                             <td>{{$row->porcentaje}}%</td>
                             <td>{{$row->fecha}}</td>
-                            <td>${{number_format($row->cxc,2)}}</td>
+                            <td>${{number_format($row->cantidad,2)}}</td>
+                            <td>${{number_format($row->subtotal,2)}}</td>
+                            <td>${{number_format($row->iva_t,2)}}</td>
+                            <td>${{number_format($row->isr_r,2)}}</td>
+                            <td>${{number_format($row->iva_r,2)}}</td>
+                            <td>${{number_format($row->imp_c,2)}}</td>
+                            <td>${{number_format($row->total,2)}}</td>
                             <td>{{$row->agrupador}}</td>
                             <td>{{$row->tipo}}</td>
                         </tr>
