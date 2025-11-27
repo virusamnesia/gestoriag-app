@@ -81,6 +81,7 @@
                                             <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
                                             <li><button class="btn align-self-left" id="btnmatrizcxc" onclick="matrizcxc({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz CxC</button></li>
                                             <li><button class="btn align-self-left" id="btnmatrizsaldos" onclick="matrizsaldos({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Saldos</button></li>
+                                            <li><button class="btn align-self-left" id="btnpdford" onclick="pdforden({{$row->id}})"><i class="ion-md-chatboxes"></i>Orden PDF</button></li>
                                             @endif
                                             @if($permisoa)
                                             @if($row->autorizar== 0)
@@ -217,6 +218,12 @@
 
         function matrizsaldos(id){
             var base = "<?php echo '/presupuestos/matrizsaldos/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function pdforden(id){
+            var base = "<?php echo '/presupuestos/pdf/ordencompra/'?>";
             var url = base+id;
             location.href=url;
         }

@@ -1,19 +1,14 @@
 @extends('adminlte::page')
 
-@section('title', 'Movimiento')
+@section('title', 'Proyecto')
 
 @section('content_header')
-    <h1>Nueva actividad a la sucursal</h1>
+    <h1>Editar Proyecto</h1>
 @stop
 
 @section('content')
     
-    <h5>Proyecto: {{$proyecto->nombre}}</h5>
-    <h5>Cliente: {{$cliente->nombre}}</h5>
-    <h5>Sucursal: {{$linea->sucursal}}</h5>
-    <h5>Producto: {{$linea->producto}}</h5>
-
-    <form action="/proyectos/lineas/sucursales/store/{{$idp}}/{{$idl}}" method="POST">
+    <form action="/proyectos/update/{{$proyecto->id}}" method="POST">
         
         @csrf
 
@@ -27,54 +22,52 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-3">
             </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="row">
-                    <input type="hidden" value="{{$next->id}}" name="movimiento"/>
-                    <x-adminlte-input name="accion" label="Acción" placeholder="{{$next->nombre}}" label-class="text-lightblue" disabled
-                    value="{{$next->nombre}}">
-                        <x-slot name="prependSlot">
-                            <div class="input-group-text">
-                                <i class="fas fa-user text-lightblue"></i>
+                    <x-adminlte-input name="nombre" placeholder="Nombre del proyecto" value="{{$proyecto->nombre}}" disabled
+                        fgroup-class="col-md-8" disable-feedback/>
+                </div>
+                <div class="row">
+                    <x-adminlte-input name="año" placeholder="Año" type="number" fgroup-class="col-md-5" value="{{$proyecto->anio}}"
+                        igroup-size="sm" min=2000 max=3000 step="0.01">
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text bg-light">
+                                <i class="fas fa-calendar-alt"></i>
                             </div>
                         </x-slot>
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    @php
-                    $config = [
-                        'format' => 'YYYY-MM-DD',
-                        'dayViewHeaderFormat' => 'MMM YYYY',
-                        'minDate' => "js:moment().startOf('month')",
-                        'maxDate' => "js:moment().endOf('month')",
-                        'daysOfWeekDisabled' => [0, 6],
-                    ];
-                    @endphp
-                    <x-adminlte-input-date name="fecha" label="Fecha de Regitro" igroup-size="sm"
-                        :config="$config" placeholder="Selecciona la fecha...">
-                        <x-slot name="appendSlot">
-                            <div class="input-group-text bg-dark">
-                                <i class="fas fa-calendar-day"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-input-date>
+                    <x-adminlte-input name="nombre" placeholder="Nombre del proyecto" value="{{$proyecto->cliente}}" disabled
+                        fgroup-class="col-md-8" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-textarea name="observaciones" label="Observaciones" rows=5 label-class="text-warning"
+                    <x-adminlte-select2 name="agrupado" label-class="text-lightblue"  fgroup-class="col-md-8" 
+                        igroup-size="sm" data-placeholder="Facturación agrupada...">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="far fa-file-alt"></i>
+                            </div>
+                        </x-slot>
+                        <option/>
+                        <option value="0" @php if ($proyecto->es_agrupado == 0) { echo "selected";} @endphp>No</option>
+                        <option value="1" @php if ($proyecto->es_agrupado == 1) { echo "selected";} @endphp>Sí</option>
+                    </x-adminlte-select2>
+                </div>
+                <div class="row">
+                    <x-adminlte-textarea name="obs" label="Observaciones" rows=5 label-class="text-warning"
                         igroup-size="lg" placeholder="Captura observaciones..."  fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-dark">
                                 <i class="fas fa-lg fa-file-alt text-warning"></i>
                             </div>
-                        </x-slot>
+                        </x-slot>{{$proyecto->observaciones}}
                     </x-adminlte-textarea>
                 </div>
-                <div class="row">
-                    <x-adminlte-input name="url" type="url"  fgroup-class="col-md-12" placeholder="URL de la carpeta de registro..."/>
-                </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
             </div>
         </div>
     </form>
@@ -85,7 +78,7 @@
         <div class="col-md-10">
         </div>
         <div class="col-md-1">
-            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back({{$proyecto->id}})"/>
+            <x-adminlte-button class="btn-sm" type="button" label="Cancelar" theme="outline-danger" icon="fas fa-lg fa-trash" onclick="back()"/>
         </div>
     </div>
 
@@ -130,9 +123,9 @@
     </script>
 
     <script type="text/javascript">
-        function back(id){
-            var base = "<?php echo '/proyectos/lineas/' ?>";
-            var url = base+id;
+        function back(){
+            var base = "<?php echo '/Proyectos' ?>";
+            var url = base;
             location.href=url;
         }
     </script>

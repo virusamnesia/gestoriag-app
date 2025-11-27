@@ -80,16 +80,18 @@
                                             <div class="dropdown">
                                                 <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                                 <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
-                                                    <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
+                                                    <li><button class="btn align-self-left" id="btnlines"  onclick="lines({{$row->id}})"><i class="icon ion-md-create"></i>Líneas</button></li>
                                                     <li><button class="btn align-self-left" id="btnview" onclick="view({{$row->id}})"><i class="ion-md-chatboxes"></i>Ver</button></li>
                                                     @if($permisom)
                                                     <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
                                                     <li><button class="btn align-self-left" id="btnmatrizcxc" onclick="matrizcxc({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz CxC</button></li>
                                                     <li><button class="btn align-self-left" id="btnmatrizsaldos" onclick="matrizsaldos({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Saldos</button></li>
                                                     <li><button class="btn align-self-left" id="btnmatrizmargen" onclick="matrizmargen({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz Margen</button></li>
+                                                    <li><button class="btn align-self-left" id="btnpdfcot" onclick="pdfcotizacion({{$row->id}})"><i class="ion-md-chatboxes"></i>Cotización PDF</button></li>
                                                     @endif
                                                     @if($permisoa)
                                                     @if($row->autorizar == 0)
+                                                        <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                                         <li><button class="btn align-self-left" id="btnauth" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
                                                         <li><button class="btn align-self-left" id="btnterm" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Terminos de Pago</button></li>
                                                     @endif
@@ -182,6 +184,12 @@
 
     <script type="text/javascript">
         function edit(id){
+            var base = "<?php echo '/proyectos/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function lines(id){
             var base = "<?php echo '/proyectos/lineas/'?>";
             var url = base+id;
             location.href=url;
@@ -225,6 +233,12 @@
 
         function matrizmargen(id){
             var base = "<?php echo '/proyectos/matrizmargen/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function pdfcotizacion(id){
+            var base = "<?php echo '/proyectos/pdf/cotizacion/'?>";
             var url = base+id;
             location.href=url;
         }

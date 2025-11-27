@@ -14,6 +14,7 @@ use App\Http\Controllers\MovimientosPagoClienteController;
 use App\Http\Controllers\MovimientosPagoProveedorController;
 use App\Http\Controllers\MunicipioContactoController;
 use App\Http\Controllers\MunicipiosProveedorController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PrecioProductoController;
 use App\Http\Controllers\PresupuestoController;
@@ -184,6 +185,8 @@ Route::middleware([
     Route::get('/proyectos/errores/{id?}', [ProyectoLineaController::class, 'errores'])->name('errores.proyectos');
     Route::get('/proyectos/lineas/delete/{idp?}/{idl?}', [ProyectoLineaController::class, 'delete'])->name('delete.proyectos.lineas');
     Route::post('/proyectos/lineas/destroy/{idp?}/{idl?}', [ProyectoLineaController::class, 'destroy'])->name('destroy.proyectos.lineas');
+
+    Route::get('/proyectos/pdf/cotizacion/{id?}', [PdfController::class, 'cotizacion'])->name('pdf.proyectos.cotizacion');
     
 
     //FACTURACION CLIENTES
@@ -218,6 +221,8 @@ Route::middleware([
     Route::get('/presupuestos/matriz/{id?}', [PresupuestoController::class, 'matriz'])->name('presupuestos.matriz');
     Route::get('/presupuestos/matrizcxp/{id?}', [PresupuestoController::class, 'matrizcxp'])->name('presupuestos.matrizcxc');
     Route::get('/presupuestos/matrizsaldos/{id?}', [PresupuestoController::class, 'matrizsaldos'])->name('presupuestos.matrizsaldos');
+    
+    Route::get('/presupuestos/pdf/ordencompra/{id?}', [PdfController::class, 'ordencompra'])->name('pdf.presupuestos.ordencompra');
     
     //FACTURACION PROVEEDORES
     Route::get('/factproveedores', [ProveedorFacturaController::class, 'index'])->name('factproveedores');

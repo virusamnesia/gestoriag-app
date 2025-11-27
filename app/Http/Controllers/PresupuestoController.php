@@ -345,7 +345,7 @@ class PresupuestoController extends Controller
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
                 ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo')
                 ->where('proyecto_lineas.presupuesto_id','=',$id)
-                ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                ->where('proyecto_lineas.proveedor_id','=',$presupuesto->presupuesto_id)
                 ->orderBy('productos.nombre')
                 ->get();
 

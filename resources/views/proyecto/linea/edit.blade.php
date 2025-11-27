@@ -77,6 +77,16 @@
                         @endforeach
                     </x-adminlte-select2>
                 </div>
+                <div class="row">
+                    <x-adminlte-textarea name="obs" label="Observaciones" rows=5 label-class="text-warning" 
+                        igroup-size="lg" placeholder="Captura observaciones..."  fgroup-class="col-md-12">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-dark">
+                                <i class="fas fa-lg fa-file-alt text-warning"></i>
+                            </div>
+                        </x-slot>{{$linea->obs_v}}
+                    </x-adminlte-textarea>
+                </div>
             <div class="col-md-3">
             </div>
         </div>

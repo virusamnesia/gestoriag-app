@@ -195,6 +195,8 @@ class ProyectoLineaController extends Controller
             $linea->saldoproveedor = 0;
             $linea->terminos_pago_cliente_id = $terminos->id;
             $linea->estatus_linea_cliente_id = $terminos->estatus; 
+            $linea->obs_c = ""; 
+            $linea->obs_v = ""; 
 
             $linea->save();
 
@@ -348,6 +350,7 @@ class ProyectoLineaController extends Controller
                     'terminos_pago_cliente_id'=> $request->termino,
                     'estatus_linea_cliente_id'=> $terminos->estatus,
                     'producto_id'=> $request->producto,
+                    'obs_v'=> $request->obs,
                 ]
             );
         

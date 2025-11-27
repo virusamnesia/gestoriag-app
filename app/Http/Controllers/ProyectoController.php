@@ -161,6 +161,7 @@ class ProyectoController extends Controller
         $proyecto->es_agrupado = $request->agrupado;
         $proyecto->autorizar = 0;
         $proyecto->fiscal_position_id = $posicion_id;
+        $proyecto->observaciones = "";
 
         $proyecto->save();
 
@@ -531,7 +532,65 @@ class ProyectoController extends Controller
      */
     public function edit($id)
     {
+        $user = Auth::user()->id;
+
+        $acceso = 2;
+
+        $permisos = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->get();
+
+        $permisoa = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', 4)
+            ->first();
         
+        $permisom = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', 1)
+            ->first();
+        
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $proyecto =DB::table('proyectos')
+                ->join('clientes', 'clientes.id', '=', 'proyectos.cliente_id')
+                ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
+                ->leftjoin('fiscal_positions', 'fiscal_positions.id', '=', 'proyectos.fiscal_position_id')
+                ->select('proyectos.*','clientes.nombre as cliente','clientes.id as cliente_id','estados_proyectos.nombre as estado',
+                'estados_proyectos.id as estados_proyecto_id','fiscal_positions.id as posicion_id','fiscal_positions.nombre as posicion')
+                ->where('proyectos.id', "=",$id)
+                ->first();
+
+            return view('proyecto.edit', ['proyecto' => $proyecto, 'user' => $user,'permisos' => $permisos,'permisoa' => $permisoa,'permisom' => $permisom]);
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('proyectos')->with('error',$inf);
+        }
     }
 
     /**
@@ -543,7 +602,17 @@ class ProyectoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $proyecto = DB::table('proyectos')
+            ->where('proyectos.id','=',$id)
+            ->update([
+            'anio'=> $request->año,
+            'es_agrupado'=> $request->agrupado,
+            'observaciones'=> $request->obs,
+        ]);
+
+        $inf = 1;
+        session()->flash('Exito','El proyecto se modificó con éxito...');
+        return redirect()->route('proyectos')->with('info',$inf);
     }
 
 
