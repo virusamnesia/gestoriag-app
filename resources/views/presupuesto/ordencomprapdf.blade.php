@@ -180,6 +180,9 @@
     .hrfirmas{
       width: 60%;
     }
+    .pjustify {
+      text-align: justify;
+    }
   </style>
 <body>
   <header>
@@ -252,7 +255,7 @@
         <!-- Introducción -->
         
         <h4>PRESENTE</h4>
-        <p>
+        <p class="pjustify">
             Por medio del presente, dejo a su consideración la orden de compra, 
             para diversos servicios y/o productos en las sucursales que a continuación se detallan:
         </p>
@@ -336,38 +339,38 @@
         <br>
         <br>
         <br>
-        <!-- Conclusión -->
+        <!-- Entrega -->
         <div class="conclusion">
             <h3>Condiciones de entrega</h3>
-            <ul>
-                <li>
+            <ol>
+                <li class="pjustify">
                      Entregar los permisos concluidos y/o dictámenes en cada establecimiento de acuerdo al protocolo de entrega, 
                      que consta de: acuse con firma y sello de la sucursal, fotografía del permiso o licencia en acrílico de tienda; 
                      para PIPC se deberá entregar una copia de la portada para que también se acuse con firma y sello de la sucursal y 
                      foto de entrega (de lo anterior, lo que aplique de acuerdo al servicio cotizado). 
-                     Es de suma importancia que al momento de presentarse en cada establecimiento hacerlo bajo el nombre de Gestoría G. 
+                     <b>Es de suma importancia que al momento de presentarse en cada establecimiento hacerlo bajo el nombre de Gestoría G.</b> 
                 </li>
-                <li>
+                <li class="pjustify">
                      Compartir a Gestoría G la evidencia de manera digital (Programa Interno, constancias de capacitación, licencias escaneadas, 
                      acuses de entrega, fotografías, etc.) y evidencia original (DC-3 del personal capacitado).
                 </li>
-            </ul>
+            </ol>
         </div>
 
         <!-- Conclusión -->
         <div class="conclusion">
             <h3>Condiciones de pago</h3>
-            <ul>
-                <li>
+            <ol>
+                <li class="pjustify">
                      A la autorización de la presente orden de compra, se tramitará el 50% de anticipo sobre el total una vez firmada por ambas partes. 
                 </li>
-                <li>
+                <li class="pjustify">
                      Al concluir los tramites, el 50% restante se cubrirá una vez cumpliendo las condiciones de entrega. 
                      El equipo de Gestoría G deberá revisar  dichas evidencias para ser aceptadas, en caso de haber observaciones en determinado servicio, 
                      serán indicadas y tendrán que ser atendidas con la persona correspondiente, en caso contrario se podrá tramitar el monto restante 
                      para pago sin inconveniente. 
                 </li>
-            </ul>
+            </ol>
         </div>
         <br><br><br><br><br><br><br>
         <table class="firmas">

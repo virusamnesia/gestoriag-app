@@ -187,6 +187,9 @@
       font-weight: bold;
       font-size: 12px;
     }
+    .pjustify {
+      text-align: justify;
+    }
   </style>
 <body>
   <header>
@@ -257,7 +260,7 @@
 
         <!-- Introducción -->
         <h4>PRESENTE</h4>
-        <p>
+        <p class="pjustify">
             Por medio del presente y de acuerdo a sus instrucciones, dejo a su consideración la cotización solicitada, 
             para diversos servicios y/o productos en las sucursales que a continuación se detallan:
         </p>
@@ -313,22 +316,11 @@
         <!-- Conclusión -->
         <div class="conclusion">
             <h3>Condiciones Comerciales</h3>
-            <p>
-                OBSERVACIONES:
-            </p>
-            <ul>
-                <li>
-                    Se requiere el 50% de anticipo y el resto al término de los servicios.
-                </li>
-                <li>
-                    El costo de los trámites no incluye pago de derechos ante la autoridad correspondiente
-                </li>
-            </ul>
-            <p>
-                Esperando vernos favorecidos con su preferencia, quedamos a sus órdenes, para cualquier duda o comentario a la presente.
-            </p>
-            <p>
+            <p class="pjustify">
                 {{$proyecto->observaciones}}
+            </p>
+            <p class="pjustify">
+                Esperando vernos favorecidos con su preferencia, quedamos a sus órdenes, para cualquier duda o comentario a la presente.
             </p>
         </div>
         
