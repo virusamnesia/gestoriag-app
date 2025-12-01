@@ -59,7 +59,7 @@
                                 <th scope="row">
                                     <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger"/>
                                 </th>
-                                <td>{{$row->producto}}</td>
+                                <td>{{$row->producto}}</td> 
                                 <td>{{$row->tps_nombre}}</td>
                                 <td>
                                     <x-adminlte-input name="{{$cantidad}}" id="{{$cantidad}}" placeholder="$Precio" type="number" 

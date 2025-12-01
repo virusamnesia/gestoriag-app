@@ -105,6 +105,7 @@ class ClienteController extends Controller
         $cliente->telefono = $request->telefono;
         $cliente->email = $request->email;
         $cliente->fiscal_position_id = $request->posicion;
+        $cliente->es_detalle = 0;
 
         $cliente->save();
         $inf = 1;
