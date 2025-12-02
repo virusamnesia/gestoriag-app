@@ -98,7 +98,7 @@ class ClienteController extends Controller
         $cliente->domicilio = $request->domicilio;
         $cliente->colonia = $request->colonia;
         $cliente->ciudad_contacto_id = $ciudad;
-        $cliente->municipio_contacto_id = $request->$municipio;
+        $cliente->municipio_contacto_id = $municipio;
         $cliente->estado_contacto_id = $estado;
         $cliente->pais_contacto_id = $pais;
         $cliente->cp = $request->cp;
