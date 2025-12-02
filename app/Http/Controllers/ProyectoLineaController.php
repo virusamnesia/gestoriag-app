@@ -214,7 +214,7 @@ class ProyectoLineaController extends Controller
                 ->where('id','=',$id)
                 ->update($data);
 
-            $inf = 'la partida del proyecto se agregó con éxito...';
+            $inf = 'la partida del proyecto se agregó con éxito...'.$posicion_id;
             session()->flash('Exito',$inf);
             return redirect()->route('proyectos.lineas', ['id' => $id])->with('message',$inf);
         }
