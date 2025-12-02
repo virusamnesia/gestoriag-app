@@ -161,7 +161,7 @@ class ProyectoLineaController extends Controller
 
         if (!$rev){
 
-            $subtotal_linea = $request->cantidad * $request->precio;
+            $subtotal_linea = $request->cant * $request->precio;
             $iva_t_linea = $subtotal_linea * ($iva_t / 100);
             $isr_r_linea = $subtotal_linea * ($isr_r / 100);
             $iva_r_linea = $subtotal_linea * ($iva_r / 100);
@@ -214,7 +214,7 @@ class ProyectoLineaController extends Controller
                 ->where('id','=',$id)
                 ->update($data);
 
-            $inf = 'la partida del proyecto se agregó con éxito...'.$posicion_id;
+            $inf = 'la partida del proyecto se agregó con éxito...';
             session()->flash('Exito',$inf);
             return redirect()->route('proyectos.lineas', ['id' => $id])->with('message',$inf);
         }
