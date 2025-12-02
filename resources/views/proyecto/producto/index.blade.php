@@ -95,7 +95,7 @@
             <div class="col-md-10">
             </div>
             <div class="col-md-1">
-                <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
+                <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save" onclick="limpiarFiltro('tablarow')"/>
             </div>
         </div>
     </form>
@@ -164,6 +164,14 @@
             var base = "<?php echo '/proyectos/nuevo' ?>";
             var url = base;
             location.href=url;
+        }
+
+        function limpiarFiltro(tableId) {
+            // Obtiene la instancia del DataTable
+            var table = $('#' + tableId).DataTable();
+            
+            // Limpia el valor del filtro y redibuja la tabla
+            table.search('').draw();
         }
     </script>
 
