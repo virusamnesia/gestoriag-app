@@ -148,7 +148,7 @@ class ProyectoLineaController extends Controller
             $iva_r = $pos->iva_r;
             $imp_c = $pos->imp_c;
         }
-        
+
         if($producto->iva <> 16){
             $iva_t = $producto->iva;
             $iva_r = $producto->iva;    
@@ -430,7 +430,7 @@ class ProyectoLineaController extends Controller
             'subtotal' => $proyecto->subtotal - $linea->subtotal_v,
             'iva_t' => $proyecto->iva_t - $linea->iva_t_v,
             'isr_r' => $proyecto->isr_r - $linea->isr_r_v,
-            'iva_r' => $proyecto->iva_r - $linea->iva_t_v,
+            'iva_r' => $proyecto->iva_r - $linea->iva_r_v,
             'imp_c' => $proyecto->imp_c - $linea->imp_c_v,
             'importe' => $proyecto->importe - $linea->total_v,
             'saldo' => $proyecto->saldo - $linea->saldocliente,
