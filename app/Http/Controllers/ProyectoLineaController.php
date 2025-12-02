@@ -327,12 +327,12 @@ class ProyectoLineaController extends Controller
         $imp_c_linea = $subtotal_linea * ($imp_c / 100);
         $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
 
-        $difs = $subtotal_linea - $linea->subtotal;
+        $difs = $subtotal_linea - $linea->subtotal_v;
         $difit = $iva_t_linea - $linea->iva_t_v;
         $difir = $isr_r_linea - $linea->isr_r_v;
         $difvr = $iva_r_linea - $linea->iva_r_v;
         $dific = $imp_c_linea - $linea->imp_c_c;
-        $dift = $total_linea - $linea->total;
+        $dift = $total_linea - $linea->total_v;
         $saldo = $linea->saldocliente + $dift;
         
         $lineas = DB::table('proyecto_lineas')
@@ -356,10 +356,10 @@ class ProyectoLineaController extends Controller
         
         $data = [
             'subtotal' => $proyecto->subtotal + $difs,
-            'iva_t' => $proyecto->iva_t * $difit,
-            'isr_r' => $proyecto->isr_r * $difir,
-            'iva_r' => $proyecto->iva_r * $difvr,
-            'imp_c' => $proyecto->imp_c * $dific,
+            'iva_t' => $proyecto->iva_t + $difit,
+            'isr_r' => $proyecto->isr_r + $difir,
+            'iva_r' => $proyecto->iva_r + $difvr,
+            'imp_c' => $proyecto->imp_c + $dific,
             'importe' => $proyecto->importe + $dift,
             'saldo' => $proyecto->saldo + $dift,
         ];
