@@ -599,7 +599,7 @@ class PresupuestoController extends Controller
                 ->where('id','=', $id)
                 ->update($data);
 
-            $inf = 'El costo se modificó con éxito...';
+            $inf = $request->costo.'El costo se modificó con éxito...'.$request->cantidad;
             session()->flash('Exito',$inf);
             return redirect()->route('presupuestos.lineas', ['id' => $id])->with('message',$inf);   
         }
