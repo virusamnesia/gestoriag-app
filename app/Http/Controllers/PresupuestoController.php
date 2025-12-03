@@ -569,8 +569,8 @@ class PresupuestoController extends Controller
             $lineas = DB::table('proyecto_lineas')
                     ->where('id','=',$request->id)
                     ->update([
-                        'cantidad'=> $request->cant,
-                        'precio'=> $request->precio,
+                        /*'cantidad'=> $request->cant,*/
+                        'costo'=> $request->costo,
                         'subtotal_c'=> $subtotal_linea,
                         'iva_t_c'=> $iva_t_linea,
                         'isr_r_c'=> $isr_r_linea,
