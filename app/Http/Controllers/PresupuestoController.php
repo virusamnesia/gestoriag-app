@@ -551,7 +551,7 @@ class PresupuestoController extends Controller
                 $iva_r = $producto->iva;    
             }
             
-            $subtotal_linea = $request->cantidad * $request->costo;
+            $subtotal_linea = $request->cant * $request->costo;
             $iva_t_linea = $subtotal_linea * ($iva_t / 100);
             $isr_r_linea = $subtotal_linea * ($isr_r / 100);
             $iva_r_linea = $subtotal_linea * ($iva_r / 100);
@@ -599,7 +599,7 @@ class PresupuestoController extends Controller
                 ->where('id','=', $id)
                 ->update($data);
 
-            $inf = $request->costo.'El costo se modificó con éxito...'.$request->cantidad;
+            $inf = $request->costo.'El costo se modificó con éxito...'.$request->cant;
             session()->flash('Exito',$inf);
             return redirect()->route('presupuestos.lineas', ['id' => $id])->with('message',$inf);   
         }

@@ -151,6 +151,7 @@
                                 </x-slot>
                             </x-adminlte-input>
                         </div>
+                        <input type="hidden" name="cant" id="cant" />
                         <div class="row">
                             <x-adminlte-input name="cantidad" id="cantidad" placeholder="Cantidad" label-class="text-lightblue" disabled
                             fgroup-class="col-md-12">
@@ -239,6 +240,7 @@
             $("#producto").val(prod);
             $("#costo").val(cost);
             $("#cantidad").val(cant);
+            $("#cant").val(cant);
         }
 
         function borrar(idp,idl){
