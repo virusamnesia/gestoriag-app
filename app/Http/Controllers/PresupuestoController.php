@@ -637,6 +637,12 @@ class PresupuestoController extends Controller
             if($presupuesto->autorizar == 0){
                 $data = [
                     'costo' => 0,
+                    'subtotal_c' => 0,
+                    'iva_t_c' => 0,
+                    'isr_r_c' => 0,
+                    'iva_r_c' => 0,
+                    'imp_c_c' => 0,
+                    'total_c' => 0,
                     'saldoproveedor' => 0,
                     'proveedor_id' => NULL,
                     'presupuesto_id' => NULL,
@@ -699,6 +705,12 @@ class PresupuestoController extends Controller
             if($presupuesto->autorizar == 0){
                 $data = [
                     'costo' => 0,
+                    'subtotal_c' => 0,
+                    'iva_t_c' => 0,
+                    'isr_r_c' => 0,
+                    'iva_r_c' => 0,
+                    'imp_c_c' => 0,
+                    'total_c' => 0,
                     'saldoproveedor' => 0,
                     'proveedor_id' => NULL,
                     'presupuesto_id' => NULL,
