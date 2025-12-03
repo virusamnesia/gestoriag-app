@@ -6,12 +6,14 @@ use App\Models\Cliente;
 use App\Models\EstadosPresupuesto;
 use App\Models\MovimientosPagoCliente;
 use App\Models\Presupuesto;
+use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Models\ProyectoLinea;
 use App\Models\ProyectoSucursalLinea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\JoinClause;
 
 class PresupuestoController extends Controller
 {
@@ -386,7 +388,7 @@ class PresupuestoController extends Controller
                         ->where('id','=', $row->linea_id)
                         ->update([
                         'costo'=> $request->$input,
-                        'subtotal_v'=> $subtotal_linea,
+                        'subtotal_c'=> $subtotal_linea,
                         'iva_t_c'=> $iva_t_linea,
                         'isr_r_c'=> $isr_r_linea,
                         'iva_r_c'=> $iva_r_linea,
@@ -500,7 +502,111 @@ class PresupuestoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = Auth::user()->id;
+
+        $acceso = 5;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $presupuesto = Presupuesto::where('id','=', $id)->first();
+            
+            $linea = ProyectoLinea::where('id','=',$request->id)->first();
+
+            $producto = Producto::where('id','=',$linea->producto_id)->first();
+
+            /*$terminos =DB::table('terminos_pago_clientes')
+                ->Join('movimientos_pago_clientes', function (JoinClause $join) {
+                    $join->on('terminos_pago_clientes.id', '=', 'movimientos_pago_clientes.terminos_pago_cliente_id')
+                    ->where('movimientos_pago_clientes.secuencia', '=', 1);
+                })
+                ->select('terminos_pago_clientes.*','movimientos_pago_clientes.estatus_linea_cliente_id as estatus')
+                ->where('terminos_pago_clientes.id','=',$request->termino)
+                ->first();*/
+
+            $posicion =DB::table('presupuestos')
+            ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
+            ->select('fiscal_positions.*')
+            ->where('presupuestos.id','=',$id)
+            ->get();
+
+            foreach ($posicion as $pos){
+                $posicion_id = $pos->id;
+                $iva_t = $pos->iva_t;
+                $isr_r = $pos->isr_r;
+                $iva_r = $pos->iva_r;
+                $imp_c = $pos->imp_c;
+            }
+
+            if($producto->iva <> 16){
+                $iva_t = $producto->iva;
+                $iva_r = $producto->iva;    
+            }
+            
+            $subtotal_linea = $request->cantidad * $request->costo;
+            $iva_t_linea = $subtotal_linea * ($iva_t / 100);
+            $isr_r_linea = $subtotal_linea * ($isr_r / 100);
+            $iva_r_linea = $subtotal_linea * ($iva_r / 100);
+            $imp_c_linea = $subtotal_linea * ($imp_c / 100);
+            $total_linea = $subtotal_linea + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea;
+
+            $difs = $subtotal_linea - $linea->subtotal_c;
+            $difit = $iva_t_linea - $linea->iva_t_c;
+            $difir = $isr_r_linea - $linea->isr_r_c;
+            $difvr = $iva_r_linea - $linea->iva_r_c;
+            $dific = $imp_c_linea - $linea->imp_c_c;
+            $dift = $total_linea - $linea->total_c;
+            $saldo = $linea->saldocliente + $dift;
+            
+            $lineas = DB::table('proyecto_lineas')
+                    ->where('id','=',$request->id)
+                    ->update([
+                        'cantidad'=> $request->cant,
+                        'precio'=> $request->precio,
+                        'subtotal_c'=> $subtotal_linea,
+                        'iva_t_c'=> $iva_t_linea,
+                        'isr_r_c'=> $isr_r_linea,
+                        'iva_r_c'=> $iva_r_linea,
+                        'imp_c_c'=> $imp_c_linea,
+                        'total_c'=> $total_linea,
+                        'saldoproveedor'=> $saldo,
+                        /*'terminos_pago_cliente_id'=> $request->termino,
+                        'estatus_linea_cliente_id'=> $terminos->estatus,
+                        'producto_id'=> $request->producto,
+                        'obs_c'=> $request->obs,*/
+                    ]
+                );
+            
+            $data = [
+                'subtotal' => $presupuesto->subtotal + $difs,
+                'iva_t' => $presupuesto->iva_t + $difit,
+                'isr_r' => $presupuesto->isr_r + $difir,
+                'iva_r' => $presupuesto->iva_r + $difvr,
+                'imp_c' => $presupuesto->imp_c + $dific,
+                'importe' => $presupuesto->importe + $dift,
+                'saldo' => $presupuesto->saldo + $dift,
+            ];
+            
+            $pres = DB::table('presupuestos')
+                ->where('id','=', $id)
+                ->update($data);
+
+            $inf = 'El costo se modificó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('presupuestos.lineas', ['id' => $id])->with('message',$inf);   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos.lineas', ['id' => $id])->with('error',$inf);
+        }
     }
 
     /**

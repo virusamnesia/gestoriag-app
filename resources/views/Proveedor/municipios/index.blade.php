@@ -24,7 +24,7 @@
 
 @section('content')
     <h4>Proveedor: {{$proveedor->nombre}}</h4>
-    <form action="/proveedor/municipios/store/{{$id}}" method="POST">
+    <form action="/proveedor/municipios/{{$id}}" method="POST">
             
         @csrf
         <div class="row">

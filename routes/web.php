@@ -213,7 +213,7 @@ Route::middleware([
     Route::get('/presupuestos/costos/{id?}', [PresupuestoController::class, 'costos'])->name('presupuestos.costos');
     Route::post('/presupuestos/costos/update/{id?}', [PresupuestoController::class, 'updatecostos'])->name('update.presupuestos.costos');
     Route::get('/presupuestos/lineas/{id?}', [PresupuestoController::class, 'lineas'])->name('presupuestos.lineas');
-    Route::post('/presupuestos/lineas/costo/{id?}', [PresupuestoController::class, 'updatecosto'])->name('update.presupuestos.lineas');
+    Route::post('/presupuestos/lineas/costo/{id?}', [PresupuestoController::class, 'update'])->name('update.presupuestos.lineas');
     Route::get('/presupuestos/lineas/sucursales/{idp?}/{idl?}', [PresupuestoController::class, 'indexmov'])->name('presupuestos.lineas.sucursales');
     Route::get('/presupuestos/lineas/delete/{idp?}/{idl?}', [PresupuestoController::class, 'destroy'])->name('delete.presupuestos.lineas.');
     Route::get('/presupuestos/lineas/sucursales/nuevo/{idp?}/{idl?}', [PresupuestoController::class, 'createmov'])->name('new.presupuestos.lineas.sucursales');

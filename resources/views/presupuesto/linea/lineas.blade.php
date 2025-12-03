@@ -123,7 +123,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form class="form p-3" action="/presupuestos/costos/linea/{{$presupuesto->id}}" method="POST">
+                <form class="form p-3" action="/presupuestos/lineas/costo/{{$presupuesto->id}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <br>
