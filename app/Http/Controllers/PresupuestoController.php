@@ -345,7 +345,7 @@ class PresupuestoController extends Controller
                 ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                 ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo')
+                ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo','')
                 ->where('proyecto_lineas.presupuesto_id','=',$id)
                 ->where('proyecto_lineas.proveedor_id','=',$presupuesto->presupuesto_id)
                 ->orderBy('productos.nombre')
@@ -374,7 +374,7 @@ class PresupuestoController extends Controller
                 if ($request->$input > 0){
                     
                     
-                    $subtotal_linea = $row->cantidad * $request->input;
+                    $subtotal_linea = $row->cant * $request->input;
                     $iva_t_linea = $subtotal_linea * ($iva_t / 100);
                     $isr_r_linea = $subtotal_linea * ($isr_r / 100);
                     $iva_r_linea = $subtotal_linea * ($iva_r / 100);
