@@ -564,7 +564,7 @@ class PresupuestoController extends Controller
             $difvr = $iva_r_linea - $linea->iva_r_c;
             $dific = $imp_c_linea - $linea->imp_c_c;
             $dift = $total_linea - $linea->total_c;
-            $saldo = $linea->saldocliente + $dift;
+            $saldo = $linea->saldoproveedor + $dift;
             
             $lineas = DB::table('proyecto_lineas')
                     ->where('id','=',$request->id)
