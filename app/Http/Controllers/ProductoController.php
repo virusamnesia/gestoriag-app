@@ -78,6 +78,7 @@ class ProductoController extends Controller
         }
         $producto->tipos_producto_id = $request->tipos;
         $producto->agrupador_factura_id = $request->agrupador;
+        $producto->iva = $request->iva;
 
         $producto->save();
         $inf = 1;
@@ -153,6 +154,8 @@ class ProductoController extends Controller
             'tipos_producto_id' => $request->tipos,
             'agrupador_factura_id' => $request->agrupador,
             'es_activo' => $request->activo,
+            'iva' => $request->iva,
+
         ];
         //isset($array('clave'));
         if ($request->clave){
