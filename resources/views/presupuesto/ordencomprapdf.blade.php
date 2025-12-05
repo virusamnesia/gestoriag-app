@@ -281,7 +281,7 @@
                         <td">{{$row->municipio}},{{$row->estado}}</td>
                         <td>{{$row->producto}}</td>
                         <td>{{$row->cantidad}}</td>
-                        <td>${{number_format($row->precio,2,".",",")}}</td>
+                        <td>${{number_format($row->costo,2,".",",")}}</td>
                         <td>${{number_format($row->subtotal_c,2,".",",")}}</td>
                          @php 
                             $subtotal += $row->subtotal_c; 
