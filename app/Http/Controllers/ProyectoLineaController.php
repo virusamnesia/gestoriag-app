@@ -444,7 +444,7 @@ class ProyectoLineaController extends Controller
         if($linea->presupuesto_id > 0){
             $presupuesto = DB::table('presupuestos')
             ->select('presupuestos.*')
-            ->where('presupuesto.id','=',$linea->presupuesto_id)->first();
+            ->where('presupuestos.id','=',$linea->presupuesto_id)->first();
 
            $data = [
                 'subtotal' => $presupuesto->subtotal_c - $linea->subtotal_c,
