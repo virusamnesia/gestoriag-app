@@ -447,7 +447,7 @@ class ProyectoLineaController extends Controller
             ->where('presupuestos.id','=',$linea->presupuesto_id)->first();
 
            $data = [
-                'subtotal' => $presupuesto->subtotal_c - $linea->subtotal_c,
+                'subtotal' => $presupuesto->subtotal - $linea->subtotal_c,
                 'iva_t' => $presupuesto->iva_t - $linea->iva_t_c,
                 'isr_r' => $presupuesto->isr_r - $linea->isr_r_c,
                 'iva_r' => $presupuesto->iva_r - $linea->iva_r_c,
