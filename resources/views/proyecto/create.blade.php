@@ -123,7 +123,7 @@
 
     <script type="text/javascript">
         function back(){
-            var base = "<?php echo '/Proyectos' ?>";
+            var base = "<?php echo '/proyectos' ?>";
             var url = base;
             location.href=url;
         }
