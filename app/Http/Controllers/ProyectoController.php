@@ -674,7 +674,6 @@ class ProyectoController extends Controller
                         'imp_c_v' => 0,
                         'total_v' => 0,
                         'saldocliente' => 0,
-                        'proyecto_id' => NULL,
                     ];
                     
                     $linea = DB::table('proyecto_lineas')
