@@ -687,7 +687,7 @@ class ProyectoController extends Controller
                         'saldo' => 0,
                         'autorizar' => 0,
                         'estados_proyecto_id' => 6,
-                        'fecha_cancelación' => now(),
+                        'fecha_cancelacion' => now(),
                     ];
                     
                     $proyecto = DB::table('proyectos')

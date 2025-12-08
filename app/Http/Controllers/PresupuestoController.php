@@ -725,7 +725,7 @@ class PresupuestoController extends Controller
                     'saldo' => 0,
                     'autorizar' => 0,
                     'estados_presupuesto_id' => 6,
-                    'fecha_cancelación' => now(),
+                    'fecha_cancelacion' => now(),
                 ];
                 
                 $presupuesto = DB::table('presupuestos')
