@@ -643,7 +643,7 @@ class ProyectoController extends Controller
             $proyecto = Proyecto::find($id);
 
             $presupuestos = DB::table('proyecto_lineas')
-            ->join('presupuestos','presupuesto.id','=','proyecto_lineas.presupueto_id')
+            ->join('presupuestos','presupuestos.id','=','proyecto_lineas.presupueto_id')
             ->select('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id as estado','presupuestos.autorizar')
             ->where('proyecto_lineas.proyecto_id','=',$id)
             ->groupBy('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id','presupuestos.autorizar')
@@ -764,7 +764,7 @@ class ProyectoController extends Controller
             $proyecto = Proyecto::find($id);
 
             $presupuestos = DB::table('proyecto_lineas')
-            ->join('presupuestos','presupuesto.id','=','proyecto_lineas.presupueto_id')
+            ->join('presupuestos','presupuestos.id','=','proyecto_lineas.presupueto_id')
             ->select('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id as estado','presupuestos.autorizar')
             ->where('proyecto_lineas.proyecto_id','=',$id)
             ->groupBy('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id','presupuestos.autorizar')
