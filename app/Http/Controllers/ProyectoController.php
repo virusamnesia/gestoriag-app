@@ -157,7 +157,7 @@ class ProyectoController extends Controller
         $proyecto->saldo = 0;
         $proyecto->cxc = 0;
         $proyecto->estados_proyecto_id = 1;
-        $proyecto->fecha_cotizacion = today();
+        $proyecto->fecha_cotizacion = now();
         $proyecto->es_agrupado = $request->agrupado;
         $proyecto->autorizar = 0;
         $proyecto->fiscal_position_id = $posicion_id;
@@ -687,6 +687,7 @@ class ProyectoController extends Controller
                         'saldo' => 0,
                         'autorizar' => 0,
                         'estados_proyecto_id' => 6,
+                        'fecha_cancelación' => now(),
                     ];
                     
                     $proyecto = DB::table('proyectos')

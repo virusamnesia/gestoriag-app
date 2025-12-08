@@ -168,7 +168,7 @@ class PresupuestoController extends Controller
             $presupuesto->saldo = 0;
             $presupuesto->cxp = 0;
             $presupuesto->estados_presupuesto_id = 1;
-            $presupuesto->fecha_cotizacion = today();
+            $presupuesto->fecha_cotizacion = now();
             $presupuesto->autorizar = 0;
             $presupuesto->fiscal_position_id = $posicion_id;
 
@@ -725,6 +725,7 @@ class PresupuestoController extends Controller
                     'saldo' => 0,
                     'autorizar' => 0,
                     'estados_presupuesto_id' => 6,
+                    'fecha_cancelación' => now(),
                 ];
                 
                 $presupuesto = DB::table('presupuestos')
@@ -902,7 +903,7 @@ class PresupuestoController extends Controller
                 
                 $data = [
                     'saldo' => $saldototal,
-                    'fecha_autorizacion' => today(),
+                    'fecha_autorizacion' => now(),
                     'autorizar' => 1,
                 ];
                 
