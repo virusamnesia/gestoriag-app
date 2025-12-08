@@ -91,6 +91,9 @@
                                             @endif
                                             <li><button class="btn align-self-left" id="btncancelar" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
                                             @endif
+                                            @if($row->estados_presupuesto_id == 6)                    
+                                            <li><button class="btn align-self-left" id="btndestroy"  onclick="destroy({{$row->id}})"><i class="icon ion-md-create"></i>Eliminar</button></li>
+                                            @endif
                                     </div>
                                 </span>
                             </td>
@@ -174,6 +177,12 @@
 
         function cancelar(id){
             var base = "<?php echo '/presupuestos/cancelar/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function destroy(id){
+            var base = "<?php echo '/presupuestos/eliminar/'?>";
             var url = base+id;
             location.href=url;
         }

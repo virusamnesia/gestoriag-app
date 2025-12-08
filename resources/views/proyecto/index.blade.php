@@ -80,6 +80,7 @@
                                             <div class="dropdown">
                                                 <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                                 <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
+                                                    @if($row->estados_proyecto_id != 6) 
                                                     <li><button class="btn align-self-left" id="btnlines"  onclick="lines({{$row->id}})"><i class="icon ion-md-create"></i>Líneas</button></li>
                                                     @if($permisom)
                                                     <li><button class="btn align-self-left" id="btnmatriz" onclick="matriz({{$row->id}})"><i class="ion-md-chatboxes"></i>Matriz</button></li>
@@ -95,7 +96,11 @@
                                                         <li><button class="btn align-self-left" id="btnterm" onclick="term({{$row->id}})"><i class="ion-md-chatboxes"></i>Terminos de Pago</button></li>
                                                     @endif
                                                     @endif
-                                                    <li><button class="btn align-self-left" id="btndelete" onclick="delete({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                                    <li><button class="btn align-self-left" id="btncancel" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                                    @endif
+                                                    @if($row->estados_proyecto_id == 6)                    
+                                                    <li><button class="btn align-self-left" id="btndestroy"  onclick="destroy({{$row->id}})"><i class="icon ion-md-create"></i>Eliminar</button></li>
+                                                    @endif
                                             </div>
                                         </span>
                                     </td>
@@ -238,6 +243,18 @@
 
         function pdfcotizacion(id){
             var base = "<?php echo '/proyectos/pdf/cotizacion/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function cancelar(id){
+            var base = "<?php echo '/proyectos/cancelar/'?>";
+            var url = base+id;
+            location.href=url;
+        }
+
+        function destroy(id){
+            var base = "<?php echo '/proyectos/eliminar/'?>";
             var url = base+id;
             location.href=url;
         }

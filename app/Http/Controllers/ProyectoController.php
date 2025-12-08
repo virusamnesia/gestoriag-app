@@ -622,9 +622,192 @@ class ProyectoController extends Controller
      * @param  \App\Models\top50  $top50
      * @return \Illuminate\Http\Response
      */
+
+    public function cancelar($id)
+    {
+        $user = Auth::user()->id;
+
+        $acceso = 14;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $proyecto = Proyecto::find($id);
+
+            $presupuestos = DB::table('proyecto_lineas')
+            ->join('presupuestos','presupuesto.id','=','proyecto_lineas.presupueto_id')
+            ->select('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id as estado','presupuestos.autorizar')
+            ->where('proyecto_lineas.proyecto_id','=',$id)
+            ->groupBy('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id','presupuestos.autorizar')
+            ->get();
+
+            $banpre = 0;
+            $nomPres = '';
+            if($presupuestos){
+                foreach($presupuestos as $pre){
+                    if($pre->autorizar == 1){
+                        $banpre += 1;
+                        if($banpre > 0){
+                            $nomPres = $nomPres.',';
+                        }
+                        $nomPres = $nomPres.$pre->nombre;
+                    }
+                }
+            }
+
+            if($proyecto->autorizar == 0){
+                if($banpre == 0){
+                    $data = [
+                        'costo' => 0,
+                        'subtotal_v' => 0,
+                        'iva_t_v' => 0,
+                        'isr_r_v' => 0,
+                        'iva_r_v' => 0,
+                        'imp_c_v' => 0,
+                        'total_v' => 0,
+                        'saldocliente' => 0,
+                        'cliente_id' => NULL,
+                        'proyecto_id' => NULL,
+                    ];
+                    
+                    $linea = DB::table('proyecto_lineas')
+                        ->where('proyecto_id','=',$id)
+                        ->update($data);
+                    
+                    $data = [
+                        'importe' => 0,
+                        'saldo' => 0,
+                        'autorizar' => 0,
+                        'estados_proyecto_id' => 6,
+                    ];
+                    
+                    $proyecto = DB::table('proyectos')
+                        ->where('id','=',$id)
+                        ->update($data);
+
+                    foreach($presupuestos as $pre){
+                        $data = [
+                            'costo' => 0,
+                            'subtotal_c' => 0,
+                            'iva_t_c' => 0,
+                            'isr_r_c' => 0,
+                            'iva_r_c' => 0,
+                            'imp_c_c' => 0,
+                            'total_c' => 0,
+                            'saldoproveedor' => 0,
+                            'proveedor_id' => NULL,
+                            'presupuesto_id' => NULL,
+                        ];
+                        
+                        $linea = DB::table('proyecto_lineas')
+                            ->where('presupuesto_id','=',$pre->id)
+                            ->update($data);
+                        
+                        $data = [
+                            'importe' => 0,
+                            'saldo' => 0,
+                            'autorizar' => 0,
+                            'estados_presupuesto_id' => 6,
+                        ];
+                        
+                        $presupuesto = DB::table('presupuestos')
+                            ->where('id','=',$pre->id)
+                            ->update($data);
+                    }
+        
+                    $inf = 1;
+                    session()->flash('Exito','El proyecto fue cancelado con éxito...');
+                    return redirect()->route('proyectos')->with('info',$inf);
+                }
+                else{
+                    $inf = 'El proyecto tiene los siguientes presupuestos autorizados: '.$nomPres;
+                    return redirect()->route('proyectos')->with('error',$inf);
+                }
+                
+            }
+            else{
+                $inf = 'El proyecto esta autorizado, no es posible la acción solicitada';
+                return redirect()->route('proyectos')->with('error',$inf);
+            }   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('proyectos')->with('error',$inf);
+        }
+    }
+
     public function destroy($id)
     {
-        //
+        $user = Auth::user()->id;
+
+        $acceso = 14;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $proyecto = Proyecto::find($id);
+
+            $presupuestos = DB::table('proyecto_lineas')
+            ->join('presupuestos','presupuesto.id','=','proyecto_lineas.presupueto_id')
+            ->select('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id as estado','presupuestos.autorizar')
+            ->where('proyecto_lineas.proyecto_id','=',$id)
+            ->groupBy('presupuestos.id','presupuestos.nombre','presupuestos.estados_presupuesto_id','presupuestos.autorizar')
+            ->get();
+
+            $banpre = 0;
+            $nomPres = '';
+            if($presupuestos){
+                foreach($presupuestos as $pre){
+                    if($pre->estado != 6){
+                        $banpre += 1;
+                        if($banpre > 0){
+                            $nomPres = $nomPres.',';
+                        }
+                        $nomPres = $nomPres.$pre->nombre;
+                    }
+                }
+            }
+
+            if($proyecto->estados_proyecto_id == 6){
+                if($banpre == 0){
+                    $lineas = DB::table('proyectos')
+                    ->where('id','=',$id)
+                    ->delete();
+        
+                    $inf = 1;
+                    session()->flash('Exito','El proyecto fue eliminado con éxito...');
+                    return redirect()->route('proyectos')->with('info',$inf);
+                }
+                else{
+                    $inf = 'El proyecto tiene los siguientes presupuestos no eliminados: '.$nomPres;
+                    return redirect()->route('proyectos')->with('error',$inf);
+                }
+            }
+            else{
+                $inf = 'El proyecto debe cancelarse primero';
+                return redirect()->route('proyectos')->with('error',$inf);
+            }   
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('proyectos')->with('error',$inf);
+        }
     }
     
 }
