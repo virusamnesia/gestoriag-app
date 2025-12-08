@@ -26,11 +26,11 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Nombre del proyecto"
+                    <x-adminlte-input name="nombre"  label="Nombre" placeholder="Nombre del proyecto"
                         fgroup-class="col-md-8" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="año" placeholder="Año" type="number" fgroup-class="col-md-5"
+                    <x-adminlte-input name="año" label="Año" placeholder="Año" type="number" fgroup-class="col-md-5"
                         igroup-size="sm" min=2000 max=3000 step="0.01">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
@@ -40,7 +40,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="cliente" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="cliente" label="Cliente" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona un cliente...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -54,14 +54,13 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="agrupado" label-class="text-lightblue"  fgroup-class="col-md-8"
+                    <x-adminlte-select2 name="agrupado" label="Tipo de facturación" label-class="text-lightblue"  fgroup-class="col-md-8"
                         igroup-size="sm" data-placeholder="Facturación agrupada...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
                                 <i class="far fa-file-alt"></i>
                             </div>
                         </x-slot>
-                        <option/>
                         <option value="0">No</option>
                         <option value="1">Sí</option>
                     </x-adminlte-select2>

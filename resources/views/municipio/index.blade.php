@@ -14,9 +14,9 @@
             <div class="col-md-1">
             </div>
             <div class="col-md-10">
-                <x-adminlte-input name="nombre" placeholder="Nombre" required
+                <x-adminlte-input name="nombre" label="Municipio" placeholder="Nombre" required
                     fgroup-class="col-md-5" disable-feedback/>
-                <x-adminlte-select2 name="estado" label-class="text-lightblue"  fgroup-class="col-md-5"
+                <x-adminlte-select2 name="estado" label="Estado" label-class="text-lightblue"  fgroup-class="col-md-5"
                     igroup-size="sm" data-placeholder="Selecciona un estado..." required>
                     <x-slot name="prependSlot">
                         <div class="input-group-text bg-gradient-info">

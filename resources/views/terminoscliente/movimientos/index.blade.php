@@ -90,7 +90,7 @@
                             <h6>Nuevo Movimiento</h6>
                             <br>
                             <div class="row">
-                                <x-adminlte-select2 name="estatus" label-class="text-lightblue"  fgroup-class="col-md-12" label="Estatus"
+                                <x-adminlte-select2 name="estatus" label="Estatus" label-class="text-lightblue"  fgroup-class="col-md-12" label="Estatus"
                                     igroup-size="sm" data-placeholder="Selecciona un estatus de pago..." label-class="text-lightblue">
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-gradient-info">
@@ -104,7 +104,7 @@
                                 </x-adminlte-select2>
                             </div>
                            <div class="row">
-                                <x-adminlte-input name="vcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
+                                <x-adminlte-input name="vcliente" label="Porcentaje al Cliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
                                     igroup-size="sm" min=0 max=1000 label="% Cliente" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
@@ -114,7 +114,7 @@
                                 </x-adminlte-input>
                             </div>
                             <div class="row">
-                                <x-adminlte-input name="vproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
+                                <x-adminlte-input name="vproveedor" label="Porcentaje al Proveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
                                     igroup-size="sm" min=0 max=1000  label="% Proveedor" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
@@ -151,16 +151,16 @@
                             <h6>Editar Movimiento</h6>
                             <br>
                             <div class="row">
-                                <x-adminlte-input name="esecuencia" id="esecuencia" placeholder="Secuencia" disabled label="Secuencia" label-class="text-lightblue"
+                                <x-adminlte-input name="esecuencia" label="Secuencia" id="esecuencia" placeholder="Secuencia" disabled label="Secuencia" label-class="text-lightblue"
                                     fgroup-class="col-md-8" disable-feedback/>
                             </div>
                             <div class="row">
-                                <x-adminlte-input name="eestatus" id="eestatus" placeholder="Estado" disabled label="Estatus" label-class="text-lightblue"
+                                <x-adminlte-input name="eestatus" id="eestatus" label="Estatus" placeholder="Estado" disabled label="Estatus" label-class="text-lightblue"
                                     fgroup-class="col-md-8" disable-feedback/>
                             </div>
                             <div class="row">
                                 <input type="hidden" name="eid" id="eid">
-                                <x-adminlte-input name="evcliente" id="evcliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
+                                <x-adminlte-input name="evcliente" id="evcliente" label="Porcentaje al Cliente" placeholder="Porcentaje Cliente" type="number" fgroup-class="col-md-5"
                                     igroup-size="sm" min=0 max=1000 label="% Cliente" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">
@@ -170,7 +170,7 @@
                                 </x-adminlte-input>
                             </div>
                             <div class="row">
-                                <x-adminlte-input name="evproveedor" id="evproveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
+                                <x-adminlte-input name="evproveedor" id="evproveedor" label="Porcentaje al Proveedor" placeholder="Porcentaje Proveeddor" type="number" fgroup-class="col-md-5"
                                     igroup-size="sm" min=0 max=1000 label="% Proveedor" label-class="text-lightblue">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text bg-light">

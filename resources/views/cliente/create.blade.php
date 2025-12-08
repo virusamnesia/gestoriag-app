@@ -26,11 +26,11 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="12" requiered
+                    <x-adminlte-input name="clave" label="Clave" placeholder="Clave" maxlength="12" requiered
                         fgroup-class="col-md-3" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Razón Social del cliente" label-class="text-lightblue" fgroup-class="col-md-12" requiered>
+                    <x-adminlte-input name="nombre" label="Razón Social" placeholder="Razón Social del cliente" label-class="text-lightblue" fgroup-class="col-md-12" requiered>
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-user text-lightblue"></i>
@@ -39,11 +39,11 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="rfc" placeholder="RFC" size="15" maxlength="15" requiered
+                    <x-adminlte-input name="rfc" placeholder="RFC"label="RFC" size="15" maxlength="15" requiered
                         fgroup-class="col-md-4" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="posicion" label-class="text-lightblue"  fgroup-class="col-md-12"
+                    <x-adminlte-select2 name="posicion" label="Posición Fiscal" label-class="text-lightblue"  fgroup-class="col-md-12"
                         igroup-size="sm" data-placeholder="Selecciona una Posición Fiscal...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -57,7 +57,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="domicilio" placeholder="Domicilio"  fgroup-class="col-md-12">
+                    <x-adminlte-input name="domicilio" label="Domicilio" placeholder="Domicilio"  fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
                             <div class="input-group-text text-purple">
                                 <i class="fas fa-address-card"></i>
@@ -66,10 +66,10 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="colonia" placeholder="Colonia" fgroup-class="col-md-12" disable-feedback/>
+                    <x-adminlte-input name="colonia" label="Colinia" placeholder="Colonia" fgroup-class="col-md-12" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="municipio" label-class="text-lightblue"  fgroup-class="col-md-12"
+                    <x-adminlte-select2 name="municipio" label="Municipio" label-class="text-lightblue"  fgroup-class="col-md-12"
                         igroup-size="sm" data-placeholder="Selecciona un municipio...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -83,7 +83,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="cp" placeholder="Código Postal"  fgroup-class="col-md-4"  maxlength="5"
+                    <x-adminlte-input name="cp" label="Código Postal" placeholder="Código Postal"  fgroup-class="col-md-4"  maxlength="5"
                         enable-old-support>
                         <x-slot name="prependSlot">
                             <div class="input-group-text text-olive">
@@ -93,7 +93,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="email" placeholder="Correo Eléctronico" label-class="text-lightblue" fgroup-class="col-md-12">
+                    <x-adminlte-input name="email" label="E-mail" placeholder="Correo Eléctronico" label-class="text-lightblue" fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-at text-lightblue"></i>
@@ -102,7 +102,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="telefono" placeholder="Teléfono" label-class="text-lightblue" fgroup-class="col-md-12">
+                    <x-adminlte-input name="telefono" label="Teléfono" placeholder="Teléfono" label-class="text-lightblue" fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-phone-square-alt text-lightblue"></i>

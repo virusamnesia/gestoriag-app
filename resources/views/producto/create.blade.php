@@ -26,11 +26,11 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="10"
+                    <x-adminlte-input name="clave" label="Clave" placeholder="Clave" maxlength="10"
                         fgroup-class="col-md-3" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Nombre del producto" label-class="text-lightblue" fgroup-class="col-md-12">
+                    <x-adminlte-input name="nombre" label="Nombre" placeholder="Nombre del producto" label-class="text-lightblue" fgroup-class="col-md-12">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-user text-lightblue"></i>
@@ -39,7 +39,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="tipos" label-class="text-lightblue"  fgroup-class="col-md-12"
+                    <x-adminlte-select2 name="tipos" label="Tipo de producto" label-class="text-lightblue"  fgroup-class="col-md-12"
                         igroup-size="sm" data-placeholder="Selecciona un tipo de producto...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -53,7 +53,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="termclie" label-class="text-lightblue"  fgroup-class="col-md-12"
+                    <x-adminlte-select2 name="termclie" label="Terminos de pago" label-class="text-lightblue"  fgroup-class="col-md-12"
                         igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -67,7 +67,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="agrupador" label-class="text-lightblue"  fgroup-class="col-md-12"
+                    <x-adminlte-select2 name="agrupador" label="Agrupador" label-class="text-lightblue"  fgroup-class="col-md-12"
                         igroup-size="sm" data-placeholder="Selecciona un agrupador para facturación...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">

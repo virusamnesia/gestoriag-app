@@ -14,7 +14,7 @@
             <div class="col-md-1">
             </div>
             <div class="col-md-10">
-                <x-adminlte-select2 name="municipio" label-class="text-lightblue"  fgroup-class="col-md-12"
+                <x-adminlte-select2 name="municipio" label="Municipio a Agregar" label-class="text-lightblue"  fgroup-class="col-md-12"
                     igroup-size="sm" data-placeholder="Selecciona un municipio...">
                     <x-slot name="prependSlot">
                         <div class="input-group-text bg-gradient-info">

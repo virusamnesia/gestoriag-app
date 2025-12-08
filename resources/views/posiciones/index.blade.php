@@ -97,7 +97,7 @@
                         <h6>Nueva Posición Fiscal</h6>
                         <br>
                         <div class="row">
-                            <x-adminlte-input name="nombre" placeholder="Nombre de la Posición Fiscal" label-class="text-lightblue" 
+                            <x-adminlte-input name="nombre" label="Posición Fiscal" placeholder="Nombre de la Posición Fiscal" label-class="text-lightblue" 
                             fgroup-class="col-md-12" required>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
@@ -107,8 +107,8 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-select2 name="regimen" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                igroup-size="sm" data-placeholder="Selecciona un Regimen Fiscal..." >
+                            <x-adminlte-select2 name="regimen" label="Régimen Fiscal" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                igroup-size="sm" data-placeholder="Selecciona un Régimen Fiscal..." >
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text bg-gradient-info">
                                         <i class="fas fa-location-dot"></i>
@@ -121,7 +121,7 @@
                             </x-adminlte-select2>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="iva_t" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5" value="0"
+                            <x-adminlte-input name="iva_t" label="IVA Trasladado" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5" value="0"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -131,7 +131,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="isr_r" placeholder="ISR Retenido" type="number" fgroup-class="col-md-5" value="0"
+                            <x-adminlte-input name="isr_r" label="ISR Retenido" placeholder="ISR Retenido" type="number" fgroup-class="col-md-5" value="0"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -141,7 +141,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="iva_r" placeholder="IVA Retenido" type="number" fgroup-class="col-md-5" value="0"
+                            <x-adminlte-input name="iva_r" label="IVA Retenido" placeholder="IVA Retenido" type="number" fgroup-class="col-md-5" value="0"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -151,7 +151,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="imp_c" placeholder="Impuesto Cedular" type="number" fgroup-class="col-md-5" value="0"
+                            <x-adminlte-input name="imp_c" label="Impuesto Cedular" placeholder="Impuesto Cedular" type="number" fgroup-class="col-md-5" value="0"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -188,7 +188,7 @@
                         <h6>Editar Posición Fiscal</h6>
                         <br>
                         <div class="row">
-                            <x-adminlte-input name="nombre_e" id="nombre_e" placeholder="Nombre de la Posición Fiscal" label-class="text-lightblue" 
+                            <x-adminlte-input name="nombre_e" label="Posición Fiscal" id="nombre_e" placeholder="Nombre de la Posición Fiscal" label-class="text-lightblue" 
                             fgroup-class="col-md-12" required disabled>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
@@ -199,8 +199,8 @@
                             <input type="hidden" id="id" name="id">
                         </div>
                         <div class="row">
-                            <x-adminlte-select2 name="regimen_e" id="regimen_e" label-class="text-lightblue"  fgroup-class="col-md-12"
-                                igroup-size="sm" disabled data-placeholder="Selecciona un Regimen Fiscal..." >
+                            <x-adminlte-select2 name="regimen_e" label="Régimen Fiscal" id="regimen_e" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                igroup-size="sm" disabled data-placeholder="Selecciona un Régimen Fiscal..." >
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text bg-gradient-info">
                                         <i class="fas fa-location-dot"></i>
@@ -213,7 +213,7 @@
                             </x-adminlte-select2>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="iva_t_e" id="iva_t_e" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5"
+                            <x-adminlte-input name="iva_t_e" label="IVA Trasladado" id="iva_t_e" placeholder="IVA Trasladado" type="number" fgroup-class="col-md-5"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -223,7 +223,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="isr_r_e" placeholder="ISR Retenido" type="number" fgroup-class="col-md-5"
+                            <x-adminlte-input name="isr_r_e" label="ISR Retenido" placeholder="ISR Retenido" type="number" fgroup-class="col-md-5"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -233,7 +233,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="iva_r_e" placeholder="IVA Retenido" type="number" fgroup-class="col-md-5"
+                            <x-adminlte-input name="iva_r_e" label="IVA Retenido" placeholder="IVA Retenido" type="number" fgroup-class="col-md-5"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -243,7 +243,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="imp_c_e" placeholder="Impuesto Cedular" type="number" fgroup-class="col-md-5"
+                            <x-adminlte-input name="imp_c_e" label="Impuesto Cedular" placeholder="Impuesto Cedular" type="number" fgroup-class="col-md-5"
                                 igroup-size="sm" min=0 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">

@@ -26,11 +26,11 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Nombre del presupuesto"
+                    <x-adminlte-input name="nombre" label="Nombre" placeholder="Nombre del presupuesto"
                         fgroup-class="col-md-8" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="año" placeholder="Año" type="number" fgroup-class="col-md-5"
+                    <x-adminlte-input name="año" label="Año" placeholder="Año" type="number" fgroup-class="col-md-5"
                         igroup-size="sm" min=2000 max=3000 step="0.01">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
@@ -40,7 +40,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="proveedor" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="proveedor" label="Proveedor" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona un proveedor...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">

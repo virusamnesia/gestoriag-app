@@ -24,11 +24,11 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="clave" placeholder="Clave" maxlength="10" value="{{$prod->alias}}" disabled
+                    <x-adminlte-input name="clave" label="Clave" placeholder="Clave" maxlength="10" value="{{$prod->alias}}" disabled
                         fgroup-class="col-md-3" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Razón Social del proveedor" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$prod->nombre}}" disabled>
+                    <x-adminlte-input name="nombre" label="Nombre" placeholder="Nombre del producto" label-class="text-lightblue" fgroup-class="col-md-12" value="{{$prod->nombre}}" disabled>
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fas fa-user text-lightblue"></i>
@@ -37,7 +37,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="tipos" label-class="text-lightblue"  fgroup-class="col-md-12" disabled
+                    <x-adminlte-select2 name="tipos" label="Tipo de producto" label-class="text-lightblue"  fgroup-class="col-md-12" disabled
                         igroup-size="sm" data-placeholder="Selecciona un tipo de producto...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -51,7 +51,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="termclie" label-class="text-lightblue"  fgroup-class="col-md-12" disabled
+                    <x-adminlte-select2 name="termclie" label="Terminos de pago" label-class="text-lightblue"  fgroup-class="col-md-12" disabled
                         igroup-size="sm" data-placeholder="Selecciona un termino de pago...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -65,7 +65,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="agrupador" label-class="text-lightblue"  fgroup-class="col-md-12"
+                    <x-adminlte-select2 name="agrupador" label="Agrupador" label-class="text-lightblue"  fgroup-class="col-md-12"
                         igroup-size="sm" data-placeholder="Selecciona un agrupador para facturación..." disabled>
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -79,7 +79,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="iva" id="iva" placeholder="IVA" type="number" fgroup-class="col-md-5" value="{{$prod->iva}}" disabled
+                    <x-adminlte-input name="iva" id="iva" label="IVA" placeholder="IVA" type="number" fgroup-class="col-md-5" value="{{$prod->iva}}" disabled
                         igroup-size="sm" min=1 max=100000 step="1">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
@@ -89,10 +89,11 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select name="activo" disabled>
+                    <x-adminlte-select2 name="activo" label="Activo" label-class="text-lightblue"  fgroup-class="col-md-12"
+                        igroup-size="sm" disabled>
                         <option value=0 @php if ($prod->es_activo == False) { echo "selected";} @endphp>Inactivo</option>
                         <option value=1 @php if ($prod->es_activo == True) { echo "selected";} @endphp>Activo</option>
-                    </x-adminlte-select>
+                    </x-adminlte-select2>
                 </div>
             </div> 
             <div class="col-md-3">

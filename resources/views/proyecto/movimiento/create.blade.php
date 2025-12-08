@@ -71,7 +71,7 @@
                     </x-adminlte-textarea>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="url" type="url"  fgroup-class="col-md-12" placeholder="URL de la carpeta de registro..."/>
+                    <x-adminlte-input name="url" type="url" label="URL" fgroup-class="col-md-12" placeholder="URL de la carpeta de registro..."/>
                 </div>
             </div>
             <div class="col-md-2">

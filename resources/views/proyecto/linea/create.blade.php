@@ -29,7 +29,7 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-select2 name="sucursal" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="sucursal" label="Sucursal" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona una sucursal...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -43,7 +43,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="producto" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="producto" label="Producto" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona un producto...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -57,7 +57,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="termino" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="termino" label="Terminos de pago" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona los terminos de pago...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -71,7 +71,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="cant" id="cant" placeholder="Cantidad" type="number" fgroup-class="col-md-5"
+                    <x-adminlte-input name="cant" id="cant" label="Cantidad" placeholder="Cantidad" type="number" fgroup-class="col-md-5"
                         igroup-size="sm" min=1 max=100000 step="1">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
@@ -81,7 +81,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="precio" id="precio" placeholder="$Precio" type="number" fgroup-class="col-md-5"
+                    <x-adminlte-input name="precio" id="precio" label="Precio" placeholder="$Precio" type="number" fgroup-class="col-md-5"
                         igroup-size="sm" min=1 max=100000 step="0.01">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">

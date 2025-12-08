@@ -89,7 +89,7 @@
                             <h6>Nuevo Termino</h6>
                             <br>
                             <div class="row">
-                                <x-adminlte-input name="nombre" placeholder="Nombre del termino" label-class="text-lightblue" 
+                                <x-adminlte-input name="nombre" label="Nombre del termino" placeholder="Nombre del termino" label-class="text-lightblue" 
                                 fgroup-class="col-md-12" required>
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text">
@@ -99,14 +99,13 @@
                                 </x-adminlte-input>
                             </div>
                             <div class="row">
-                                <x-adminlte-select2 name="agrupado" label-class="text-lightblue"  fgroup-class="col-md-12"
+                                <x-adminlte-select2 name="agrupado" label="Agrupado" label-class="text-lightblue"  fgroup-class="col-md-12"
                                     igroup-size="sm" data-placeholder="Es agrupado?..." required>
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-gradient-info">
                                             <i class="far fa-building"></i>
                                         </div>
                                     </x-slot>
-                                    <option/>
                                     <option value="0">No</option>
                                     <option value="1">Sí</option>
                                 </x-adminlte-select2>

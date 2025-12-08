@@ -30,7 +30,7 @@
             <div class="col-md-6">
                 <h5>Sucursal: {{$sucursal->nombre}}</h5>
                 <div class="row">
-                    <x-adminlte-select2 name="producto" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="producto"  label="Producto" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona el producto...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
@@ -44,7 +44,7 @@
                     </x-adminlte-select2>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="cant" placeholder="Cantidad" label-class="text-lightblue" 
+                    <x-adminlte-input name="cant" label="Cantidad" placeholder="Cantidad" label-class="text-lightblue" 
                     fgroup-class="col-md-12" value="{{$linea->cantidad}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
@@ -54,7 +54,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="precio" placeholder="Precio del producto" label-class="text-lightblue" 
+                    <x-adminlte-input name="precio" label="Precio" placeholder="Precio del producto" label-class="text-lightblue" 
                     fgroup-class="col-md-12" value="{{$linea->precio}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
@@ -64,7 +64,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="termino" label-class="text-lightblue"  fgroup-class="col-md-10"
+                    <x-adminlte-select2 name="termino" label="Terminos de pago" label-class="text-lightblue"  fgroup-class="col-md-10"
                         igroup-size="sm" data-placeholder="Selecciona los terminos de pago...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">

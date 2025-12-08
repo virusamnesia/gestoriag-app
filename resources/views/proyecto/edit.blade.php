@@ -26,11 +26,11 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Nombre del proyecto" value="{{$proyecto->nombre}}" disabled
+                    <x-adminlte-input name="nombre" label="Nombre" placeholder="Nombre del proyecto" value="{{$proyecto->nombre}}" disabled
                         fgroup-class="col-md-8" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="año" placeholder="Año" type="number" fgroup-class="col-md-5" value="{{$proyecto->anio}}"
+                    <x-adminlte-input name="año" label="Año" placeholder="Año" type="number" fgroup-class="col-md-5" value="{{$proyecto->anio}}"
                         igroup-size="sm" min=2000 max=3000 step="0.01">
                         <x-slot name="appendSlot">
                             <div class="input-group-text bg-light">
@@ -40,18 +40,17 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="nombre" placeholder="Nombre del proyecto" value="{{$proyecto->cliente}}" disabled
+                    <x-adminlte-input name="cliente" label="Cliente" placeholder="Nombre del cliente" value="{{$proyecto->cliente}}" disabled
                         fgroup-class="col-md-8" disable-feedback/>
                 </div>
                 <div class="row">
-                    <x-adminlte-select2 name="agrupado" label-class="text-lightblue"  fgroup-class="col-md-8" 
+                    <x-adminlte-select2 name="agrupado" label="Tipo de facturación" label-class="text-lightblue"  fgroup-class="col-md-8" 
                         igroup-size="sm" data-placeholder="Facturación agrupada...">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
                                 <i class="far fa-file-alt"></i>
                             </div>
                         </x-slot>
-                        <option/>
                         <option value="0" @php if ($proyecto->es_agrupado == 0) { echo "selected";} @endphp>No</option>
                         <option value="1" @php if ($proyecto->es_agrupado == 1) { echo "selected";} @endphp>Sí</option>
                     </x-adminlte-select2>

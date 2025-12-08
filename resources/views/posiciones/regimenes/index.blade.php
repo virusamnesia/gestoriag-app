@@ -97,7 +97,7 @@
                         <h6>Editar Regimen Fiscal</h6>
                         <br>
                         <div class="row">
-                            <x-adminlte-input name="id_sat_e" placeholder="ID SAT" type="number" fgroup-class="col-md-5"
+                            <x-adminlte-input name="id_sat_e" label="ID SAT" placeholder="ID SAT" type="number" fgroup-class="col-md-5"
                                 igroup-size="sm" min=1 max=100>
                                 <x-slot name="appendSlot">
                                     <div class="input-group-text bg-light">
@@ -107,7 +107,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="row">
-                            <x-adminlte-input name="nombre_e" placeholder="Nombre del Regimen Fiscal" label-class="text-lightblue" 
+                            <x-adminlte-input name="nombre_e" label="Nombre" placeholder="Nombre del Regimen Fiscal" label-class="text-lightblue" 
                             fgroup-class="col-md-12" required>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
