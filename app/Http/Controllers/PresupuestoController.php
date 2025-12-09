@@ -844,7 +844,8 @@ class PresupuestoController extends Controller
                     ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                     ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                     ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                    ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo')
+                    ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo'
+                    ,'proyecto_lineas.subtotal_c','proyecto_lineas.total_c')
                     ->where('proyecto_lineas.presupuesto_id','=',$id)
                     ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                     ->get();
@@ -853,21 +854,21 @@ class PresupuestoController extends Controller
                 $saldototal = 0; 
         
                 foreach ($lineas as $row){
-                    $subtotal += $row->costo;
+                    $subtotal += $row->subtotal_c;
 
                     $movs =DB::table('proyecto_lineas')
                         ->join('proyecto_sucursal_lineas', 'proyecto_lineas.id', '=', 'proyecto_sucursal_lineas.proyecto_linea_id')
                         ->leftjoin('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
                         ->select('proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as mov_porc','proyecto_lineas.id as linea_id',
-                        'proyecto_lineas.costo','movimientos_pago_clientes.valor_proveedor')
+                        'proyecto_lineas.costo','proyecto_lineas.total_c','proyecto_lineas.subtotal_c','movimientos_pago_clientes.valor_proveedor','proyecto_lineas.cxp')
                         ->where('proyecto_lineas.presupuesto_id','=',$id)
                         ->where('proyecto_lineas.id','=',$row->linea_id)
                         ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                         ->get();
                     $cxp = 0;
-                    $saldo = $row->costo;
+                    $saldo = $row->saldoproveedor;
                     foreach($movs as $m){
-                        $importe = $row->costo * ($m->mov_porc/100);
+                        $importe = $row->subtotal * ($m->mov_porc/100);
                         $cxp += $importe;
                         $saldo = $saldo - $importe;
                         if($importe > 0){
@@ -1121,7 +1122,7 @@ class PresupuestoController extends Controller
             return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
         }
         else{
-            return view('presu´puesto.movimiento.create', ['idp' => $idp,'idl' => $idl,'presupuesto' => $presupuesto,'proveedor' => $proveedor,
+            return view('presupuesto.movimiento.create', ['idp' => $idp,'idl' => $idl,'presupuesto' => $presupuesto,'proveedor' => $proveedor,
             'linea' => $linea,'next' => $next]);
         }
     }

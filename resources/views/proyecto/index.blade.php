@@ -48,6 +48,8 @@
                             <th scope="col">Impuesto Cedular</th>
                             <th scope="col">Importe</th>
                             <th scope="col">Saldo</th>
+                            <th scope="col">CxC</th>
+                            <th scope="col">Pagado</th>
                             <th scope="col">Estado</th>
                             <th scope="col">Cotización</th>
                             <th scope="col">Autorización</th>
