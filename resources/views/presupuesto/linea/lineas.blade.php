@@ -54,6 +54,8 @@
                     <th scope="col">Impuesto Cedular</th>
                     <th scope="col">Total</th>
                     <th scope="col">Saldo</th>
+                    <th scope="col">CxP</th>
+                    <th scope="col">Pagado</th>
                     <th scope="col">Estatus</th>
                     <th scope="col">Acciones</th
                 </tr>
@@ -78,6 +80,8 @@
                         <td>${{number_format($row->imp_c_c, 2)}}</td>
                         <td>${{number_format($row->total_c, 2)}}</td>
                         <td>${{number_format($row->saldoproveedor, 2)}}</td>
+                            <td>${{number_format($row->cxp, 2)}}</td>
+                            <td>${{number_format($row->total_c-$row->saldoproveedor-$row->cxp, 2)}}</td>
                         <td>{{$row->estatus}}</td>
                         <td>
                             <span class="pull-right">

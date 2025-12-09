@@ -56,6 +56,8 @@
                             <th scope="col">Impuesto Cedular</th>
                             <th scope="col">Total</th>
                             <th scope="col">Saldo</th>
+                            <th scope="col">CxC</th>
+                            <th scope="col">Pagado</th>
                             <th scope="col">Terminos</th>
                             <th scope="col">Estatus</th>
                             <th scope="col">Acciones</th>
@@ -79,6 +81,8 @@
                                     <td>${{number_format($row->imp_c_v, 2)}}</td>
                                     <td>${{number_format($row->total_v, 2)}}</td>
                                     <td>${{number_format($row->saldocliente, 2)}}</td>
+                                    <td>${{number_format($row->cxc, 2)}}</td>
+                                    <td>${{number_format($row->total_v-$row->saldocliente-$row->cxc, 2)}}</td>
                                     <td>{{$row->terminos}}</td>
                                     <td>{{$row->estatus}}</td>
                                     <td>

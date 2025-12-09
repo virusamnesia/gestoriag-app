@@ -46,6 +46,8 @@
                     <th scope="col">Impuesto Cedular</th>
                     <th scope="col">Total</th>
                     <th scope="col">Saldo</th>
+                    <th scope="col">CxP</th>
+                    <th scope="col">Pagado</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Cotización</th>
                     <th scope="col">Autorización</th>
@@ -66,6 +68,8 @@
                             <td>${{number_format($row->imp_c, 2)}}</td>
                             <td>${{number_format($row->importe, 2)}}</td>
                             <td>${{number_format($row->saldo, 2)}}</td>
+                            <td>${{number_format($row->cxp, 2)}}</td>
+                            <td>${{number_format($row->importe-$row->saldo-$row->cxp, 2)}}</td>
                             <td>{{$row->estado}}</td>
                             <td>{{$row->fecha_cotizacion}}</td>
                             <td>{{$row->fecha_autorizacion}}</td>

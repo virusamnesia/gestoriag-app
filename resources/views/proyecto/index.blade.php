@@ -70,6 +70,8 @@
                                     <td>${{number_format($row->imp_c, 2)}}</td>
                                     <td>${{number_format($row->importe, 2)}}</td>
                                     <td>${{number_format($row->saldo, 2)}}</td>
+                                    <td>${{number_format($row->cxc, 2)}}</td>
+                                    <td>${{number_format($row->importe-$row->saldo-$row->cxc, 2)}}</td>
                                     <td>{{$row->estado}}</td>
                                     <td>{{$row->fecha_cotizacion}}</td>
                                     <td>{{$row->fecha_autorizacion}}</td>
