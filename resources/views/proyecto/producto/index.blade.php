@@ -73,7 +73,7 @@
                                 </td>
                                 <td>
                                     <x-adminlte-input name="{{$precio}}" id="{{$precio}}" placeholder="$Precio" type="number" 
-                                        igroup-size="m" min=0 max=100000 value="{{$row->precio}}" step="0.01">
+                                        igroup-size="lg" min=0 max=100000 value="{{$row->precio}}" step="0.01">
                                         <x-slot name="appendSlot">
                                             <div class="input-group-text bg-light">
                                                 <i class="fas fa-dollar-sign"></i>
