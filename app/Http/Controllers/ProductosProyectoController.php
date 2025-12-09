@@ -22,7 +22,7 @@ class ProductosProyectoController extends Controller
             ->select('productos_proyectos.*','productos.nombre as producto','tipos_productos.id as tps_id',
             'proyectos.nombre as proyecto','tipos_productos.nombre as tps_nombre')
             ->where('proyectos.id','=',$idp)
-            ->where('proyectos.es_activo','=',true)
+            ->where('productos.es_activo','=',true)
             ->orderBy('productos.nombre')
             ->get();
 
