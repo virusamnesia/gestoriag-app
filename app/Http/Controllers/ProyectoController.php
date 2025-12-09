@@ -230,7 +230,7 @@ class ProyectoController extends Controller
                     ]);
 
                 $posicion =DB::table('proyectos')
-                ->join('clientes', 'cliente.id', '=', 'proyectos.cliente_id')
+                ->join('clientes', 'clientes.id', '=', 'proyectos.cliente_id')
                 ->join('fiscal_positions', 'fiscal_positions.id', '=', 'clientes.fiscal_position_id')
                 ->select('fiscal_positions.*')
                 ->where('proyectos.id','=',$id)

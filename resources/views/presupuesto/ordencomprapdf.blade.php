@@ -119,8 +119,9 @@
         text-align: left;
     }
     .totalsrow{
-        height: 5px;
+        padding: 5;
         font-size: 8px;
+        text-align: right;
     }
 
     .simple {
@@ -335,10 +336,6 @@
         <br>
         <br>
         <br>
-        <br>
-        <br>
-        <br>
-        <br>
         <!-- Entrega -->
         <div class="conclusion">
             <h3>Condiciones de entrega</h3>
@@ -355,10 +352,6 @@
                      acuses de entrega, fotografías, etc.) y evidencia original (DC-3 del personal capacitado).
                 </li>
             </ol>
-        </div>
-
-        <!-- Conclusión -->
-        <div class="conclusion">
             <h3>Condiciones de pago</h3>
             <ol>
                 <li class="pjustify">
@@ -371,6 +364,11 @@
                      para pago sin inconveniente. 
                 </li>
             </ol>
+        </div>
+
+        <!-- Conclusión -->
+        <div class="conclusion">
+            
         </div>
         <br><br><br><br><br><br><br>
         <table class="firmas">
