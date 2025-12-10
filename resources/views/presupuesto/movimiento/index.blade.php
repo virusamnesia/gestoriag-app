@@ -61,8 +61,8 @@
                             <td>{{$row->es_facturable}}</td>
                             <td>{{$row->fecha_factura}}</td>
                             <td>{{$row->factura}}</td>
-                            <td>${{number_format($row->importe, 2)}}</td>
-                            <td>${{number_format($row->saldo, 2)}}</td>
+                            <td>${{number_format($row->importe_proveedor, 2)}}</td>
+                            <td>${{number_format($row->saldo_proveedor, 2)}}</td>
                         </tr>
                     @endforeach
                 </tbody>
