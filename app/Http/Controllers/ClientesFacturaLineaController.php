@@ -47,7 +47,7 @@ class ClientesFacturaLineaController extends Controller
         $cliente_id = $cliente->id;
         $proyecto_id = $proyecto->id;
         $cliente = $cliente->nombre;
-        $proyecto = $proyecto->nombre;
+        $proyecto = $proyecto->cxc;
         $subtotal = 0;
 
         $inf = 1;
