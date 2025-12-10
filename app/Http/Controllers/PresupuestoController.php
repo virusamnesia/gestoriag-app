@@ -1233,9 +1233,10 @@ class PresupuestoController extends Controller
 
         $movimientos =DB::table('proyecto_sucursal_lineas')
         ->join('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
         ->leftjoin('clientes_factura_lineas', 'proyecto_sucursal_lineas.id', '=', 'clientes_factura_lineas.proyecto_sucursal_linea_id')
         ->leftjoin('clientes_facturas', 'clientes_facturas.id', '=', 'clientes_factura_lineas.clientes_factura_id')
-        ->select('proyecto_sucursal_lineas.*','movimientos_pago_clientes.nombre as movimiento','movimientos_pago_clientes.secuencia as secuencia',
+        ->select('proyecto_sucursal_lineas.*','estatus_linea_clientes.nombre as movimiento','movimientos_pago_clientes.secuencia as secuencia',
         'clientes_facturas.id as factura')
         ->where('proyecto_sucursal_lineas.proyecto_linea_id','=',$idl)
         ->get();
