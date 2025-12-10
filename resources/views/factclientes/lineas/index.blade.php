@@ -32,7 +32,7 @@
         @csrf
         <div class="row">
             <div class="col-md-11">
-                <x-adminlte-input name="subtotal" id="subtotal" type="number" label="Facturación Seleccionado" step="0.01" disabled
+                <x-adminlte-input name="subtotal" id="subtotal" type="number" label="Facturación Seleccionada" step="0.01" disabled
                         fgroup-class="col-md-5" value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
