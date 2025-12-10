@@ -80,7 +80,7 @@
                                 <td>{{$row->fecha}}</td>
                                 <td>${{number_format($row->cantidad,2)}}</td>
                                 <td>${{number_format($row->subtotal_c,2)}}</td>
-                                <td>${{number_format($row->iva_t_C,2)}}</td>
+                                <td>${{number_format($row->iva_t_c,2)}}</td>
                                 <td>${{number_format($row->isr_r_c,2)}}</td>
                                 <td>${{number_format($row->iva_r_c,2)}}</td>
                                 <td>${{number_format($row->imp_c_c,2)}}</td>
