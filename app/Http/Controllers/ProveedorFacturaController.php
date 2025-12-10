@@ -50,7 +50,7 @@ class ProveedorFacturaController extends Controller
         $presupuestos = DB::table('presupuestos')
             ->join('proveedors','proveedors.id','=','presupuestos.proveedor_id')
             ->select('presupuestos.*','proveedors.nombre as proveedor','proveedors.rfc as rfc')
-            ->where('proveedors.cxp', '>',0)
+            ->where('presupuestos.cxp', '>',0)
             ->get();
         
         return view('factproveedores.create', ['presupuestos' => $presupuestos]);
