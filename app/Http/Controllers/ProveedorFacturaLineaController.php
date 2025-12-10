@@ -40,6 +40,9 @@ class ProveedorFacturaLineaController extends Controller
         $presupuesto = DB::table('presupuestos')
             ->where('id','=',$id)
             ->first();
+        $presupuestos = DB::table('presupuestos')
+            ->where('id','=',$id)
+            ->get();
 
         $proveedor = Proveedor::where('id','=',$presupuesto->proveedor_id)->first();
 
@@ -47,7 +50,9 @@ class ProveedorFacturaLineaController extends Controller
         $presupuesto_id = $presupuesto->id;
         $proveedor = $proveedor->nombre;
         $presupuesto = $presupuesto->nombre;
-        $subtotal = $presupuesto->cxp;
+        foreach($presupuestos as $pre){
+            $subtotal = $pre->cxp;
+        }
 
         $inf = 1;
         session()->flash('Exito','Selecciona las partidas a facturar...');
