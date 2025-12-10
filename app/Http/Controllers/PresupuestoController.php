@@ -1227,7 +1227,7 @@ class PresupuestoController extends Controller
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
             'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id','proyectos.saldo as proyecto_saldo','proyectos.cxc as proyecto_cxc',
             'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
-            'tipos_productos.nombre as tipo')
+            'tipos_productos.nombre as tipo','proyectos.nombre as proyecto')
             ->where('proyecto_lineas.id','=',$idl)
             ->first();
 
