@@ -33,7 +33,7 @@
         <div class="row">
             <div class="col-md-11">
                 <x-adminlte-input name="subtotal" id="subtotal" type="number" label="Facturación Seleccionado" step="0.01" disabled
-                        fgroup-class="col-md-5" value="${{number_format($subtotal,2)}}"/>
+                        fgroup-class="col-md-5" value="{{$subtotal}}"/>
             </div>
             <div class="col-md-1">
                 <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
