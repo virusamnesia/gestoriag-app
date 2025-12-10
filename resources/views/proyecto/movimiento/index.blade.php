@@ -58,14 +58,14 @@
                             <td>{{$row->fecha_mov}}</td>
                             <td>{{$row->observaciones}}</td>
                             <td><a href="{{$row->url}}">{{$row->url}}</a></td>
-                            <td>{{$row->es_facturable}}</td>
-                            <td> 
+                            <td>
                                 @if ($row->es_facturable)
                                     Sí
                                 @else
                                     No
                                 @endif
                             </td>
+                            <td>{{$row->fecha_factura}}</td>
                             <td>{{$row->factura}}</td>
                             <td>${{number_format($row->subtotal_cliente, 2)}}</td>
                             <td>${{number_format($row->importe_cliente, 2)}}</td>
