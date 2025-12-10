@@ -42,13 +42,17 @@ class ClientesFacturaLineaController extends Controller
             ->where('id','=',$id)
             ->first();
 
+        $proyectos = DB::table('proyectos')
+            ->where('id','=',$id)
+            ->get();
+
         $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
 
         $cliente_id = $cliente->id;
         $proyecto_id = $proyecto->id;
         $cliente = $cliente->nombre;
         $proyecto = $proyecto->nombre;
-        foreach($proyecto as $proy){
+        foreach($proyectos as $proy){
             $subtotal = $proy->cxc;
         }
 
