@@ -47,8 +47,8 @@ class ClientesFacturaLineaController extends Controller
         $cliente_id = $cliente->id;
         $proyecto_id = $proyecto->id;
         $cliente = $cliente->nombre;
-        $proyecto = $proyecto->cxc;
-        $subtotal = 0;
+        $proyecto = $proyecto->nombre;
+        $subtotal = floatValue($proyecto->cxc);
 
         $inf = 1;
         session()->flash('Exito','Selecciona las partidas a facturar...');
