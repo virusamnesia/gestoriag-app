@@ -833,7 +833,7 @@ class PresupuestoController extends Controller
             
             if (count($lineas) > 0){
                 $inf = 0;
-                session()->flash('Error','Existen porductos sin costo asignado...');
+                session()->flash('Error','Existen productos sin costo asignado...');
                 return redirect()->route('presupuestos')->with('info',$inf);
             }
             else{
@@ -860,49 +860,24 @@ class PresupuestoController extends Controller
                         ->join('proyecto_sucursal_lineas', 'proyecto_lineas.id', '=', 'proyecto_sucursal_lineas.proyecto_linea_id')
                         ->leftjoin('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
                         ->select('proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as mov_porc','proyecto_lineas.id as linea_id',
-                        'proyecto_lineas.costo','proyecto_lineas.total_c','proyecto_lineas.subtotal_c','movimientos_pago_clientes.valor_proveedor','proyecto_lineas.cxp')
+                        'proyecto_lineas.costo','proyecto_lineas.total_c','proyecto_lineas.subtotal_c','movimientos_pago_clientes.valor_proveedor','proyecto_lineas.cxp'
+                        ,'proyecto_lineas.saldoproveedor')
                         ->where('proyecto_lineas.presupuesto_id','=',$id)
                         ->where('proyecto_lineas.id','=',$row->linea_id)
                         ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                        ->where('movimientos_pago_clientes.secuencia','=',1)
                         ->get();
                     $cxp = 0;
-                    $saldo = $row->saldoproveedor;
+                    $saldo = 0;
                     foreach($movs as $m){
-                        $importe = $row->subtotal * ($m->mov_porc/100);
-                        $cxp += $importe;
-                        $saldo = $saldo - $importe;
-                        if($importe > 0){
-                            $data = [
-                                'importe_proveedor'=> $importe,
-                                'saldo_proveedor'=> $saldo,
-                                'es_facturable'=> 1,
-                                'proveedor_id'=> $presupuesto->proveedor_id,
-                            ];
-                        }
-                        else{
-                            $data = [
-                                'importe_proveedor'=> $importe,
-                                'saldo_proveedor'=> $saldo,
-                                'proveedor_id'=> $presupuesto->proveedor_id,
-                            ];
-                        }
-                        $upm = DB::table('proyecto_sucursal_lineas')
-                            ->where('id','=', $m->mov_id)
-                            ->update($data);
+                        $cxp += $m->cxp;
+                        $saldo += $m->saldoproveedor;
                     }
-
-                    $line = DB::table('proyecto_lineas')
-                        ->where('id','=', $row->linea_id)
-                        ->update([
-                        'saldoproveedor'=> $saldo,
-                        'cxp'=> $cxp,
-                    ]);
-                    
-                    $saldototal += $saldo;
                 }
                 
                 $data = [
-                    'saldo' => $saldototal,
+                    'saldo' => $saldo,
+                    'cxp' => $cxp,
                     'fecha_autorizacion' => now(),
                     'autorizar' => 1,
                 ];

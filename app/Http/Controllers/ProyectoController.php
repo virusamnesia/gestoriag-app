@@ -285,6 +285,20 @@ class ProyectoController extends Controller
                         session()->flash('Error','No existen acciones que agregar: '.$linea->sucursal." . ".$linea->producto);
                     }
                     else{
+                        $posicionp =DB::table('presupuestos')
+                        ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
+                        ->select('fiscal_positions.*')
+                        ->where('presupuesto.id','=',$linea->presupuesto_id)
+                        ->get();
+
+                        foreach ($posicionp as $posp){
+                            $posicionp_id = $posp->id;
+                            $iva_tp = $posp->iva_t;
+                            $isr_rp = $posp->isr_r;
+                            $iva_rp = $posp->iva_r;
+                            $imp_cp = $posp->imp_c;
+                        }
+
                         $importe_cliente = 0;
                         $subtotal_v = 0;
                         $saldo_cliente = $linea->saldocliente;
@@ -301,10 +315,10 @@ class ProyectoController extends Controller
                         $saldo_cliente = $saldo_cliente - $importe_cliente;
                         /** revisar los impuestos del proveedor en el proyecto */
                         $subtotal_c = $linea->subtotal_c * ($movimiento->valor_proveedor / 100);
-                        $iva_t_c = $subtotal_c * ($iva_t / 100);
-                        $isr_r_c = $subtotal_c * ($isr_r / 100);
-                        $iva_r_c = $subtotal_c * ($iva_r / 100);
-                        $imp_c_c = $subtotal_c * ($imp_c / 100);
+                        $iva_t_c = $subtotal_c * ($iva_tp / 100);
+                        $isr_r_c = $subtotal_c * ($isr_rp / 100);
+                        $iva_r_c = $subtotal_c * ($iva_rp / 100);
+                        $imp_c_c = $subtotal_c * ($imp_cp / 100);
                         $importe_proveedor = $subtotal_c  + $iva_t_c - $isr_r_c - $iva_r_c -$imp_c_c;
                         $saldo_proveedor = $saldo_proveedor - $importe_proveedor;
 
@@ -314,6 +328,7 @@ class ProyectoController extends Controller
                         $isr_r_cliente = $isr_r_cliente + $isr_r_v;
                         $iva_r_cliente = $iva_r_cliente + $iva_r_v;
                         $imp_c_cliente = $imp_c_cliente + $imp_c_v;
+
                         $total_proveedor = $total_proveedor + $importe_proveedor;
                         $subtotal_proveedor = $subtotal_proveedor + $subtotal_c;
                         $iva_t_proveedor = $iva_t_proveedor + $iva_t_c;
@@ -337,8 +352,10 @@ class ProyectoController extends Controller
                         $mov->cliente_id = $linea->cliente;
                         $mov->proveedor_id = $linea->proveedor_id;
                         $mov->importe_cliente = $importe_cliente;
+                        $mov->subtotal_cliente = $subtotal_cliente;
                         $mov->saldo_cliente = $saldo_cliente;
                         $mov->importe_proveedor = $importe_proveedor;
+                        $mov->subtotal_proveedor = $subtotal_proveedor;
                         $mov->saldo_proveedor = $saldo_proveedor;
                         $mov->observaciones = "Autorización";
                         $mov->url = "";

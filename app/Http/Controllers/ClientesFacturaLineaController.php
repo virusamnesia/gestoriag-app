@@ -7,6 +7,7 @@ use App\Models\ClientesFactura;
 use App\Models\ClientesFacturaLinea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ClientesFacturaLineaController extends Controller
 {

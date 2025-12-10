@@ -238,6 +238,12 @@
             location.href=url;
         }
 
+         function view(idp,idl){
+            var base = "<?php echo '/presupuestos/lineas/sucursales/'?>";
+            var url = base+idp+"/"+idl;
+            location.href=url;
+        }
+
         function editar(idl,suc,prod,cost,cant){
             $("#id").val(idl);
             $("#sucursal").val(suc);
