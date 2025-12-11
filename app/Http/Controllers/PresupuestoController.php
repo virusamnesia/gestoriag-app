@@ -133,7 +133,7 @@ class PresupuestoController extends Controller
             ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->select('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.proeycto_id as proyecto_id','proyectos.nombre as proyecto')
+            ->select('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.proyecto_id as proyecto_id','proyectos.nombre as proyecto')
             ->where('proveedors.id','=',$request->proveedor)
             ->where('proyecto_lineas.proveedor_id','=',NULL)
             ->groupBy('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.proyecto_id','proyectos.nombre')
