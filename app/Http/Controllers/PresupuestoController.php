@@ -231,7 +231,7 @@ class PresupuestoController extends Controller
             $cliente = Cliente::where('id','=', $idc)->first();
             $inf = 'Selecciona los productos para el presupuesto...';
             session()->flash('Exito',$inf);
-            return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc])->with('message',$inf);    
+            return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc,'idpr' => $idpr])->with('message',$inf);    
         }
         else{
             $inf = 'No cuentas con el permiso de acceso';
