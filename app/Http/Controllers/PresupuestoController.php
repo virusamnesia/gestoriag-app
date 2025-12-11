@@ -133,10 +133,10 @@ class PresupuestoController extends Controller
             ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->select('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.id as proyecto_id','proyectos.nombre as proyecto')
+            ->select('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.proeycto_id as proyecto_id','proyectos.nombre as proyecto')
             ->where('proveedors.id','=',$request->proveedor)
             ->where('proyecto_lineas.proveedor_id','=',NULL)
-            ->groupBy('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.id','proyectos.nombre')
+            ->groupBy('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.proyecto_id','proyectos.nombre')
             ->orderBy('clientes.nombre')
             ->get();
 
@@ -190,7 +190,7 @@ class PresupuestoController extends Controller
 
     }
 
-    public function products($idp,$idv,$idc)
+    public function products($idp,$idv,$idc,$idpr)
     {
         $user = Auth::user()->id;
 
@@ -221,6 +221,7 @@ class PresupuestoController extends Controller
                 ->where('proveedors.id','=',$idv)
                 ->where('clientes.id','=',$idc)
                 ->where('proyecto_lineas.proveedor_id','=',NULL)
+                ->where('proyecto_lineas.proyecto_id','=',$idpr)
                 ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
                 ->orderBy('productos.nombre')
                 ->get();
