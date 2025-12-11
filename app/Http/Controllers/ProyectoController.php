@@ -447,10 +447,10 @@ class ProyectoController extends Controller
             if($proyecto->autorizar == 0){
                 
                 $productos =DB::table('proyecto_lineas')
-                    ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
-                    ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+                    ->leftJoin('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+                    ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
                     ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-                    ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                    ->leftJoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
                     ->select('proyectos.id as proyecto_id','productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos_id','terminos_pago_clientes.nombre as terminos',
                     'tipos_productos.nombre as tipo','productos.alias')
                     ->where('proyecto_lineas.proyecto_id','=',$id)
