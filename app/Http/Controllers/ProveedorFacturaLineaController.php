@@ -209,7 +209,7 @@ class ProveedorFacturaLineaController extends Controller
             ->join('presupuestos','presupuestos.id','=','proyecto_lineas.presupuesto_id')
             ->join('proyectos','proyectos.id','=','proyecto_lineas.proyecto_id')
             ->join('proveedors','proveedors.id','=','presupuestos.proveedor_id')
-            ->join('clientes','clientes.id','=','proyecto.cliente_id')
+            ->join('clientes','clientes.id','=','proyectos.cliente_id')
             ->join('productos','proyecto_lineas.producto_id','=','productos.id')
             ->join('sucursals','sucursals.id','=','proyecto_lineas.sucursal_id')
             ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
