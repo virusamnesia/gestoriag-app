@@ -243,7 +243,7 @@ class ProveedorFacturaLineaController extends Controller
         $proveedor = $proveedor->nombre;
         $presupuesto = $presupuesto->nombre;
         $subtotal = $factura->subtotal;
-
+        $inf = 1;
         return view('factproveedores.lineas.lineas', ['factura' => $factura,'proveedor' => $proveedor,'presupuesto' => $presupuesto,'proveedor_id' => $proveedor_id,'presupuesto_id' => $presupuesto_id,'subtotal' => $subtotal,'movimientos' => $movimientos])->with('info',$inf);
     }
 
