@@ -19,7 +19,7 @@ class PresupuestoController extends Controller
 {
     public function index(){
         
-        $user = Auth::user()->id;
+        $user = Auth::user()->id; 
 
         $acceso = 5;
 
@@ -124,6 +124,7 @@ class PresupuestoController extends Controller
     {
         $lineas =DB::table('proyecto_lineas')
             ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+            ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
             ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
             ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
             ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
@@ -132,10 +133,10 @@ class PresupuestoController extends Controller
             ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->select('clientes.id','clientes.nombre','clientes.clave','clientes.rfc')
+            ->select('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.id as proyecto_id','proyectos.nombre as proyecto')
             ->where('proveedors.id','=',$request->proveedor)
             ->where('proyecto_lineas.proveedor_id','=',NULL)
-            ->groupBy('clientes.id','clientes.nombre','clientes.clave','clientes.rfc')
+            ->groupBy('clientes.id','clientes.nombre','clientes.clave','clientes.rfc','proyecto_lineas.id','proyectos.nombre')
             ->orderBy('clientes.nombre')
             ->get();
 
@@ -1001,7 +1002,7 @@ class PresupuestoController extends Controller
 
     }
 
-    public function storeLineas(Request $request, $idp,$idv,$idc)
+    public function storeLineas(Request $request, $idp,$idv,$idc,$idpr)
     {
 
         $lineas =DB::table('proyecto_lineas')
@@ -1019,6 +1020,7 @@ class PresupuestoController extends Controller
             'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
             ->where('proveedors.id','=',$idv)
             ->where('clientes.id','=',$idc)
+            ->where('proyecto_lineas.proyecto_id','=',$idpr)
             ->where('proyecto_lineas.proveedor_id','=',NULL)
             ->orderBy('clientes.nombre')
             ->get();

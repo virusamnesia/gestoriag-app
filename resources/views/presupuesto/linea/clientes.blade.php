@@ -41,6 +41,7 @@
                 <tr>
                     <th scope="col">Cliente</th>
                     <th scope="col">RFC</th>
+                    <th scope="col">Proyecto</th>
                     <th scope="col">Acciones</th>
                 </tr>
                 </thead>
@@ -51,7 +52,8 @@
                                 {{$row->nombre}}
                             </th>
                             <td>{{$row->rfc}}</td>
-                            <td><a href= "/presupuestos/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}">Seleccionar</a></td>
+                            <td>{{$row->proyecto}}</td>
+                            <td><a href= "/presupuestos/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}/{{$row->proyecto_id}}">Seleccionar</a></td>
                         </tr>
                     @endforeach
                 </tbody>

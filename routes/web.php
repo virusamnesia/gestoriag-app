@@ -205,7 +205,7 @@ Route::middleware([
     Route::get('/presupuestos/nuevo', [PresupuestoController::class, 'create'])->name('new.presupuestos');
     Route::post('/presupuestos/store', [PresupuestoController::class, 'store'])->name('save.presupuestos');
     Route::get('/presupuestos/productos/{idp?}/{idv?}/{idc?}', [PresupuestoController::class, 'products'])->name('presupuestos.products');
-    Route::post('/presupuestos/lineas/store/{idp?}/{idv?}/{idc?}', [PresupuestoController::class, 'storeLineas'])->name('save.presupuestos.lineas');
+    Route::post('/presupuestos/lineas/store/{idp?}/{idv?}/{idc?}/{idpr?}', [PresupuestoController::class, 'storeLineas'])->name('save.presupuestos.lineas');
     Route::get('/presupuestos/{id?}', [PresupuestoController::class, 'edit'])->name('edit.presupuestos');
     Route::post('/presupuestos/update/{id?}', [PresupuestoController::class, 'update'])->name('update.presupuestos');
     Route::get('/presupuestos/auth/{id?}', [PresupuestoController::class, 'auth'])->name('auth.presupuestos');
