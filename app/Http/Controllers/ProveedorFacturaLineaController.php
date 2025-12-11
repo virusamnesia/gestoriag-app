@@ -97,7 +97,7 @@ class ProveedorFacturaLineaController extends Controller
             'presupuestos.id as presupuesto_id','presupuestos.nombre as presupuesto', 'productos.id as producto_id', 'productos.nombre as producto', 'agrupador_facturas.nombre as agrupador', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha', 'proyecto_sucursal_lineas.subtotal_proveedor as subtotal_c',
             'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_proveedor as cxp','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as porcentaje',
-            'productos.iva','proyectos.fiscal_position_id as posicion_id','fiscal_positions.iva_t','fiscal_positions.isr_r','fiscal_positions.iva_r','fiscal_positions.imp_c')
+            'productos.iva','presupuestos.fiscal_position_id as posicion_id','fiscal_positions.iva_t','fiscal_positions.isr_r','fiscal_positions.iva_r','fiscal_positions.imp_c')
             ->where('presupuestos.id', '=',$idp)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
             ->where('proyecto_sucursal_lineas.importe_proveedor', '>', 0)
