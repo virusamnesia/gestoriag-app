@@ -54,7 +54,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
+                    @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                        <tr>
                             <td>{{$row->sucursal}}</td>
                             <td>{{$row->municipio}}</td>
