@@ -881,6 +881,7 @@ class PresupuestoController extends Controller
                     'saldo' => $saldo,
                     'cxp' => $cxp,
                     'fecha_autorizacion' => now(),
+                    'estados_presupuesto_id' => 2,
                     'autorizar' => 1,
                 ];
                 
