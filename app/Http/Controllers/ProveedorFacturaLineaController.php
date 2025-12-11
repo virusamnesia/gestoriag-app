@@ -95,7 +95,7 @@ class ProveedorFacturaLineaController extends Controller
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','proveedors.id as proveedor_id','proveedors.nombre as proveedor',
             'proveedors.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'presupuestos.id as presupuesto_id','presupuestos.nombre as presupuesto', 'productos.id as producto_id', 'productos.nombre as producto', 'agrupador_facturas.nombre as agrupador', 
-            'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha', 'movimientos_pago_clientes.subtotal_proveedor as subtotal_c',
+            'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha', 'proyecto_sucursal_lineas.subtotal_proveedor as subtotal_c',
             'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_proveedor as cxp','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as porcentaje',
             'productos.iva','proyectos.fiscal_position_id as posicion_id','fiscal_positions.iva_t','fiscal_positions.isr_r','fiscal_positions.iva_r','fiscal_positions.imp_c')
             ->where('presupuestos.id', '=',$idp)

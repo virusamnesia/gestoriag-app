@@ -98,7 +98,7 @@ class ClientesFacturaLineaController extends Controller
             'clientes.rfc as rfc','municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
             'proyectos.id as proyecto_id','proyectos.nombre as proyecto', 'productos.id as producto_id', 'productos.nombre as producto', 'agrupador_facturas.nombre as agrupador', 
             'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus','tipos_productos.nombre as tipo','proyecto_sucursal_lineas.fecha_mov as fecha',
-            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje','movimientos_pago_clientes.subtotal_cliente as subtotal_v',
+            'movimientos_pago_clientes.secuencia as secuencia','proyecto_sucursal_lineas.importe_cliente as cxc','proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje','proyecto_sucursal_lineas.subtotal_cliente as subtotal_v',
             'productos.iva','proyectos.fiscal_position_id as posicion_id','fiscal_positions.iva_t','fiscal_positions.isr_r','fiscal_positions.iva_r','fiscal_positions.imp_c','proyecto_sucursal_lineas.subtotal_cliente as subtotal_v')
             ->where('proyectos.id', '=',$idp)
             ->where('proyecto_sucursal_lineas.es_facturable', '=',1)
