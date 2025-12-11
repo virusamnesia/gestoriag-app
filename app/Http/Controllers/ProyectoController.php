@@ -288,7 +288,7 @@ class ProyectoController extends Controller
                         $posicionp =DB::table('presupuestos')
                         ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
                         ->select('fiscal_positions.*')
-                        ->where('presupuesto.id','=',$linea->presupuesto_id)
+                        ->where('presupuestos.id','=',$linea->presupuesto_id)
                         ->get();
 
                         foreach ($posicionp as $posp){
