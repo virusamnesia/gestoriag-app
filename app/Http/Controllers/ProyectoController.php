@@ -7,6 +7,7 @@ use App\Models\EstadosProyecto;
 use App\Models\ListasPrecio;
 use App\Models\MovimientosPagoCliente;
 use App\Models\Proyecto;
+use App\Models\ProyectoLinea;
 use App\Models\ProyectoSucursalLinea;
 use App\Models\Sucursal;
 use App\Models\sucursales_proyecto;
@@ -244,155 +245,164 @@ class ProyectoController extends Controller
                     $imp_c = $pos->imp_c;
                 }
 
-                $lineas =DB::table('proyecto_lineas')
-                    ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
-                    ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-                    ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-                    ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-                    ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-                    ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
-                    ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
-                    ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
-                    ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                    ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','sucursals.cliente_id as cliente',
-                    'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
-                    'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
-                    'tipos_productos.nombre as tipo')
-                    ->where('proyecto_lineas.proyecto_id','=',$id)
-                    ->get();
+                $lineas = ProyectoLinea::where('costo','<',0)->get();
 
-                $total_cliente = 0;
-                $subtotal_cliente = 0;
-                $iva_t_cliente = 0;
-                $isr_r_cliente = 0;
-                $iva_r_cliente = 0;
-                $imp_c_cliente = 0;
-                $total_proveedor = 0;
-                $subtotal_proveedor = 0;
-                $iva_t_proveedor = 0;
-                $isr_r_proveedor = 0;
-                $iva_r_proveedor = 0;
-                $imp_c_proveedor = 0;
+                if($lineas){
+                    $inf = 'Proyecto con partidas no asignadas a algún presupeusto...';
+                    session()->flash('Error',$inf);
+                    return redirect()->route('proyectos')->with('error',$inf);
+                }
+                else{
 
-                foreach($lineas as $linea){
-                    
-                    $movimiento = MovimientosPagoCliente::where('terminos_pago_cliente_id','=',$linea->terminos)
-                        ->where('secuencia','=',1)
-                        ->first();
-
-                    if($movimiento == null){
-                        $inf = 1;
-                        session()->flash('Error','No existen acciones que agregar: '.$linea->sucursal." . ".$linea->producto);
-                    }
-                    else{
-                        $posicionp =DB::table('presupuestos')
-                        ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
-                        ->select('fiscal_positions.*')
-                        ->where('presupuestos.id','=',$linea->presupuesto_id)
+                    $lineas =DB::table('proyecto_lineas')
+                        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+                        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                        ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                        ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                        ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                        ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+                        ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+                        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+                        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','sucursals.cliente_id as cliente',
+                        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+                        'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+                        'tipos_productos.nombre as tipo')
+                        ->where('proyecto_lineas.proyecto_id','=',$id)
                         ->get();
 
-                        foreach ($posicionp as $posp){
-                            $posicionp_id = $posp->id;
-                            $iva_tp = $posp->iva_t;
-                            $isr_rp = $posp->isr_r;
-                            $iva_rp = $posp->iva_r;
-                            $imp_cp = $posp->imp_c;
-                        }
+                    $total_cliente = 0;
+                    $subtotal_cliente = 0;
+                    $iva_t_cliente = 0;
+                    $isr_r_cliente = 0;
+                    $iva_r_cliente = 0;
+                    $imp_c_cliente = 0;
+                    $total_proveedor = 0;
+                    $subtotal_proveedor = 0;
+                    $iva_t_proveedor = 0;
+                    $isr_r_proveedor = 0;
+                    $iva_r_proveedor = 0;
+                    $imp_c_proveedor = 0;
 
-                        $importe_cliente = 0;
-                        $subtotal_v = 0;
-                        $saldo_cliente = $linea->saldocliente;
-                        $importe_proveedor = 0;
-                        $subtotal_c = 0;
-                        $saldo_proveedor = $linea->saldoproveedor;
-
-                        $subtotal_v = $linea->subtotal_v * ($movimiento->valor_cliente / 100);
-                        $iva_t_v = $subtotal_v * ($iva_t / 100);
-                        $isr_r_v = $subtotal_v * ($isr_r / 100);
-                        $iva_r_v = $subtotal_v * ($iva_r / 100);
-                        $imp_c_v = $subtotal_v * ($imp_c / 100);
-                        $importe_cliente = $subtotal_v  + $iva_t_v - $isr_r_v - $iva_r_v -$imp_c_v;
-                        $saldo_cliente = $saldo_cliente - $importe_cliente;
-                        /** revisar los impuestos del proveedor en el proyecto */
-                        $subtotal_c = $linea->subtotal_c * ($movimiento->valor_proveedor / 100);
-                        $iva_t_c = $subtotal_c * ($iva_tp / 100);
-                        $isr_r_c = $subtotal_c * ($isr_rp / 100);
-                        $iva_r_c = $subtotal_c * ($iva_rp / 100);
-                        $imp_c_c = $subtotal_c * ($imp_cp / 100);
-                        $importe_proveedor = $subtotal_c  + $iva_t_c - $isr_r_c - $iva_r_c -$imp_c_c;
-                        $saldo_proveedor = $saldo_proveedor - $importe_proveedor;
-
-                        $total_cliente = $total_cliente + $importe_cliente;
-                        $subtotal_cliente = $subtotal_cliente + $subtotal_v;
-                        $iva_t_cliente = $iva_t_cliente + $iva_t_v;
-                        $isr_r_cliente = $isr_r_cliente + $isr_r_v;
-                        $iva_r_cliente = $iva_r_cliente + $iva_r_v;
-                        $imp_c_cliente = $imp_c_cliente + $imp_c_v;
-
-                        $total_proveedor = $total_proveedor + $importe_proveedor;
-                        $subtotal_proveedor = $subtotal_proveedor + $subtotal_c;
-                        $iva_t_proveedor = $iva_t_proveedor + $iva_t_c;
-                        $isr_r_proveedor = $isr_r_proveedor + $isr_r_c;
-                        $iva_r_proveedor = $iva_r_proveedor + $iva_r_c;
-                        $imp_c_proveedor = $imp_c_proveedor + $imp_c_c;
-
-                        $facturable = 0;
-                        if ($importe_cliente >  0 or $importe_proveedor > 0 ){
-                            $facturable = 1;
-                        }
+                    foreach($lineas as $linea){
                         
+                        $movimiento = MovimientosPagoCliente::where('terminos_pago_cliente_id','=',$linea->terminos)
+                            ->where('secuencia','=',1)
+                            ->first();
 
-                        $mov =  new ProyectoSucursalLinea();
+                        if($movimiento == null){
+                            $inf = 1;
+                            session()->flash('Error','No existen acciones que agregar: '.$linea->sucursal." . ".$linea->producto);
+                        }
+                        else{
+                            $posicionp =DB::table('presupuestos')
+                            ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
+                            ->select('fiscal_positions.*')
+                            ->where('presupuestos.id','=',$linea->presupuesto_id)
+                            ->get();
 
-                        $mov->proyecto_linea_id = $linea->id;
-                        $mov->movimientos_pago_cliente_id = $movimiento->id;
-                        $mov->tipos_proceso_id = 1;
-                        $mov->es_facturable = $facturable;
-                        $mov->fecha_mov = now();
-                        $mov->cliente_id = $linea->cliente;
-                        $mov->proveedor_id = $linea->proveedor_id;
-                        $mov->importe_cliente = $importe_cliente;
-                        $mov->subtotal_cliente = $subtotal_cliente;
-                        $mov->saldo_cliente = $saldo_cliente;
-                        $mov->importe_proveedor = $importe_proveedor;
-                        $mov->subtotal_proveedor = $subtotal_proveedor;
-                        $mov->saldo_proveedor = $saldo_proveedor;
-                        $mov->observaciones = "Autorización";
-                        $mov->url = "";
+                            foreach ($posicionp as $posp){
+                                $posicionp_id = $posp->id;
+                                $iva_tp = $posp->iva_t;
+                                $isr_rp = $posp->isr_r;
+                                $iva_rp = $posp->iva_r;
+                                $imp_cp = $posp->imp_c;
+                            }
 
-                        $mov->save();
+                            $importe_cliente = 0;
+                            $subtotal_v = 0;
+                            $saldo_cliente = $linea->saldocliente;
+                            $importe_proveedor = 0;
+                            $subtotal_c = 0;
+                            $saldo_proveedor = $linea->saldoproveedor;
 
-                        $data = [
-                            'saldocliente' => $linea->saldocliente - $importe_cliente,
-                            'cxc' => $linea->cxc + $importe_cliente,
-                            'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
-                            'saldoproveedor' => $linea->saldoproveedor - $importe_proveedor,
-                            'cxp' => $linea->cxp + $importe_proveedor,
-                            'proyecto_sucursal_linea_id' => $mov->id,
-                        ];
+                            $subtotal_v = $linea->subtotal_v * ($movimiento->valor_cliente / 100);
+                            $iva_t_v = $subtotal_v * ($iva_t / 100);
+                            $isr_r_v = $subtotal_v * ($isr_r / 100);
+                            $iva_r_v = $subtotal_v * ($iva_r / 100);
+                            $imp_c_v = $subtotal_v * ($imp_c / 100);
+                            $importe_cliente = $subtotal_v  + $iva_t_v - $isr_r_v - $iva_r_v -$imp_c_v;
+                            $saldo_cliente = $saldo_cliente - $importe_cliente;
+                            /** revisar los impuestos del proveedor en el proyecto */
+                            $subtotal_c = $linea->subtotal_c * ($movimiento->valor_proveedor / 100);
+                            $iva_t_c = $subtotal_c * ($iva_tp / 100);
+                            $isr_r_c = $subtotal_c * ($isr_rp / 100);
+                            $iva_r_c = $subtotal_c * ($iva_rp / 100);
+                            $imp_c_c = $subtotal_c * ($imp_cp / 100);
+                            $importe_proveedor = $subtotal_c  + $iva_t_c - $isr_r_c - $iva_r_c -$imp_c_c;
+                            $saldo_proveedor = $saldo_proveedor - $importe_proveedor;
 
-                        $proy = DB::table('proyecto_lineas')
-                            ->where('id','=',$linea->id)
-                            ->update($data);
+                            $total_cliente = $total_cliente + $importe_cliente;
+                            $subtotal_cliente = $subtotal_cliente + $subtotal_v;
+                            $iva_t_cliente = $iva_t_cliente + $iva_t_v;
+                            $isr_r_cliente = $isr_r_cliente + $isr_r_v;
+                            $iva_r_cliente = $iva_r_cliente + $iva_r_v;
+                            $imp_c_cliente = $imp_c_cliente + $imp_c_v;
+
+                            $total_proveedor = $total_proveedor + $importe_proveedor;
+                            $subtotal_proveedor = $subtotal_proveedor + $subtotal_c;
+                            $iva_t_proveedor = $iva_t_proveedor + $iva_t_c;
+                            $isr_r_proveedor = $isr_r_proveedor + $isr_r_c;
+                            $iva_r_proveedor = $iva_r_proveedor + $iva_r_c;
+                            $imp_c_proveedor = $imp_c_proveedor + $imp_c_c;
+
+                            $facturable = 0;
+                            if ($importe_cliente >  0 or $importe_proveedor > 0 ){
+                                $facturable = 1;
+                            }
+                            
+
+                            $mov =  new ProyectoSucursalLinea();
+
+                            $mov->proyecto_linea_id = $linea->id;
+                            $mov->movimientos_pago_cliente_id = $movimiento->id;
+                            $mov->tipos_proceso_id = 1;
+                            $mov->es_facturable = $facturable;
+                            $mov->fecha_mov = now();
+                            $mov->cliente_id = $linea->cliente;
+                            $mov->proveedor_id = $linea->proveedor_id;
+                            $mov->importe_cliente = $importe_cliente;
+                            $mov->subtotal_cliente = $subtotal_cliente;
+                            $mov->saldo_cliente = $saldo_cliente;
+                            $mov->importe_proveedor = $importe_proveedor;
+                            $mov->subtotal_proveedor = $subtotal_proveedor;
+                            $mov->saldo_proveedor = $saldo_proveedor;
+                            $mov->observaciones = "Autorización";
+                            $mov->url = "";
+
+                            $mov->save();
+
+                            $data = [
+                                'saldocliente' => $linea->saldocliente - $importe_cliente,
+                                'cxc' => $linea->cxc + $importe_cliente,
+                                'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
+                                'saldoproveedor' => $linea->saldoproveedor - $importe_proveedor,
+                                'cxp' => $linea->cxp + $importe_proveedor,
+                                'proyecto_sucursal_linea_id' => $mov->id,
+                            ];
+
+                            $proy = DB::table('proyecto_lineas')
+                                ->where('id','=',$linea->id)
+                                ->update($data);
+
+                        }
 
                     }
 
+                    $data = [
+                        'saldo' => $proyecto->saldo - $total_cliente,
+                        'cxc' => $proyecto->cxc + $total_cliente,
+                        'autorizar' => 1,
+                    ];
+
+                    $proy = DB::table('proyectos')
+                        ->where('id','=',$id)
+                        ->update($data);
+                    
+                    $inf = 'La autorización se realizó con éxito...';
+                    session()->flash('Exito',$inf);
+                    return redirect()->route('proyectos')->with('message',$inf);
                 }
-
-                $data = [
-                    'saldo' => $proyecto->saldo - $total_cliente,
-                    'cxc' => $proyecto->cxc + $total_cliente,
-                    'autorizar' => 1,
-                ];
-
-                $proy = DB::table('proyectos')
-                    ->where('id','=',$id)
-                    ->update($data);
-                
-                $inf = 'La autorización se realizó con éxito...';
-                session()->flash('Exito',$inf);
-                return redirect()->route('proyectos')->with('message',$inf);
-
             }
             else{
                 $inf = 'Proyecto previamente autorizado...';
