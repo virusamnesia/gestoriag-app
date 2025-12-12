@@ -185,7 +185,7 @@ class ClientesFacturaLineaController extends Controller
                 $proy = DB::table('proyectos')
                     ->where('id','=', $proyecto->id)
                     ->update([
-                    'cxc'=> $proyecto->cxc - $row->subtotal_v + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea,
+                    'cxc'=> $proyecto->cxc - $row->subtotal_v - $iva_t_linea + $isr_r_linea + $iva_r_linea + $imp_c_linea,
                 ]);
             } 
         };

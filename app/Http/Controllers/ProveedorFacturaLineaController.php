@@ -182,7 +182,7 @@ class ProveedorFacturaLineaController extends Controller
                 $proy = DB::table('presupuestos')
                     ->where('id','=', $presupuesto->id)
                     ->update([
-                    'cxp'=> $presupuesto->cxp - $row->subtotal_c + $iva_t_linea - $isr_r_linea - $iva_r_linea - $imp_c_linea,
+                    'cxp'=> $presupuesto->cxp - $row->subtotal_c - $iva_t_linea + $isr_r_linea + $iva_r_linea + $imp_c_linea,
                 ]);
             } 
         };
