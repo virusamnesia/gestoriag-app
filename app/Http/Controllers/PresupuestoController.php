@@ -818,27 +818,21 @@ class PresupuestoController extends Controller
             ->first();
         
         if ($permiso){
-            $presupuesto = Presupuesto::where('id','=', $id)->first();
-            
-            $lineas =DB::table('proyecto_lineas')
-                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-                ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-                ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-                ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-                ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                ->select('productos.id as producto_id','proyecto_lineas.id as linea_id')
-                ->where('proyecto_lineas.presupuesto_id','=',$id)
-                ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
-                ->where('proyecto_lineas.costo','=',0)
-                ->get();
-            
+            $lineas = DB::table('proyecto_lineas')
+            ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+            ->select('proyecto_lineas.id as linea_id')
+            ->where('proyecto_lineas.presupuesto_id','=',$id)
+            ->where('proyectos.autorizar','=',0)
+            ->get();
+
             if (count($lineas) > 0){
-                $inf = 0;
-                session()->flash('Error','Existen productos sin costo asignado...');
-                return redirect()->route('presupuestos')->with('info',$inf);
+                $inf = 'El presupuesto no se puede autorizar, proyecto relacionado no autorizado...';
+                session()->flash('Error',$inf);
+                return redirect()->route('presupuestos')->with('message',$inf);
             }
             else{
+                $presupuesto = Presupuesto::where('id','=', $id)->first();
+                
                 $lineas =DB::table('proyecto_lineas')
                     ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
                     ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
@@ -846,51 +840,71 @@ class PresupuestoController extends Controller
                     ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                     ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                     ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                    ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo'
-                    ,'proyecto_lineas.subtotal_c','proyecto_lineas.total_c')
+                    ->select('productos.id as producto_id','proyecto_lineas.id as linea_id')
                     ->where('proyecto_lineas.presupuesto_id','=',$id)
                     ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                    ->where('proyecto_lineas.costo','=',0)
                     ->get();
-
-                $subtotal = 0;
-                $cxp = 0;
-                $saldo = 0;
-                foreach ($lineas as $row){
-                    $subtotal += $row->subtotal_c;
-
-                    $movs =DB::table('proyecto_lineas')
-                        ->join('proyecto_sucursal_lineas', 'proyecto_lineas.id', '=', 'proyecto_sucursal_lineas.proyecto_linea_id')
-                        ->leftjoin('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
-                        ->select('proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as mov_porc','proyecto_lineas.id as linea_id',
-                        'proyecto_lineas.costo','proyecto_lineas.total_c','proyecto_lineas.subtotal_c','movimientos_pago_clientes.valor_proveedor','proyecto_lineas.cxp'
-                        ,'proyecto_lineas.saldoproveedor')
-                        ->where('proyecto_lineas.presupuesto_id','=',$id)
-                        ->where('proyecto_lineas.id','=',$row->linea_id)
-                        ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
-                        ->where('movimientos_pago_clientes.secuencia','=',1)
-                        ->get();
-                    
-                    foreach($movs as $m){
-                        $cxp += $m->cxp;
-                        $saldo += $m->saldoproveedor;
-                    }
+                
+                if (count($lineas) > 0){
+                    $inf = 0;
+                    session()->flash('Error','Existen productos sin costo asignado...');
+                    return redirect()->route('presupuestos')->with('info',$inf);
                 }
-                
-                $data = [
-                    'saldo' => $saldo,
-                    'cxp' => $cxp,
-                    'fecha_autorizacion' => now(),
-                    'estados_presupuesto_id' => 2,
-                    'autorizar' => 1,
-                ];
-                
-                $pres = DB::table('presupuestos')
-                    ->where('id','=', $id)
-                    ->update($data);
-        
-                $inf = 'El presupuesto se autorizó con éxito...';
-                session()->flash('Exito',$inf);
-                return redirect()->route('presupuestos')->with('message',$inf);
+                else{
+                    $lineas =DB::table('proyecto_lineas')
+                        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                        ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+                        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                        ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo'
+                        ,'proyecto_lineas.subtotal_c','proyecto_lineas.total_c')
+                        ->where('proyecto_lineas.presupuesto_id','=',$id)
+                        ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                        ->get();
+
+                    $subtotal = 0;
+                    $cxp = 0;
+                    $saldo = 0;
+                    foreach ($lineas as $row){
+                        $subtotal += $row->subtotal_c;
+
+                        $movs =DB::table('proyecto_lineas')
+                            ->join('proyecto_sucursal_lineas', 'proyecto_lineas.id', '=', 'proyecto_sucursal_lineas.proyecto_linea_id')
+                            ->leftjoin('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
+                            ->select('proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_proveedor as mov_porc','proyecto_lineas.id as linea_id',
+                            'proyecto_lineas.costo','proyecto_lineas.total_c','proyecto_lineas.subtotal_c','movimientos_pago_clientes.valor_proveedor','proyecto_lineas.cxp'
+                            ,'proyecto_lineas.saldoproveedor')
+                            ->where('proyecto_lineas.presupuesto_id','=',$id)
+                            ->where('proyecto_lineas.id','=',$row->linea_id)
+                            ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
+                            ->where('movimientos_pago_clientes.secuencia','=',1)
+                            ->get();
+                        
+                        foreach($movs as $m){
+                            $cxp += $m->cxp;
+                            $saldo += $m->saldoproveedor;
+                        }
+                    }
+                    
+                    $data = [
+                        'saldo' => $saldo,
+                        'cxp' => $cxp,
+                        'fecha_autorizacion' => now(),
+                        'estados_presupuesto_id' => 2,
+                        'autorizar' => 1,
+                    ];
+                    
+                    $pres = DB::table('presupuestos')
+                        ->where('id','=', $id)
+                        ->update($data);
+            
+                    $inf = 'El presupuesto se autorizó con éxito...';
+                    session()->flash('Exito',$inf);
+                    return redirect()->route('presupuestos')->with('message',$inf);
+                }
             }   
         }
         else{

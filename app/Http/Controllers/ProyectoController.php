@@ -361,10 +361,10 @@ class ProyectoController extends Controller
                             $mov->cliente_id = $linea->cliente;
                             $mov->proveedor_id = $linea->proveedor_id;
                             $mov->importe_cliente = $importe_cliente;
-                            $mov->subtotal_cliente = $subtotal_cliente;
+                            $mov->subtotal_cliente = $subtotal_v;
                             $mov->saldo_cliente = $saldo_cliente;
                             $mov->importe_proveedor = $importe_proveedor;
-                            $mov->subtotal_proveedor = $subtotal_proveedor;
+                            $mov->subtotal_proveedor = $subtotal_c;
                             $mov->saldo_proveedor = $saldo_proveedor;
                             $mov->observaciones = "Autorización";
                             $mov->url = "";
