@@ -222,29 +222,6 @@ class ProyectoController extends Controller
                 ->first();
 
             if($proyecto->autorizar == 0){
-                
-                $proy = DB::table('proyectos')
-                    ->where('id','=',$id)
-                    ->update([
-                    'estados_proyecto_id' => 2,
-                    'fecha_autorizacion' => now(),
-                    ]);
-
-                $posicion =DB::table('proyectos')
-                ->join('clientes', 'clientes.id', '=', 'proyectos.cliente_id')
-                ->join('fiscal_positions', 'fiscal_positions.id', '=', 'clientes.fiscal_position_id')
-                ->select('fiscal_positions.*')
-                ->where('proyectos.id','=',$id)
-                ->get();
-
-                foreach ($posicion as $pos){
-                    $posicion_id = $pos->id;
-                    $iva_t = $pos->iva_t;
-                    $isr_r = $pos->isr_r;
-                    $iva_r = $pos->iva_r;
-                    $imp_c = $pos->imp_c;
-                }
-
                 $lineas = ProyectoLinea::where('costo','<',0)->get();
 
                 if($lineas){
@@ -253,6 +230,28 @@ class ProyectoController extends Controller
                     return redirect()->route('proyectos')->with('error',$inf);
                 }
                 else{
+                    
+                    $proy = DB::table('proyectos')
+                        ->where('id','=',$id)
+                        ->update([
+                        'estados_proyecto_id' => 2,
+                        'fecha_autorizacion' => now(),
+                        ]);
+
+                    $posicion =DB::table('proyectos')
+                    ->join('clientes', 'clientes.id', '=', 'proyectos.cliente_id')
+                    ->join('fiscal_positions', 'fiscal_positions.id', '=', 'clientes.fiscal_position_id')
+                    ->select('fiscal_positions.*')
+                    ->where('proyectos.id','=',$id)
+                    ->get();
+
+                    foreach ($posicion as $pos){
+                        $posicion_id = $pos->id;
+                        $iva_t = $pos->iva_t;
+                        $isr_r = $pos->isr_r;
+                        $iva_r = $pos->iva_r;
+                        $imp_c = $pos->imp_c;
+                    }
 
                     $lineas =DB::table('proyecto_lineas')
                         ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
