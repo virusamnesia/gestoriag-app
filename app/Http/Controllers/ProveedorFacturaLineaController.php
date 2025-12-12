@@ -191,6 +191,10 @@ class ProveedorFacturaLineaController extends Controller
             ->where('id','=',$fact->id)
             ->update([
             'subtotal'=> $subtotal,
+            'iva_t'=> $iva_t_p,
+            'isr_r'=> $isr_r_p,
+            'iva_r'=> $iva_r_p,
+            'imp_c'=> $imp_c_p,
             'impuestos'=> $impuestos,
             'total'=> $total,
         ]);
