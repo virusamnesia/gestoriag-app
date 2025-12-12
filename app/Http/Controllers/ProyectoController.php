@@ -222,10 +222,10 @@ class ProyectoController extends Controller
                 ->first();
 
             if($proyecto->autorizar == 0){
-                $lineas = ProyectoLinea::where('costo','<',0)->get();
+                $lineas = ProyectoLinea::where('proyect_id','=',$id)->where('costo','<',0)->get();
 
                 if($lineas){
-                    $inf = 'Proyecto con partidas no asignadas a algún presupeusto...';
+                    $inf = 'Proyecto con partidas no asignadas a algún presupuesto...';
                     session()->flash('Error',$inf);
                     return redirect()->route('proyectos')->with('error',$inf);
                 }
