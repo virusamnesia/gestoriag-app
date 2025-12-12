@@ -144,13 +144,13 @@ class MovimientosPagoClienteController extends Controller
     public function update(Request $request, $id)
     {
         if  ($request->evcliente > 0){
-            $cliente = $request->vcliente;
+            $cliente = $request->evcliente;
         }
         else{
             $cliente = 0;
         }
         if  ($request->evproveedor > 0){
-            $proveedor = $request->vproveedor;
+            $proveedor = $request->evproveedor;
         }
         else{
             $proveedor = 0;
