@@ -853,8 +853,8 @@ class PresupuestoController extends Controller
                     ->get();
 
                 $subtotal = 0;
-                $saldototal = 0; 
-        
+                $cxp = 0;
+                $saldo = 0;
                 foreach ($lineas as $row){
                     $subtotal += $row->subtotal_c;
 
@@ -869,8 +869,7 @@ class PresupuestoController extends Controller
                         ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                         ->where('movimientos_pago_clientes.secuencia','=',1)
                         ->get();
-                    $cxp = 0;
-                    $saldo = 0;
+                    
                     foreach($movs as $m){
                         $cxp += $m->cxp;
                         $saldo += $m->saldoproveedor;
