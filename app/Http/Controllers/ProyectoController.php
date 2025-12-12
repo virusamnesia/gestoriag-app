@@ -222,7 +222,7 @@ class ProyectoController extends Controller
                 ->first();
 
             if($proyecto->autorizar == 0){
-                $lineas = ProyectoLinea::where('proyect_id','=',$id)->where('costo','<',0)->get();
+                $lineas = ProyectoLinea::where('proyect_id','=',$id)->where('costo','<',0.01)->get();
 
                 if($lineas){
                     $inf = 'Proyecto con partidas no asignadas a algún presupuesto...';
