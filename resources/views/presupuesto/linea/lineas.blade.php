@@ -71,7 +71,7 @@
                         <td>{{$row->estado}}</td>
                         <td>{{$row->producto}}</td>
                         <td>{{$row->tipo}}</td>
-                        <td>${{number_format($row->cantidad, 2)}}</td>
+                        <td>{{$row->cantidad}}</td>
                         <td>${{number_format($row->costo, 2)}}</td>
                         <td>${{number_format($row->subtotal_c, 2)}}</td>
                         <td>${{number_format($row->iva_t_c, 2)}}</td>
