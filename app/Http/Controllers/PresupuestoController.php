@@ -104,7 +104,7 @@ class PresupuestoController extends Controller
         
         if ($permiso){
             $estados = EstadosPresupuesto::all();
-            $proveedores = Proveedor::all();
+            $proveedores = Proveedor::where('fiscal_position_id','>',0)->get();
 
             return view('presupuesto.create', ['proveedores' => $proveedores, 'estados' => $estados]);
         }

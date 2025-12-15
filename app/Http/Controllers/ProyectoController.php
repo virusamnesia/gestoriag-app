@@ -104,7 +104,7 @@ class ProyectoController extends Controller
         
         if ($permiso){
             $estados = EstadosProyecto::all();
-            $clientes = Cliente::all();
+            $clientes = Cliente::where('fiscal_position_id','>',0)->get();
 
             return view('proyecto.create', ['clientes' => $clientes, 'estados' => $estados]);    
         }
