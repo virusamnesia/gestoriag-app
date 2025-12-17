@@ -126,6 +126,7 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                             'sucursal_id' => $sucursal->id,
                             'producto_id' => $producto->id,
                             'cantidad' => 1,
+                            'precio' => $subtotal_linea,
                             'subtotal_v' => $subtotal_linea,
                             'iva_t_v' => $iva_t_linea,
                             'isr_r_v' => $isr_r_linea,
