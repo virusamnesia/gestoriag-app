@@ -55,7 +55,7 @@
                             <tr>
                                 <th scope="row">
                                         <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO"/>
-                                    </th>
+                                </th>
                                 <th scope="row">
                                     {{$row->nombre}}
                                 </th>
@@ -85,6 +85,8 @@
     {{-- Add here extra stylesheets --}}
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
 @stop
+
+@section('plugins.BootstrapSwitch', true)
 
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
