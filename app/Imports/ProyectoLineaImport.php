@@ -52,11 +52,11 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
 
             $importe = $proyecto->importe;
             $saldo = $proyecto->saldo;
-            $subtotal = $proyecto->subtotal;
-            $iva_t = $proyecto->iva_t;
-            $isr_r = $proyecto->isr_r;
-            $iva_r = $proyecto->iva_r;
-            $imp_c = $proyecto->imp_c;
+            $subtotal_p = $proyecto->subtotal;
+            $iva_t_p = $proyecto->iva_t;
+            $isr_r_p = $proyecto->isr_r;
+            $iva_r_p = $proyecto->iva_r;
+            $imp_c_p = $proyecto->imp_c;
             
             if($sucursal == null){
                 $mensaje = $row['id']."-".$row['marca']."-".$row['sucursal']." sucursal no existente";
@@ -97,13 +97,6 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     $iva_r = $pos->iva_r;
                     $imp_c = $pos->imp_c;
                 }
-                $subtotal_p = 0;
-                $iva_t_p = 0;
-                $isr_r_p = 0;
-                $iva_r_p = 0;
-                $imp_c_p = 0;
-                $importe = 0;
-                $saldo = 0;
                 
                 foreach ($productos as $producto){
                     $prod = str_replace(' ', '_', strtolower($producto->nombre));
