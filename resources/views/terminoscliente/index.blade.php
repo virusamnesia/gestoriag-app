@@ -82,7 +82,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form class="form p-3" action="/termclie/nuevo" method="POST">
+                    <form class="form p-3" action="/termclie/store" method="POST">
                         @csrf
                         <div class="modal-body">
                             <br>
