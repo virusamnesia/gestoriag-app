@@ -25,8 +25,7 @@
 @section('content')
     <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
     <h4>Proveedor: {{$proveedor->nombre}}</h4>
-    <h4>Cliente: {{$cliente->nombre}}</h4>
-    <form action="/presupuestos/lineas/store/{{$idp}}/{{$idv}}/{{$idc}}/{{$idpr}}" method="POST">
+    <form action="/presupuestos/lineas/store/{{$id}}/{{$idv}}" method="POST">
             
         @csrf
         <div class="row">
@@ -37,25 +36,32 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-1">
             </div>
-            <div class="col-md-8">
-                <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
+            <div class="col-md-10">
+                <table class="table table-striped table-bordered shadow-lg mt-6" style="width:100%" id="tablarow">
                     <thead class="bg-dark text-white">
                     <tr>
-                        <th scope="col">Seleccionar</th>
+                        <th scope="col">Selección</th>
+                        <th scope="col">Proyecto</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Sucursal</th>
                         <th scope="col">Producto</th>
                         <th scope="col">Clave</th>
                         <th scope="col">Tipo</th>
+                        
                     </tr>
                     </thead>
                     <tbody>
                         @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
-                            @php $name = "sel".$row->producto_id; @endphp
+                            @php $name = "sel".$row->linea_id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" />
                                 </th>
+                                <td>{{$row->proyecto}}</td>
+                                <td>{{$row->cliente}}</td>
+                                <td>{{$row->sucursal}}</td>
                                 <td>{{$row->producto}}</td>
                                 <td>{{$row->alias}}</td>
                                 <td>{{$row->tipo}}</td>
@@ -64,7 +70,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
             </div>
         </div>
     </form>

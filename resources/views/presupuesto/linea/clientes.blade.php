@@ -25,52 +25,60 @@
 @section('content')
     <h4>Presupuesto: {{$presupuesto->nombre}}</h4>
     <h4>Proveedor: {{$proveedor->nombre}}</h4>
-
-    <div class="row">
-        <div class="col-md-11">
+    <form action="/presupuestos/productos/{{$id}}" method="POST">
+            
+        @csrf
+        <div class="row">
+            <div class="col-md-11">
+            </div>
+            <div class="col-md-1">
+                <x-adminlte-button class="btn-flat" type="submit" label="Confirmar" theme="info" icon="fas fa-lg fa-save"/>
+            </div>
         </div>
-        <div class="col-md-1">
+        <div class="row">
+            <div class="col-md-2">
+                <input type="hidden" id="idv" name="idv" value=" {{$proveedor->id}}">
+            </div>
+            <div class="col-md-8">
+                <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
+                    <thead class="bg-dark text-white">
+                    <tr>
+                        <th scope="col">Selección</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">RFC</th>
+                        <th scope="col">Proyecto</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
+                            @php $name = "sel".$row->proyecto_id; @endphp
+                            <tr>
+                                <th scope="row">
+                                        <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO"/>
+                                    </th>
+                                <th scope="row">
+                                    {{$row->nombre}}
+                                </th>
+                                <td>{{$row->rfc}}</td>
+                                <td>{{$row->proyecto}}</td>
+                                <!--<td><a href= "/presupuestos/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}/{{$row->proyecto_id}}">Seleccionar</a></td>-->
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-2">
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
+    </form>
+        <div class="row">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-10">
+            </div>
+            <div class="col-md-1">
+            </div>
         </div>
-        <div class="col-md-8">
-            <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
-                <thead class="bg-dark text-white">
-                <tr>
-                    <th scope="col">Cliente</th>
-                    <th scope="col">RFC</th>
-                    <th scope="col">Proyecto</th>
-                    <th scope="col">Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                    @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
-                        <tr>
-                            <th scope="row">
-                                {{$row->nombre}}
-                            </th>
-                            <td>{{$row->rfc}}</td>
-                            <td>{{$row->proyecto}}</td>
-                            <td><a href= "/presupuestos/productos/{{$id}}/{{$proveedor->id}}/{{$row->id}}/{{$row->proyecto_id}}">Seleccionar</a></td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-2">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-1">
-        </div>
-        <div class="col-md-10">
-        </div>
-        <div class="col-md-1">
-        </div>
-    </div>
-
 @stop
 
 @section('css')

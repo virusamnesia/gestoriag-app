@@ -153,7 +153,7 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                         $iva_r_p += $iva_r_linea;
                         $imp_c_p += $imp_c_linea;
                         $importe += $total_linea;
-                        $saldo += $$total_linea:
+                        $saldo += $$total_linea;
 
                         $data = [
                             'subtotal' => $subtotal_p,

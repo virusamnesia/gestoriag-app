@@ -190,7 +190,7 @@ class PresupuestoController extends Controller
 
     }
 
-    public function products($idp,$idv,$idc,$idpr)
+    public function products(Request $request,$id)
     {
         $user = Auth::user()->id;
 
@@ -208,6 +208,33 @@ class PresupuestoController extends Controller
         
         if ($permiso){
             $lineas =DB::table('proyecto_lineas')
+            ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+            ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+            ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+            ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+            ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+            ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
+            ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
+            ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
+            ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+            ->select('proyecto_lineas.proyecto_id as proyecto_id')
+            ->where('proveedors.id','=',$request->idv)
+            ->where('proyecto_lineas.proveedor_id','=',NULL)
+            ->groupBy('proyecto_lineas.proyecto_id')
+            ->orderBy('proyecto_lineas.proyecto_id')
+            ->get();
+            
+            $data = [];
+            foreach($lineas as $row){
+                $input = "sel".$row->proyecto_id;
+                if ($request->$input > 0){
+                    $data[] = $row->proyecto_id;
+                }
+            }
+            
+
+            /*$lineas =DB::table('proyecto_lineas')
                 ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
                 ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
                 ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
@@ -224,14 +251,29 @@ class PresupuestoController extends Controller
                 ->where('proyecto_lineas.proyecto_id','=',$idpr)
                 ->groupBy('productos.id','productos.nombre','tipos_productos.nombre','productos.alias')
                 ->orderBy('productos.nombre')
+                ->get();*/
+
+            $lineas =DB::table('proyecto_lineas')
+                ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+                ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+                ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+                ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+                ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+                ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
+                ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+                ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias',
+                'proyectos.id as proyecto_id','proyectos.nombre as proyecto','sucursals.nombre as sucursal','proyecto_lineas.id as linea_id','clientes.nombre as cliente')
+                ->whereIn('proyecto_lineas.proyecto_id',$data)
+                ->where('proyecto_lineas.proveedor_id','=',NULL)
+                ->where('proyecto_lineas.presupuesto_id','=',NULL)
                 ->get();
 
-            $proveedor = Proveedor::where('id','=', $idv)->first();
-            $presupuesto = Presupuesto::where('id','=', $idp)->first();
-            $cliente = Cliente::where('id','=', $idc)->first();
+            $presupuesto = Presupuesto::where('id','=', $id)->first();
+            $proveedor = Proveedor::where('id','=', $presupuesto->proveedor_id)->first();
             $inf = 'Selecciona los productos para el presupuesto...';
             session()->flash('Exito',$inf);
-            return view('presupuesto.linea.productos', ['idp' => $idp,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'cliente' => $cliente,'idv' => $idv,'idc' => $idc,'idpr' => $idpr])->with('message',$inf);    
+            return view('presupuesto.linea.productos', ['id' => $id,'lineas' => $lineas,'presupuesto' => $presupuesto,'proveedor' => $proveedor,'idv' => $proveedor->id,'proys' => $data])->with('message',$inf);    
         }
         else{
             $inf = 'No cuentas con el permiso de acceso';
@@ -1017,40 +1059,37 @@ class PresupuestoController extends Controller
 
     }
 
-    public function storeLineas(Request $request, $idp,$idv,$idc,$idpr)
+    public function storeLineas(Request $request, $id,$idv)
     {
 
         $lineas =DB::table('proyecto_lineas')
             ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+            ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
             ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
             ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
             ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-            ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
-            ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
             ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
-            'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
-            'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
-            ->where('proveedors.id','=',$idv)
-            ->where('clientes.id','=',$idc)
-            ->where('proyecto_lineas.proyecto_id','=',$idpr)
+            ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias',
+            'proyectos.id as proyecto_id','proyectos.nombre as proyecto','sucursals.nombre as sucursal','proyecto_lineas.id as linea_id','clientes.nombre as cliente')
             ->where('proyecto_lineas.proveedor_id','=',NULL)
-            ->orderBy('clientes.nombre')
+            ->where('proyecto_lineas.presupuesto_id','=',NULL)
             ->get();
 
         foreach ($lineas as $row){
-            $sel = "sel".$row->producto_id;
-            if ($request->$sel){
-                $data = [
-                    'proveedor_id' => $idv,
-                    'presupuesto_id' => $idp,
-                ];
-                
-                $linea = DB::table('proyecto_lineas')
-                    ->where('id','=',$row->id)
-                    ->update($data);
+            $sel = "sel".$row->linea_id;
+            if (isset($_POST[$sel])){
+                if ($request->$sel){
+                    $data = [
+                        'proveedor_id' => $idv,
+                        'presupuesto_id' => $id,
+                    ];
+                    
+                    $linea = DB::table('proyecto_lineas')
+                        ->where('id','=',$row->linea_id)
+                        ->update($data);
+                }
             } 
         };
 
