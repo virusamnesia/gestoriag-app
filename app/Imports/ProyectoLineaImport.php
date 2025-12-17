@@ -97,6 +97,13 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                     $iva_r = $pos->iva_r;
                     $imp_c = $pos->imp_c;
                 }
+                $subtotal_p = 0;
+                $iva_t_p = 0;
+                $isr_r_p = 0;
+                $iva_r_p = 0;
+                $imp_c_p = 0;
+                $importe = 0;
+                $saldo = 0;
                 
                 foreach ($productos as $producto){
                     $prod = str_replace(' ', '_', strtolower($producto->nombre));
