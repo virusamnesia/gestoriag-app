@@ -14,6 +14,7 @@ use App\Models\sucursales_proyecto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\Builder;
 
 class ProyectoController extends Controller
 {
@@ -224,7 +225,12 @@ class ProyectoController extends Controller
             if($proyecto->autorizar == 0){
                 $lineas = ProyectoLinea::where('proyecto_id','=',$id)->where('costo','<',0.01)->get();
 
-                if(count($lineas) > 0 ){
+                if( ProyectoLinea::where('proyecto_id','=',$id)->where('presupuesto_id','is',NULL)
+                    ->where(function (Builder $query) {
+                    $query->where('costo','<',0.01)
+                    ->where('costo','is',NULL);
+                        })
+                ->exist() ){
                     $inf = 'Proyecto con partidas no asignadas a algún presupuesto...';
                     session()->flash('Error',$inf);
                     return redirect()->route('proyectos')->with('error',$inf);
