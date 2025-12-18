@@ -224,14 +224,13 @@ class ProyectoController extends Controller
                 ->first();
 
             if($proyecto->autorizar == 0){
-                $lineas = ProyectoLinea::where('proyecto_id','=',$id)->where('costo','<',0.01)->get();
-
-                if( ProyectoLinea::where('proyecto_id','=',$id)->whereNull('presupuesto_id')
+                $lineas = ProyectoLinea::where('proyecto_id','=',$id)->whereNull('presupuesto_id')
                     ->where(function (Builder $query) {
                     $query->where('costo','<',0.01)
                     ->whereNull('costo');
-                        })
-                ->exist() ){
+                        })->get();
+
+                if( count($lineas) > 0){
                     $inf = 'Proyecto con partidas no asignadas a algún presupuesto...';
                     session()->flash('Error',$inf);
                     return redirect()->route('proyectos')->with('error',$inf);
