@@ -225,10 +225,10 @@ class ProyectoController extends Controller
             if($proyecto->autorizar == 0){
                 $lineas = ProyectoLinea::where('proyecto_id','=',$id)->where('costo','<',0.01)->get();
 
-                if( ProyectoLinea::where('proyecto_id','=',$id)->where('presupuesto_id','is',NULL)
+                if( ProyectoLinea::where('proyecto_id','=',$id)->whereNull('presupuesto_id')
                     ->where(function (Builder $query) {
                     $query->where('costo','<',0.01)
-                    ->where('costo','is',NULL);
+                    ->whereNull('costo');
                         })
                 ->exist() ){
                     $inf = 'Proyecto con partidas no asignadas a algún presupuesto...';
