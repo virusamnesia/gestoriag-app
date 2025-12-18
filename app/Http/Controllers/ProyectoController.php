@@ -14,7 +14,8 @@ use App\Models\sucursales_proyecto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Query\Builder;
+//use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProyectoController extends Controller
 {
