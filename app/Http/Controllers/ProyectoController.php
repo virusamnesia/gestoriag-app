@@ -227,7 +227,7 @@ class ProyectoController extends Controller
                 $lineas = ProyectoLinea::where('proyecto_id','=',$id)->whereNull('presupuesto_id')
                     ->where(function (Builder $query) {
                     $query->where('costo','<',0.01)
-                    ->whereNull('costo');
+                    ->orWhereNull('costo');
                         })->get();
 
                 if( count($lineas) > 0){
