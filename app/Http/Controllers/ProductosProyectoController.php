@@ -47,14 +47,22 @@ class ProductosProyectoController extends Controller
             $sel = "sel".$row->id;
             $prec = "prec".$row->id;
             $cant = "cant".$row->id;
-            if ($request->$sel){$cotizado = 1;}
-            else {$cotizado = 0;}
+            if ($request->$sel){
+                $cotizado = 1;
+                $precio = $request->$prec;
+                $cantidad = $request->$cant;
+            }
+            else {
+                $cotizado = 0;
+                $precio = 0;
+                $cantidad = 0;
+            }
             $sucursal = DB::table('productos_proyectos')
                 ->where('productos_proyectos.id','=',$row->id)
                 ->update([
                     'cotizado'=> $cotizado,
-                    'precio'=> $request->$prec,
-                    'cantidad'=> $request->$cant,
+                    'precio'=> $precio,
+                    'cantidad'=> $cantidad,
                 ]
             );
         };

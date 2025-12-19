@@ -259,7 +259,7 @@ class ProyectoController extends Controller
                     ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio','sucursals.cliente_id as cliente',
                     'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
                     'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
-                    'tipos_productos.nombre as tipo')
+                    'tipos_productos.nombre as tipo','productos.iva')
                     ->where('proyecto_lineas.proyecto_id','=',$id)
                     ->get();
 
@@ -287,6 +287,11 @@ class ProyectoController extends Controller
                         session()->flash('Error','No existen acciones que agregar: '.$linea->sucursal." . ".$linea->producto);
                     }
                     else{
+
+                        if($linea->iva <> 16){
+                            $iva_t = $linea->iva;
+                            $iva_r = $linea->iva;    
+                        }
 
                         $importe_cliente = 0;
                         $subtotal_v = 0;

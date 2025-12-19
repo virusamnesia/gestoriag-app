@@ -916,7 +916,8 @@ class PresupuestoController extends Controller
                         ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
                         ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo'
-                        ,'proyecto_lineas.subtotal_c','proyecto_lineas.total_c','productos.iva')
+                        ,'proyecto_lineas.subtotal_c','proyecto_lineas.total_c','productos.iva','proyecto_lineas.iva_t_c','proyecto_lineas.isr_r_c','proyecto_lineas.iva_r_c',
+                        'proyecto_lineas.imp_c_c','proyecto_lineas.total_c','proyecto_lineas.saldoproveedor','proyecto_lineas.cxp')
                         ->where('proyecto_lineas.presupuesto_id','=',$id)
                         ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                         ->get();
