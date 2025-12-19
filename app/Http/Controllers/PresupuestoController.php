@@ -868,12 +868,26 @@ class PresupuestoController extends Controller
             ->get();
 
             if (count($lineas) > 0){
-                $inf = 'El presupuesto no se puede autorizar, proyecto relacionado no autorizado...';
+                $inf = 'El presupuesto no se puede autorizar, proyecto(s) relacionado(s) no autorizado(s)...';
                 session()->flash('Error',$inf);
                 return redirect()->route('presupuestos')->with('message',$inf);
             }
             else{
                 $presupuesto = Presupuesto::where('id','=', $id)->first();
+
+                $posicion =DB::table('presupuestos')
+                ->join('fiscal_positions', 'fiscal_positions.id', '=', 'presupuestos.fiscal_position_id')
+                ->select('fiscal_positions.*')
+                ->where('presupuestos.id','=',$id)
+                ->get();
+
+                foreach ($posicion as $pos){
+                    $posicion_id = $pos->id;
+                    $iva_t = $pos->iva_t;
+                    $isr_r = $pos->isr_r;
+                    $iva_r = $pos->iva_r;
+                    $imp_c = $pos->imp_c;
+                }
                 
                 $lineas =DB::table('proyecto_lineas')
                     ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
@@ -902,7 +916,7 @@ class PresupuestoController extends Controller
                         ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
                         ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo'
-                        ,'proyecto_lineas.subtotal_c','proyecto_lineas.total_c')
+                        ,'proyecto_lineas.subtotal_c','proyecto_lineas.total_c','productos.iva')
                         ->where('proyecto_lineas.presupuesto_id','=',$id)
                         ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                         ->get();
@@ -910,8 +924,21 @@ class PresupuestoController extends Controller
                     $subtotal = 0;
                     $cxp = 0;
                     $saldo = 0;
+                    $total_proveedor = 0;
+                    $subtotal_proveedor = 0;
+                    $iva_t_proveedor = 0;
+                    $isr_r_proveedor = 0;
+                    $iva_r_proveedor = 0;
+                    $imp_c_proveedor = 0;
+
                     foreach ($lineas as $row){
                         $subtotal += $row->subtotal_c;
+                        $saldo_proveedor = $row->saldoproveedor;
+
+                        if($row->iva <> 16){
+                            $iva_t = $row->iva;
+                            $iva_r = $row->iva;    
+                        }
 
                         $movs =DB::table('proyecto_lineas')
                             ->join('proyecto_sucursal_lineas', 'proyecto_lineas.id', '=', 'proyecto_sucursal_lineas.proyecto_linea_id')
@@ -923,12 +950,49 @@ class PresupuestoController extends Controller
                             ->where('proyecto_lineas.id','=',$row->linea_id)
                             ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
                             ->where('movimientos_pago_clientes.secuencia','=',1)
-                            ->get();
+                            ->first();
+
+                        $subtotal_c = $row->subtotal_c * ($movs->valor_proveedor / 100);
+                        $iva_t_c = $subtotal_c * ($iva_t / 100);
+                        $isr_r_c = $subtotal_c * ($isr_r / 100);
+                        $iva_r_c = $subtotal_c * ($iva_r / 100);
+                        $imp_c_c = $subtotal_c * ($imp_c / 100);
+                        $importe_proveedor = $subtotal_c  + $iva_t_c - $isr_r_c - $iva_r_c -$imp_c_c;
+                        $saldo_proveedor = $saldo_proveedor - $importe_proveedor;
                         
-                        foreach($movs as $m){
-                            $cxp += $m->cxp;
-                            $saldo += $m->saldoproveedor;
+                        $total_proveedor = $total_proveedor + $importe_proveedor;
+                        $subtotal_proveedor = $subtotal_proveedor + $subtotal_c;
+                        $iva_t_proveedor = $iva_t_proveedor + $iva_t_c;
+                        $isr_r_proveedor = $isr_r_proveedor + $isr_r_c;
+                        $iva_r_proveedor = $iva_r_proveedor + $iva_r_c;
+                        $imp_c_proveedor = $imp_c_proveedor + $imp_c_c;
+
+                        $facturable = 0;
+                        if ( $importe_proveedor > 0 ){
+                            $facturable = 1;
                         }
+
+                        $data = [
+                            'importe_proveedor' => $importe_proveedor,
+                            'subtotal_proveedor' => $subtotal_c,
+                            'saldo_proveedor' => $saldo_proveedor,
+                        ];
+                        
+                        $suc = DB::table('proyecto_sucursal_lineas')
+                            ->where('id','=', $movs->mov_id)
+                            ->update($data);
+
+                        $data = [
+                            'saldoproveedor' => $row->saldoproveedor - $importe_proveedor,
+                            'cxp' => $row->cxp + $importe_proveedor,
+                        ];
+
+                        $proy = DB::table('proyecto_lineas')
+                            ->where('id','=',$row->linea_id)
+                            ->update($data);
+
+                        $cxp += $importe_proveedor;
+                        $saldo += $saldo_proveedor;
                     }
                     
                     $data = [
