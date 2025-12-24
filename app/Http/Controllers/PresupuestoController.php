@@ -175,7 +175,7 @@ class PresupuestoController extends Controller
             $presupuesto->estados_presupuesto_id = 1;
             $presupuesto->fecha_cotizacion = now();
             $presupuesto->autorizar = 0;
-            $presupuesto->fiscal_position_id = $posicion_id;
+            $presupuesto->fiscal_position_id = $request->posicion;
 
             $presupuesto->save();
 
