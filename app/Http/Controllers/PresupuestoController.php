@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\EstadosPresupuesto;
+use App\Models\FiscalPosition;
 use App\Models\MovimientosPagoCliente;
 use App\Models\Presupuesto;
 use App\Models\Producto;
@@ -72,7 +73,9 @@ class PresupuestoController extends Controller
             ->orderBy('presupuestos.id', 'desc')
             ->get();
 
-            return view('presupuesto.index', ['presupuestos' => $presupuestos,'permisos' => $permisos,'permisoa' => $permisoa,'permisom' => $permisom]);    
+            $posiciones = FiscalPosition::all();
+
+            return view('presupuesto.index', ['presupuestos' => $presupuestos,'permisos' => $permisos,'permisoa' => $permisoa,'permisom' => $permisom,'posiciones' => $posiciones]);    
         }
         else{
             $inf = 'No cuentas con el permiso de acceso';
@@ -105,8 +108,9 @@ class PresupuestoController extends Controller
         if ($permiso){
             $estados = EstadosPresupuesto::all();
             $proveedores = Proveedor::where('fiscal_position_id','>',0)->get();
+            $posiciones = FiscalPosition::all();
 
-            return view('presupuesto.create', ['proveedores' => $proveedores, 'estados' => $estados]);
+            return view('presupuesto.create', ['proveedores' => $proveedores, 'estados' => $estados, 'posiciones' => $posiciones]);
         }
         else{
             $inf = 'No cuentas con el permiso de acceso';
@@ -500,19 +504,6 @@ class PresupuestoController extends Controller
             ->first();
         
         if ($permiso){
-            $lineas =DB::table('proyecto_lineas')
-        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
-        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
-        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
-        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
-        ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
-        ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
-        ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
-        ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-        ->select('clientes.nombre','clientes.clave','clientes.rfc')
-        ->where('proveedors.id','=',1)
-        ->orderBy('sucursals.nombre')
-        ->get();
 
         $lineas =DB::table('proyecto_lineas')
         ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
@@ -1495,5 +1486,132 @@ class PresupuestoController extends Controller
         ->get();
 
         return view('presupuesto.linea.matrizsaldos', ['lineas' => $lineas,'proveedor' => $proveedor,'presupuesto' => $presupuesto,'id' => $id, 'productos' => $productos]);
+    }
+
+    /**
+     * Modifica la posición fiscal del prepuesto seleccionado.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function positionUpdate(Request $request){
+        $user = Auth::user()->id;
+
+        $acceso = 5;
+
+        $permiso = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->join('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
+            ->join('permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
+            ->select('users.name','roles.name as role','roles.id as role_id','permissions.name as permission','permissions.id as permission_id')
+            ->where('users.id','=', $user)
+            ->where('permissions.id','=', $acceso)
+            ->first();
+        
+        if ($permiso){
+            $data = [
+                'fiscal_position_id' => $request->posicion,
+            ];
+
+            $pres = DB::table('presupuestos')
+            ->where('id','=',$request->id)
+            ->update($data);
+
+            $presupuesto = Presupuesto::find($request->id);
+
+            $lineas =DB::table('proyecto_lineas')
+            ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+            ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+            ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+            ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+            ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+            ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+            ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+            ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+            ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
+            'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id','proyectos.saldo as proyecto_saldo','proyectos.cxc as proyecto_cxc',
+            'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+            'tipos_productos.nombre as tipo', 'productos.iva')
+            ->where('proyecto_lineas.presupuesto_id','=',$request->id)
+            ->get();
+            
+            $posicion =FiscalPosition::where('id',$request->posicion)->first();
+
+            $posicion_id = $posicion->id;
+            $iva_t = $posicion->iva_t;
+            $isr_r = $posicion->isr_r;
+            $iva_r = $posicion->iva_r;
+            $imp_c = $posicion->imp_c;
+
+            $subtotal = 0;
+            $cxp = 0;
+            $saldo_proveedor = 0;
+            $total_proveedor = 0;
+            $subtotal_proveedor = 0;
+            $iva_t_proveedor = 0;
+            $isr_r_proveedor = 0;
+            $iva_r_proveedor = 0;
+            $imp_c_proveedor = 0;
+
+            foreach($lineas as $row){
+                
+                if($row->iva <> 16){
+                    $iva_t = $row->iva;
+                    $iva_r = $row->iva;    
+                }
+
+                $subtotal = $row->subtotal_c;
+                $iva_t_c = $subtotal * ($iva_t / 100);
+                $isr_r_c = $subtotal * ($isr_r / 100);
+                $iva_r_c = $subtotal * ($iva_r / 100);
+                $imp_c_c = $subtotal * ($imp_c / 100);
+                $importe_proveedor = $subtotal  + $iva_t_c - $isr_r_c - $iva_r_c -$imp_c_c;
+                $saldo_proveedor = $saldo_proveedor - $importe_proveedor;
+                
+                $total_proveedor = $total_proveedor + $importe_proveedor;
+                $subtotal_proveedor = $subtotal_proveedor + $subtotal;
+                $iva_t_proveedor = $iva_t_proveedor + $iva_t_c;
+                $isr_r_proveedor = $isr_r_proveedor + $isr_r_c;
+                $iva_r_proveedor = $iva_r_proveedor + $iva_r_c;
+                $imp_c_proveedor = $imp_c_proveedor + $imp_c_c;
+
+                $line = DB::table('proyecto_lineas')
+                    ->where('id','=', $row->id)
+                    ->update([
+                    'subtotal_c'=> $subtotal,
+                    'iva_t_c'=> $iva_t_c,
+                    'isr_r_c'=> $isr_r_c,
+                    'iva_r_c'=> $iva_r_c,
+                    'imp_c_c'=> $imp_c_c,
+                    'total_c'=> $importe_proveedor,
+                    'saldoproveedor'=> $importe_proveedor,
+                ]);
+            }
+            $data = [
+                'importe' => $total_proveedor,
+                'subtotal' => $subtotal_proveedor,
+                'iva_t' => $iva_t_proveedor,
+                'isr_r' => $isr_r_proveedor,
+                'iva_r' => $iva_r_proveedor,
+                'imp_c' => $imp_c_proveedor,
+                'saldo' => $total_proveedor,
+            ];
+            
+            $pres = DB::table('presupuestos')
+                ->where('id','=', $request->id)
+                ->update($data);
+
+            $inf = 'La nueva posición fiscal se aplicó con éxito...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('presupuestos')->with('message',$inf);
+        }
+        else{
+            $inf = 'No cuentas con el permiso de acceso';
+            return redirect()->route('presupuestos')->with('error',$inf);
+        }
+        
+        
     }
 }

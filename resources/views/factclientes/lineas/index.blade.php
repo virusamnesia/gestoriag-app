@@ -69,7 +69,7 @@
                             @php $name = "sel".$row->mov_id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id,{{$row->cxc}})" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" checked/>
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id,{{$row->cxc}})" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" />
                                 </th>
                                 <td>{{$row->sucursal}}</td>
                                 <td>{{$row->municipio}}</td>

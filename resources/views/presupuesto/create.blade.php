@@ -53,6 +53,20 @@
                         @endforeach
                     </x-adminlte-select2>
                 </div>
+                <div class="row">
+                    <x-adminlte-select2 name="posicion" label="Posición Fiscal" label-class="text-lightblue"  fgroup-class="col-md-10"
+                        igroup-size="sm" data-placeholder="Selecciona una posición fiscal...">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="far fa-address-card"></i>
+                            </div>
+                        </x-slot>
+                        <option/>
+                        @foreach ($posiciones as $rowp)
+                        <option value="{{$rowp->id}}">{{$rowp->nombre}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
             </div>
             <div class="col-md-3">
             </div>
@@ -105,6 +119,44 @@
                     }, 
                     'print'
                 ]
+            });
+
+            // 1. Escuchar el evento 'change' del select de proveedores
+            $('#proveedor').on('change', function() {
+                var proveedorId = $(this).val();
+                
+                // Referencia al select de destino
+                var $fiscalSelect = $('#posicion');
+
+                // Si hay una selección válida
+                if (proveedorId) {
+                    // 2. Hacer la llamada AJAX
+                    $.ajax({
+                        url: '/api/proveedor/' + proveedorId + '/fiscal-position',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.success && data.fiscal_position_id) {
+                                // 3. Cambiar el valor del select de posición fiscal
+                                $fiscalSelect.val(data.fiscal_position_id);
+                                
+                                // IMPORTANTE: Si usas Select2, debes disparar el evento change 
+                                // para que se actualice la interfaz visual
+                                $fiscalSelect.trigger('change'); 
+                                
+                                console.log("Posición fiscal actualizada a ID: " + data.fiscal_position_id);
+                            } else {
+                                console.log("El proveedor no tiene posición fiscal asignada.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error al obtener datos del proveedor:", error);
+                        }
+                    });
+                } else {
+                    // Si el usuario "des-selecciona", puedes limpiar el segundo campo si quieres
+                    // $fiscalSelect.val('').trigger('change');
+                }
             });
         } );
     </script>

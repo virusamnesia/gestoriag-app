@@ -318,5 +318,24 @@ class ProveedorController extends Controller
         session()->flash('Exito','El proveedor se agregó con éxito...');
         return redirect()->route('proveedores')->with('info',$inf);
     }
+
+    /**
+     * Obtener la posición fiscal de un proveedor vía AJAX.
+     */
+    public function getFiscalPosition($id)
+    {
+        // Buscamos el proveedor. Asumimos que la columna foránea se llama fiscal_position_id
+        // Si tu columna tiene otro nombre (ej. position_id), cámbialo aquí.
+        $proveedor = Proveedor::find($id);
+
+        if ($proveedor) {
+            return response()->json([
+                'success' => true,
+                'fiscal_position_id' => $proveedor->fiscal_position_id
+            ]);
+        }
+
+        return response()->json(['success' => false], 404);
+    }
     
 }

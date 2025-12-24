@@ -91,6 +91,7 @@
                                             @if($row->autorizar== 0)
                                             <li><button class="btn align-self-left" id="btncostos" onclick="costos({{$row->id}})"><i class="ion-md-chatboxes"></i>Costos</button></li>
                                             <li><button class="btn align-self-left" id="btnauth" onclick="auth({{$row->id}})"><i class="ion-md-chatboxes"></i>Autorizar</button></li>
+                                            <li><button class="btn align-self-left" data-toggle="modal" data-target="#smeditar" id="btnpos" onclick="fpos('{{$row->id}}','{{$row->posicion}}','{{$row->proveedor}}','{{$row->nombre}}')"><i class="ion-md-chatboxes"></i>Posición</button></li>
                                             @endif
                                             @endif
                                             <li><button class="btn align-self-left" id="btncancelar" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
@@ -105,6 +106,78 @@
                     @endforeach
                 </tbody>
             <table>
+        </div>
+    </div>
+
+    <!-- Button trigger modal para procesar -->
+    <!-- Modal -->
+    <div class="modal fade" id="smeditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="form p-3" action="/presupuestos/posiciones" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <br>
+                        <h6>Editar Posición Fiscal</h6>
+                        <br>
+                        <div class="row">
+                            <input type="hidden" name="id" id="id" />
+                            <x-adminlte-input name="presupuesto" label="Presupuesto" id="presupuesto" placeholder="Nombre del presupuesto" label-class="text-lightblue" 
+                            fgroup-class="col-md-12" disabled>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-user text-lightblue"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+                        <div class="row">
+                            <x-adminlte-input name="proveedor" id="proveedor" label="Proveedor" placeholder="Proveedor" label-class="text-lightblue" 
+                            fgroup-class="col-md-12" disabled>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-user text-lightblue"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+                        <div class="row">
+                            <x-adminlte-input name="fiscal" id="fiscal" label="Posición Fiscal" placeholder="Posición fiscal del presupuesto" label-class="text-lightblue" 
+                            fgroup-class="col-md-12" disabled>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-user text-lightblue"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+                        <div class="row">
+                            <x-adminlte-select2 name="posicion" label="Nueva posición Fiscal" label-class="text-lightblue"  fgroup-class="col-md-10"
+                                igroup-size="sm" data-placeholder="Nueva posición fiscal...">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text bg-gradient-info">
+                                        <i class="far fa-address-card"></i>
+                                    </div>
+                                </x-slot>
+                                <option/>
+                                @foreach ($posiciones as $rowp)
+                                <option value="{{$rowp->id}}">{{$rowp->nombre}}</option>
+                                @endforeach
+                            </x-adminlte-select2>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"  id="guardar">Guardar</button>
+                    </div>
+                </form> 
+            </div>
         </div>
     </div>
 
@@ -189,6 +262,13 @@
             var base = "<?php echo '/presupuestos/eliminar/'?>";
             var url = base+id;
             location.href=url;
+        }
+
+        function fpos(id,pos,prov,pres){
+            $("#id").val(id);
+            $("#fiscal").val(pos);
+            $("#presupuesto").val(pres);
+            $("#proveedor").val(prov);
         }
     </script>
 

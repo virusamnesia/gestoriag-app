@@ -96,7 +96,7 @@ Route::middleware([
     Route::get('/posiciones/regimenes', [RegimenesFiscaleController::class, 'index'])->name('regimenes');
     Route::post('/posiciones/regimenes/store', [RegimenesFiscaleController::class, 'store'])->name('save.regimenes');
     Route::post('/posiciones/regimenes/update/{id?}', [RegimenesFiscaleController::class, 'update'])->name('update.regimenes');
-        
+    Route::get('/api/proveedor/{id}/fiscal-position', [ProveedorController::class, 'getFiscalPosition'])->name('api.proveedor.fiscal_position');    
    
     //USUARIOS
     Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios');
@@ -224,6 +224,7 @@ Route::middleware([
     Route::get('/presupuestos/matriz/{id?}', [PresupuestoController::class, 'matriz'])->name('presupuestos.matriz');
     Route::get('/presupuestos/matrizcxp/{id?}', [PresupuestoController::class, 'matrizcxp'])->name('presupuestos.matrizcxc');
     Route::get('/presupuestos/matrizsaldos/{id?}', [PresupuestoController::class, 'matrizsaldos'])->name('presupuestos.matrizsaldos');
+    Route::post('/presupuestos/posiciones', [PresupuestoController::class, 'positionUpdate'])->name('presupuestos.posiciones');
     
     Route::get('/presupuestos/pdf/ordencompra/{id?}', [PdfController::class, 'ordencompra'])->name('pdf.presupuestos.ordencompra');
     
