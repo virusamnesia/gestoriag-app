@@ -187,6 +187,8 @@ Route::middleware([
     Route::get('/proyectos/errores/{id?}', [ProyectoLineaController::class, 'errores'])->name('errores.proyectos');
     Route::get('/proyectos/lineas/delete/{idp?}/{idl?}', [ProyectoLineaController::class, 'delete'])->name('delete.proyectos.lineas');
     Route::post('/proyectos/lineas/destroy/{idp?}/{idl?}', [ProyectoLineaController::class, 'destroy'])->name('destroy.proyectos.lineas');
+    Route::get('/proyectos/lineas/close/{idp?}/{idl?}', [ProyectoLineaController::class, 'close'])->name('close.proyectos.lineas');
+    Route::post('/proyectos/lineas/closeup', [ProyectoLineaController::class, 'closeUp'])->name('closeup.proyectos.lineas');
 
     Route::get('/proyectos/pdf/cotizacion/{id?}', [PdfController::class, 'cotizacion'])->name('pdf.proyectos.cotizacion');
     
@@ -225,7 +227,8 @@ Route::middleware([
     Route::get('/presupuestos/matrizcxp/{id?}', [PresupuestoController::class, 'matrizcxp'])->name('presupuestos.matrizcxc');
     Route::get('/presupuestos/matrizsaldos/{id?}', [PresupuestoController::class, 'matrizsaldos'])->name('presupuestos.matrizsaldos');
     Route::post('/presupuestos/posiciones', [PresupuestoController::class, 'positionUpdate'])->name('presupuestos.posiciones');
-    
+    Route::post('/presupuestos/lineas/closeup', [PresupuestoController::class, 'closeUp'])->name('closeup.presupuestos.lineas');
+
     Route::get('/presupuestos/pdf/ordencompra/{id?}', [PdfController::class, 'ordencompra'])->name('pdf.presupuestos.ordencompra');
     
     //FACTURACION PROVEEDORES

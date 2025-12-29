@@ -221,6 +221,7 @@ class PresupuestoController extends Controller
             ->leftjoin('proveedor_municipios', 'proveedor_municipios.municipio_contacto_id', '=', 'municipio_contactos.id')
             ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('proyecto_lineas.proyecto_id as proyecto_id')
             ->where('proveedors.id','=',$request->idv)
@@ -266,7 +267,8 @@ class PresupuestoController extends Controller
                 ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
                 ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-                ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias',
+                ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
+                ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
                 'proyectos.id as proyecto_id','proyectos.nombre as proyecto','sucursals.nombre as sucursal','proyecto_lineas.id as linea_id','clientes.nombre as cliente')
                 ->whereIn('proyecto_lineas.proyecto_id',$data)
                 ->where('proyecto_lineas.proveedor_id','=',NULL)
@@ -302,8 +304,9 @@ class PresupuestoController extends Controller
         ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
         ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
-        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
         ->where('proyecto_lineas.presupuesto_id','=',$id)
         ->orderBy('sucursals.nombre')
@@ -348,6 +351,7 @@ class PresupuestoController extends Controller
                 ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                 ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
                 ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias')
                 ->where('proyecto_lineas.presupuesto_id','=',$presupuesto->id)
                 ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
@@ -393,6 +397,7 @@ class PresupuestoController extends Controller
                 ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
                 ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+                ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
                 ->select('productos.id as producto_id','proyecto_lineas.id as linea_id','proyecto_lineas.costo','')
                 ->where('proyecto_lineas.presupuesto_id','=',$id)
                 ->where('proyecto_lineas.proveedor_id','=',$presupuesto->presupuesto_id)
@@ -514,8 +519,9 @@ class PresupuestoController extends Controller
         ->leftJoin('proveedors', 'proveedor_municipios.proveedor_id', '=', 'proveedors.id')
         ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
-        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
         ->where('proveedors.id','=',1)
         ->orderBy('sucursals.nombre')
@@ -1033,6 +1039,7 @@ class PresupuestoController extends Controller
                 ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
                 ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
                 ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
                 ->select('productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
                 ->where('proyecto_lineas.id','=',$request->id)
                 ->orderBy('productos.id')
@@ -1099,11 +1106,12 @@ class PresupuestoController extends Controller
             ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
             'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','estatus_linea_clientes.nombre as estatus',
             'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo',
-            'sucursals.marca','proyectos.nombre as proyecto')
+            'sucursals.marca','proyectos.nombre as proyecto','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id')
             ->where('proyecto_lineas.presupuesto_id','=',$id)
             ->orderBy('sucursals.nombre')
             ->get();
@@ -1127,7 +1135,8 @@ class PresupuestoController extends Controller
             ->leftjoin('clientes', 'clientes.id', '=', 'sucursals.cliente_id')
             ->leftJoin('productos', 'proyecto_lineas.producto_id', '=', 'productos.id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
-            ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias',
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
+            ->select('productos.id as producto_id','productos.nombre as producto','tipos_productos.nombre as tipo','productos.alias','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
             'proyectos.id as proyecto_id','proyectos.nombre as proyecto','sucursals.nombre as sucursal','proyecto_lineas.id as linea_id','clientes.nombre as cliente')
             ->where('proyecto_lineas.proveedor_id','=',NULL)
             ->where('proyecto_lineas.presupuesto_id','=',NULL)
@@ -1174,10 +1183,11 @@ class PresupuestoController extends Controller
             ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
             ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
             'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id','proyectos.nombre as proyecto',
-            'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.nombre as estatus',
+            'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.nombre as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
             'tipos_productos.nombre as tipo')
             ->where('proyecto_lineas.id','=',$idl)
             ->first();
@@ -1234,10 +1244,11 @@ class PresupuestoController extends Controller
         ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id','proyectos.saldo as proyecto_saldo','proyectos.cxc as proyecto_cxc',
-        'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+        'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'tipos_productos.nombre as tipo')
         ->where('proyecto_lineas.id','=',$idl)
         ->first();
@@ -1335,10 +1346,11 @@ class PresupuestoController extends Controller
             ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
             ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
             'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id','proyectos.saldo as proyecto_saldo','proyectos.cxc as proyecto_cxc',
-            'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+            'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
             'tipos_productos.nombre as tipo','proyectos.nombre as proyecto')
             ->where('proyecto_lineas.id','=',$idl)
             ->first();
@@ -1385,10 +1397,11 @@ class PresupuestoController extends Controller
         ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
         ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','presupuestos.id as presupuesto_id',
-        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'tipos_productos.nombre as tipo','proyectos.nombre as proyecto','proyectos.id as proyecto_id')
         ->where('presupuestos.id','=',$id)
         ->orderBy('proyectos.id','asc')
@@ -1429,10 +1442,11 @@ class PresupuestoController extends Controller
         ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
         ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','presupuestos.id as presupuesto_id',
-        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'tipos_productos.nombre as tipo','proyectos.nombre as proyecto','proyectos.id as proyecto_id')
         ->where('presupuestos.id','=',$id)
         ->orderBy('proyectos.id','asc')
@@ -1473,11 +1487,12 @@ class PresupuestoController extends Controller
         ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
         ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','presupuestos.id as presupuesto_id',
         'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
-        'tipos_productos.nombre as tipo','proyectos.nombre as proyecto','proyectos.id as proyecto_id')
+        'tipos_productos.nombre as tipo','proyectos.nombre as proyecto','proyectos.id as proyecto_id','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id')
         ->where('presupuestos.id','=',$id)
         ->orderBy('proyectos.id','asc')
         ->orderBy('sucursals.marca','asc')
@@ -1529,10 +1544,11 @@ class PresupuestoController extends Controller
             ->join('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
             ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
             ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
             ->join('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
             ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
             'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id','proyectos.saldo as proyecto_saldo','proyectos.cxc as proyecto_cxc',
-            'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus',
+            'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.id as terminos','estatus_linea_clientes.id as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
             'tipos_productos.nombre as tipo', 'productos.iva')
             ->where('proyecto_lineas.presupuesto_id','=',$request->id)
             ->get();
@@ -1613,5 +1629,85 @@ class PresupuestoController extends Controller
         }
         
         
+    }
+
+    /*
+        Permite cerrar tiendas
+    */
+    public function closeUp(Request $request){
+
+        $aplicacion = $request->terminar;
+        $linea = ProyectoLinea::where('id',$request->linea)->first();
+        $presupuesto = Presupuesto::where('id',$request->presupuesto)->first();
+        
+        if ($aplicacion == 1){
+            
+            $posicion = FiscalPosition::where('id',$presupuesto->fiscal_position_id)->first();
+            $producto = Producto::where('id',$linea->producto_id)->first();
+            $mov = ProyectoSucursalLinea::where('id',$linea->proyecto_linea_id)->select(DB::raw('SUM(subtotal_proveedor) AS `subtotal`'))->first();
+            
+            $saldo = $linea->saldoproveedor;
+            $cxp = $linea->cxp;
+            if($mov->subtotal == NULL){
+                $subtotal = 0;
+            }
+            else{
+                $subtotal = $mov->subtotal;
+            }
+
+            if($producto->iva != 16){
+                $iva_t = $subtotal * ($producto->iva/100);
+                $iva_r = $subtotal * ($producto->iva/100);
+            }
+            else{
+                $iva_t = $subtotal * ($posicion->iva_t/100);
+                $iva_r = $subtotal * ($posicion->iva_r/100);
+            }
+
+            $isr_r = $subtotal * ($posicion->isr_r/100);
+            $imp_c = $subtotal * ($posicion->imp_c/100);
+            $total = $subtotal + $iva_t - $isr_r - $iva_r - $imp_c;
+
+            $data = [
+                'saldoproveedor' => 0,
+                'cxp' => 0,
+                'subtotal_c' => $linea->subtotal_c - $subtotal,
+                'iva_t_c' => $linea->iva_t_c - $iva_t,
+                'isr_r_c' => $linea->isr_r_c - $isr_r,
+                'iva_r_c' => $linea->iva_r_c - $iva_r,
+                'imp_c_c' => $linea->imp_c_c - $imp_c,
+                'total_c' => $linea->total_c - $total,
+                'estatus_linea_proveedor_id' => 3,
+            ];
+            
+            $prol = DB::table('proyecto_lineas')
+            ->where('id','=',$request->linea)
+            ->update($data);
+
+            $data = [
+                'saldo' => $presupuesto->saldo - $saldo,
+                'cxp' => $presupuesto->cxp - $cxp,
+                'subtotal' => $presupuesto->subtotal - $subtotal,
+                'iva_t' => $presupuesto->iva_t - $iva_t,
+                'isr_r' => $presupuesto->isr_r - $isr_r,
+                'iva_r' => $presupuesto->iva_r - $iva_r,
+                'imp_c' => $presupuesto->imp_c - $imp_c,
+                'importe' => $presupuesto->total - $total,
+
+            ];
+            
+            $proy = DB::table('presupuestos')
+            ->where('id','=',$request->presupuesto)
+            ->update($data);
+
+            $inf = 'La línea se cerró con éxito. Presupuesto '.$presupuesto->nombre.' actualizado...';
+            session()->flash('Exito',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $linea->proyecto_id])->with('message',$inf);
+        }
+        else{
+            $inf = 'La línea del presupuesto no cerrada...';
+            session()->flash('Error',$inf);
+            return redirect()->route('proyectos.lineas', ['id' => $linea->proyecto_id])->with('message',$inf);
+        }        
     }
 }

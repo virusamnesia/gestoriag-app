@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Imports\ProyectoLineaImport;
 use App\Models\Cliente;
+use App\Models\FiscalPosition;
 use App\Models\Importacion;
 use App\Models\ImportacionError;
+use App\Models\Presupuesto;
 use App\Models\Producto;
+use App\Models\Proveedor;
 use App\Models\Proyecto;
 use App\Models\ProyectoLinea;
+use App\Models\ProyectoSucursalLinea;
+use App\Models\SaldosClientes;
 use App\Models\TerminosPagoCliente;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
@@ -36,11 +41,12 @@ class ProyectoLineaController extends Controller
         ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
         'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus',
-        'tipos_productos.nombre as tipo','presupuestos.autorizar')
+        'tipos_productos.nombre as tipo','presupuestos.autorizar','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id')
         ->where('proyectos.id','=',$id)
         ->orderBy('sucursals.nombre')
         ->get();
@@ -197,7 +203,8 @@ class ProyectoLineaController extends Controller
             $linea->terminos_pago_cliente_id = $terminos->id;
             $linea->estatus_linea_cliente_id = $terminos->estatus; 
             $linea->obs_c = ""; 
-            $linea->obs_v = ""; 
+            $linea->obs_v = "";
+            $linea->estatus_linea_cliente_id = 1;  
 
             $linea->save();
 
@@ -515,7 +522,7 @@ class ProyectoLineaController extends Controller
         if($numerrores == 0){
             $inf = 'El proyecto se importó con éxito...';
             session()->flash('Exito',$inf);
-            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);;
+            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('message',$inf);
         }
         else{
             $inf = $importacion->id;
@@ -576,9 +583,10 @@ class ProyectoLineaController extends Controller
         ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
-        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'tipos_productos.nombre as tipo')
         ->where('proyectos.id','=',$id)
         ->orderBy('sucursals.marca','asc')
@@ -618,9 +626,10 @@ class ProyectoLineaController extends Controller
         ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
-        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'tipos_productos.nombre as tipo')
         ->where('proyectos.id','=',$id)
         ->orderBy('sucursals.marca','asc')
@@ -660,9 +669,10 @@ class ProyectoLineaController extends Controller
         ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
-        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id',
         'tipos_productos.nombre as tipo')
         ->where('proyectos.id','=',$id)
         ->orderBy('sucursals.marca','asc')
@@ -702,10 +712,11 @@ class ProyectoLineaController extends Controller
         ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
         'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',DB::raw('proyecto_lineas.subtotal_v - proyecto_lineas.subtotal_c as margen'),
-        'tipos_productos.nombre as tipo')
+        'tipos_productos.nombre as tipo','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id')
         ->where('proyectos.id','=',$id)
         ->orderBy('sucursals.marca','asc')
         ->orderBy('sucursals.id','asc')
@@ -713,5 +724,155 @@ class ProyectoLineaController extends Controller
         ->get();
 
         return view('proyecto.linea.matrizmargen', ['lineas' => $lineas,'cliente' => $cliente,'proyecto' => $proyecto,'id' => $id, 'productos' => $productos]);
+    }
+
+    /*
+        Permite cerrar tiendas
+    */
+    public function close($idp,$idl){
+        $linea =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','proyecto_lineas.total_v','proyecto_lineas.saldocliente',
+        'tipos_productos.nombre as tipo','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id')
+        ->where('proyecto_lineas.id','=',$idl)
+        ->orderBy('sucursals.marca','asc')
+        ->orderBy('sucursals.id','asc')
+        ->orderBy('productos.nombre','asc')
+        ->first();
+
+        $proyecto = DB::table('proyectos')
+        ->leftjoin('estados_proyectos', 'estados_proyectos.id', '=', 'proyectos.estados_proyecto_id')
+        ->select('proyectos.*','estados_proyectos.nombre as estado')
+        ->where('proyectos.id','=',$idp)->first();
+
+        $cliente = Cliente::where('id','=',$proyecto->cliente_id)->first();
+
+        return view('proyecto.linea.close', ['linea' => $linea,'cliente' => $cliente,'proyecto' => $proyecto,'id' => $idp]);
+    }
+
+    public function closeUp(Request $request){
+
+        $aplicacion = $request->saldo;
+        $linea = ProyectoLinea::where('id',$request->linea)->first();
+        $proyecto = Proyecto::where('id',$request->proyecto)->first();
+        $posicion = FiscalPosition::where('id',$proyecto->fiscal_position_id)->first();
+        $producto = Producto::where('id',$linea->producto_id)->first();
+        $mov = ProyectoSucursalLinea::where('id',$linea->proyecto_linea_id)->select(DB::raw('SUM(subtotal_cliente) AS `subtotal`'))->first();
+        
+        $saldo = $linea->saldocliente;
+        $cxc = $linea->cxc;
+        if($mov->subtotal == NULL){
+            $subtotal = 0;
+        }
+        else{
+            $subtotal = $mov->subtotal;
+        }
+        
+        if($producto->iva != 16){
+            $iva_t = $subtotal * ($producto->iva/100);
+            $iva_r = $subtotal * ($producto->iva/100);
+        }
+        else{
+            $iva_t = $subtotal * ($posicion->iva_t/100);
+            $iva_r = $subtotal * ($posicion->iva_r/100);
+        }
+
+        $isr_r = $subtotal * ($posicion->isr_r/100);
+        $imp_c = $subtotal * ($posicion->imp_c/100);
+        $total = $subtotal + $iva_t - $isr_r - $iva_r - $imp_c;
+
+        $abonado = 0;
+        
+        if ($aplicacion == 1){
+            
+            $abono = new SaldosClientes();
+
+            $abono->proyecto_id = $proyecto->id;
+            $abono->cliente_id = $proyecto->cliente_id;
+            $abono->sucursal_id = $linea->sucursal_id;
+            $abono->producto_id = $linea->producto_id;
+            $abono->subtotal = $subtotal;
+            $abono->iva_t = $iva_t;
+            $abono->isr_r = $isr_r;
+            $abono->iva_r = $iva_r;
+            $abono->imp_c = $imp_c;
+            $abono->total = $total;
+            $abono->aplicado = 0;
+            $abono->saldo = $subtotal;  
+
+            $abono->save();
+
+            $abonado = $total;
+        }
+
+        $data = [
+            'saldocliente' => 0,
+            'cxc' => 0,
+            'subtotal_v' => $linea->subtotal_v - $subtotal,
+            'iva_t_v' => $linea->iva_t_v - $iva_t,
+            'isr_r_v' => $linea->isr_r_v - $isr_r,
+            'iva_r_v' => $linea->iva_r_v - $iva_r,
+            'imp_c_v' => $linea->imp_c_v - $imp_c,
+            'total_v' => $linea->total_v - $total,
+            'estatus_linea_proveedor_id' => 2,
+        ];
+        
+        $prol = DB::table('proyecto_lineas')
+        ->where('id','=',$request->linea)
+        ->update($data);
+
+        $data = [
+            'saldo' => $proyecto->saldo - $saldo,
+            'cxc' => $proyecto->cxc - $cxc,
+            'subtotal' => $proyecto->subtotal - $subtotal,
+            'iva_t' => $proyecto->iva_t - $iva_t,
+            'isr_r' => $proyecto->isr_r - $isr_r,
+            'iva_r' => $proyecto->iva_r - $iva_r,
+            'imp_c' => $proyecto->imp_c - $imp_c,
+            'importe' => $proyecto->total - $total,
+
+        ];
+        
+        $proy = DB::table('proyectos')
+        ->where('id','=',$request->proyecto)
+        ->update($data);
+
+        $linea =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','proyecto_lineas.total_v','proyecto_lineas.saldocliente',
+        'tipos_productos.nombre as tipo','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id')
+        ->where('proyecto_lineas.id','=',$request->linea)
+        ->orderBy('sucursals.marca','asc')
+        ->orderBy('sucursals.id','asc')
+        ->orderBy('productos.nombre','asc')
+        ->first();
+
+        $presupuesto = Presupuesto::where('id','=',$linea->presupuesto_id)->first();
+
+        $proveedor = Proveedor::where('id','=',$presupuesto->proveedor_id)->first();
+
+        $inf = 'La línea se cerró con éxito... Se abono un saldo a favor por $'.$abonado;
+        session()->flash('Exito',$inf);
+        return view('presupuesto.linea.close', ['linea' => $linea,'proveedor' => $proveedor,'presupuesto' => $presupuesto])->with('message',$inf);
     }
 }

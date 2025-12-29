@@ -57,6 +57,7 @@
                     <th scope="col">CxP</th>
                     <th scope="col">Pagado</th>
                     <th scope="col">Estatus</th>
+                    <th scope="col">Operación</th>
                     <th scope="col">Acciones</th
                 </tr>
                 </thead>
@@ -83,6 +84,7 @@
                             <td>${{number_format($row->cxp, 2)}}</td>
                             <td>${{number_format($row->total_c-$row->saldoproveedor-$row->cxp, 2)}}</td>
                         <td>{{$row->estatus}}</td>
+                        <td>{{$row->estatuslinea}}</td>
                         <td>
                             <span class="pull-right">
                                 <div class="dropdown">
@@ -93,7 +95,12 @@
                                         @endif
                                         @if($presupuesto->autorizar== 1)
                                         <li><button class="btn align-self-left" id="btnview" onclick="view({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Historial</button></li>
-                                        <li><button class="btn align-self-left" id="btnmove" onclick="move({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
+                                            @if($row->estatuslinea_id == 1)
+                                            <li><button class="btn align-self-left" id="btnmove" onclick="move({{$presupuesto->id}},{{$row->id}})"><i class="ion-md-chatboxes"></i>Actualizar</button></li>
+                                            @endif
+                                        @endif
+                                        @if($row->estatuslinea_id == 1)
+                                        <li><button class="btn align-self-left" id="btnclose"  onclick="breakup({{$presupuesto->id}},{{$row->id}})"><i class="icon ion-md-pint"></i>Interrumpir</button></li>
                                         @endif
                                         @if($presupuesto->autorizar == 0)
                                         <li><button class="btn align-self-left" id="btnborrar" onclick="borrar({{$presupuesto->id}},{{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
@@ -255,6 +262,12 @@
 
         function borrar(idp,idl){
             var base = "<?php echo '/presupuestos/lineas/delete/' ?>";
+            var url = base+idp+"/"+idl;
+            location.href=url;
+        }
+
+        function breakup(idp,idl){
+            var base = "<?php echo '/presupuestos/lineas/breakup/'?>";
             var url = base+idp+"/"+idl;
             location.href=url;
         }

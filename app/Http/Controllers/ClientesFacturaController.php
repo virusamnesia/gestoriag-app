@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\ClientesFactura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -112,6 +113,65 @@ class ClientesFacturaController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function abonar(Request $request,$id){
+        
+        $factura = ClientesFactura::where('id',$id)->first();
+
+        $saldos = DB::table('saldos_clientes')
+            ->join('clientes','clientes.id','=','saldos_clientes.cliente_id')
+            ->join('proyectos','saldos_clientes.proyecto_id','=','proyectos.id')
+            ->join('productos','saldos_clientes.producto_id','=','productos.id')
+            ->join('sucursals','sucursals.id','=','saldos_clientes.sucursal_id')
+            ->select('saldos_clientes.*','sucursals.nombre as sucursal','clientes.id as cliente_id','clientes.nombre as cliente',
+            'clientes.rfc as rfc','proyectos.id as proyecto_id','proyectos.nombre as proyecto', 'productos.id as producto_id', 'productos.nombre as producto')
+            ->where('saldos_clientes.cliente_id', '=',$factura->cliente_id)
+            ->where('saldos_clientes.saldo', '>',0)
+            ->get();
+        
+        $subtotal = 0;
+        $iva_t = 0;
+        $isr_r = 0;
+        $iva_r = 0;
+        $imp_c = 0;
+        
+        foreach ($saldos as $row){
+            $sel = "sel".$row->id;
+            if ($request->$sel){
+                
+                $mov = DB::table('saldos_clientes')
+                    ->where('id','=', $row->id)
+                    ->update([
+                    'saldo'=> 0,
+                    'aplicado'=> $row->total,
+                    'clientes_factura_id'=> $id,
+                ]);
+
+                $subtotal += $row->subtotal;
+                $iva_t += $row->iva_t;
+                $isr_r += $row->isr_r;
+                $iva_r += $row->iva_r;
+                $imp_c += $row->imp_c;
+            } 
+        }
+
+        if($subtotal > 0){
+            $line = DB::table('clientes_facturas')
+                ->where('id','=', $id)
+                ->update([
+                'descuento'=> $subtotal,
+                'iva_t'=> $factura->iva_t - $iva_t,
+                'isr_r'=> $factura->isr_r - $isr_r,
+                'iva_r'=> $factura->iva_r - $iva_r,
+                'imp_c'=> $factura->imp_c - $imp_c,
+                'total'=> $factura->subtotal - $subtotal + $factura->iva_t - $iva_t - $factura->isr_r + $isr_r - $factura->iva_r + $iva_r - $factura->imp_c + $imp_c,
+            ]);    
+        }
+        
+        $inf = 1;
+        session()->flash('Exito','La factura con saldos a favor aplicados con éxito...');
+        return redirect()->route('factclientes')->with('info',$inf);
     }
     
 }

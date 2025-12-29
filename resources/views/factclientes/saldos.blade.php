@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'LineasFactura')
+@section('title', 'Saldos a aplicar')
 
 @section('content_header')
-    <h1>Previo líneas de la factura</h1>
+    <h1>Saldos a favor del cliente</h1>
     @if(Session::get('Error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error! </strong>{{  Session::get('Error'); }}
@@ -24,15 +24,15 @@
 
 @section('content')
     <h4>Cliente: {{$cliente}}</h4>
-    <h4>Proyecto: {{$proyecto}}</h4>
-    <h4>Facturación Original: ${{number_format($subtotal,2)}}</h4>
+    <h4>factura: {{$factura->nombre}}</h4>
+    <h4>Subtotal de la factura: ${{number_format($factura->subtotal,2)}}</h4>
     
-    <form action="/factclientes/lineas/store/{{$proyecto_id}}/{{$cliente_id}}" method="POST">
+    <form action="/factclientes/abonar/{{$factura->id}}" method="POST">
             
         @csrf
         <div class="row">
             <div class="col-md-11">
-                <x-adminlte-input name="subtotal" id="subtotal" type="number" label="Facturación Seleccionada" step="0.01" disabled
+                <x-adminlte-input name="saldo" id="saldo" type="number" label="Saldo a aplicar" step="0.01" disabled
                         fgroup-class="col-md-5" value="0"/>
             </div>
             <div class="col-md-1">
@@ -44,50 +44,36 @@
                 <table class="table table-striped table-bordered shadow-lg mt-4" style="width:100%" id="tablarow">
                     <thead class="bg-dark text-white">
                     <tr>
-                        <th scope="col">Facturar</th>
+                        <th scope="col">Abonar</th>
+                        <th scope="col">Proyecto</th>
                         <th scope="col">Sucursal</th>
-                        <th scope="col">Municipio</th>
-                        <th scope="col">Estado</th>
                         <th scope="col">Producto</th>
-                        <th scope="col">Motivo</th>
-                        <th scope="col">Porcentaje aplicado</th>
-                        <th scope="col">Fecha aplicación</th>
-                        <th scope="col">Cantidad</th>
                         <th scope="col">Subtotal</th>
                         <th scope="col">IVA Trasladado</th>
                         <th scope="col">ISR Retenido</th>
                         <th scope="col">IVA Retenido</th>
                         <th scope="col">Impuesto Cedular</th>
                         <th scope="col">Total</th>
-                        <th scope="col">A Facturar</th>
-                        <th scope="col">Agrupador de Facturación</th>
-                        <th scope="col">Tipo de Producto</th>
+                        <th scope="col">Saldo a favor</th>
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($movimientos as $row) {{-- Add here extra stylesheets --}}
-                            @php $name = "sel".$row->mov_id; @endphp
+                        @foreach ($saldos as $row) {{-- Add here extra stylesheets --}}
+                            @php $name = "sel".$row->id; @endphp
                             <tr>
                                 <th scope="row">
-                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id,{{$row->cxc}})" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" />
+                                    <x-adminlte-input-switch name="{{$name}}" id="{{$name}}" onchange="recalcular(this.id,{{$row->saldo}})" data-on-color="success" data-off-color="danger" data-on-text="SI" data-off-text="NO" />
                                 </th>
+                                <td>{{$row->proyecto}}</td>
                                 <td>{{$row->sucursal}}</td>
-                                <td>{{$row->municipio}}</td>
-                                <td>{{$row->estado}}</td>
                                 <td>{{$row->producto}}</td>
-                                <td>{{$row->estatus}}</td>
-                                <td>{{$row->porcentaje}}%</td>
-                                <td>{{$row->fecha}}</td>
-                                <td>${{number_format($row->cantidad,2)}}</td>
-                                <td>${{number_format($row->subtotal_v,2)}}</td>
-                                <td>${{number_format($row->iva_t_v,2)}}</td>
-                                <td>${{number_format($row->isr_r_v,2)}}</td>
-                                <td>${{number_format($row->iva_r_v,2)}}</td>
-                                <td>${{number_format($row->imp_c_v,2)}}</td>
-                                <td>${{number_format($row->total_v,2)}}</td>
-                                <td>${{number_format($row->cxc,2)}}</td>
-                                <td>{{$row->agrupador}}</td>
-                                <td>{{$row->tipo}}</td>
+                                <td>${{number_format($row->subtotal,2)}}</td>
+                                <td>${{number_format($row->iva_t,2)}}</td>
+                                <td>${{number_format($row->isr_r,2)}}</td>
+                                <td>${{number_format($row->iva_r,2)}}</td>
+                                <td>${{number_format($row->imp_c,2)}}</td>
+                                <td>${{number_format($row->total,2)}}</td>
+                                <td>${{number_format($row->saldo,2)}}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -97,7 +83,7 @@
     </form>
     <div class="row">
         <div class="col-md-1">
-            <x-adminlte-button label="Regresar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back()"/>
+            <x-adminlte-button label="No abonar" type="button" theme="info" icon="far fa-hand-point-left" onclick="back()"/>
         </div>
         <div class="col-md-10">
         </div>
@@ -155,11 +141,11 @@
             location.href=url;
         }
 
-        function recalcular(id,cxc){
+        function recalcular(id,saldo){
             
-            selectElement = document.getElementById('subtotal');
+            selectElement = document.getElementById('saldo');
             subtotal = parseInt(selectElement.value,10);
-            importe = parseInt(cxc,10);
+            importe = parseInt(saldo,10);
             operacion = 0;
             checkElement = document.getElementById(id);
             checkValue = checkElement.checked;

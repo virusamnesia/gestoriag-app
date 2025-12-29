@@ -60,6 +60,7 @@
                             <th scope="col">Pagado</th>
                             <th scope="col">Terminos</th>
                             <th scope="col">Estatus</th>
+                            <th scope="col">Operación</th>
                             <th scope="col">Acciones</th>
                         </tr>
                         </thead>
@@ -85,6 +86,7 @@
                                     <td>${{number_format($row->total_v-$row->saldocliente-$row->cxc, 2)}}</td>
                                     <td>{{$row->terminos}}</td>
                                     <td>{{$row->estatus}}</td>
+                                    <td>{{$row->estatuslinea}}</td>
                                     <td>
                                         <span class="pull-right">
                                             <div class="dropdown">
@@ -94,13 +96,18 @@
                                                     <li><button class="btn align-self-left" id="btnedit"  onclick="edit({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-create"></i>Editar</button></li>
                                                     @endif
                                                     @if($proyecto->autorizar == 1)
-                                                    @if($row->autorizar == 1)
-                                                    <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-list"></i>Historial</button></li>
-                                                    @endif
-                                                    <li><button class="btn align-self-left" id="btnmove" onclick="move({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-play"></i>Actualizar</button></li>
+                                                        @if($row->autorizar == 1)
+                                                        <li><button class="btn align-self-left" id="btnview" onclick="view({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-list"></i>Historial</button></li>
+                                                        @endif
+                                                        @if($row->estatuslinea_id == 1)
+                                                        <li><button class="btn align-self-left" id="btnmove" onclick="move({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-play"></i>Actualizar</button></li> 
+                                                        @endif
+                                                        @if($row->estatuslinea_id == 1 or $row->estatuslinea_id == 4)
+                                                        <li><button class="btn align-self-left" id="btnclose"  onclick="closer('{{$proyecto->id}}','{{$row->id}}')"><i class="icon ion-md-pint"></i>Cerrar</button></li>
+                                                        @endif
                                                     @endif
                                                     @if($proyecto->autorizar == 0)
-                                                     <li><button class="btn align-self-left" id="btndel"  onclick="del({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-pint"></i>Eliminar</button></li>
+                                                    <li><button class="btn align-self-left" id="btndel"  onclick="del({{$proyecto->id}},{{$row->id}})"><i class="icon ion-md-pint"></i>Eliminar</button></li>
                                                     @endif
                                             </div>
                                         </span>
@@ -195,6 +202,12 @@
 
         function del(idp,idl){
             var base = "<?php echo '/proyectos/lineas/delete/'?>";
+            var url = base+idp+"/"+idl;
+            location.href=url;
+        }
+
+        function closer(idp,idl){
+            var base = "<?php echo '/proyectos/lineas/close/'?>";
             var url = base+idp+"/"+idl;
             location.href=url;
         }

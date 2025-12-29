@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\ClientesFactura;
 use App\Models\ClientesFacturaLinea;
+use App\Models\SaldosClientes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -126,6 +127,7 @@ class ClientesFacturaLineaController extends Controller
         $fact->imp_c = $impuestos;
         $fact->total = $total;
         $fact->es_activo = 1;
+        $fact->descuento = 0;
         $fact->fiscal_position_id = $impuestos;
         $fact->save();
 
@@ -203,9 +205,36 @@ class ClientesFacturaLineaController extends Controller
             'fiscal_position_id'=> $posicion_id,
         ]);
 
-        $inf = 1;
-        session()->flash('Exito','La factura fue creada con éxito...');
-        return redirect()->route('factclientes')->with('info',$inf);
+        $abono = SaldosClientes::where('cliente_id',$idc)->select(DB::raw('SUM(saldo) AS `saldo`'))->first();
+        
+        if($abono->saldo == NULL or $abono->saldo == 0){
+            $inf = 1;
+            session()->flash('Exito','La factura fue creada con éxito. Cliente sin saldo a favor...');
+            return redirect()->route('factclientes')->with('info',$inf);
+        }
+        else{
+            
+            $saldos = DB::table('saldos_clientes')
+            ->join('clientes','clientes.id','=','saldos_clientes.cliente_id')
+            ->join('proyectos','saldos_clientes.proyecto_id','=','proyectos.id')
+            ->join('productos','saldos_clientes.producto_id','=','productos.id')
+            ->join('sucursals','sucursals.id','=','saldos_clientes.sucursal_id')
+            ->select('saldos_clientes.*','sucursals.nombre as sucursal','clientes.id as cliente_id','clientes.nombre as cliente',
+            'clientes.rfc as rfc','proyectos.id as proyecto_id','proyectos.nombre as proyecto', 'productos.id as producto_id', 'productos.nombre as producto')
+            ->where('saldos_clientes.cliente_id', '=',$idc)
+            ->where('saldos_clientes.saldo', '>',0)
+            ->get();
+
+            $cliente = Cliente::where('id',$idc)->first();
+
+            $factura = ClientesFactura::where('id',$fact->id)->first();
+
+            $inf = 1;
+            session()->flash('Exito','La factura fue creada con éxito. Cliente con saldo a favor..');
+            return view('factclientes.saldos',['saldo' => $$abono->saldo,'factura' => $factura,'cliente' => $cliente,'saldos' => $saldos])->with('info',$inf);
+        }
+
+        
     }
 
     public function lineas($id){
