@@ -201,6 +201,7 @@ Route::middleware([
     Route::post('/factclientes/lineas/store/{idp?}/{idc?}', [ClientesFacturaLineaController::class, 'store'])->name('save.factclientes.lineas');
     Route::get('/factclientes/lineas/odood/{id?}', [ClientesFacturaLineaController::class, 'odooDetalle'])->name('odood.factclientes.lineas');
     Route::get('/factclientes/lineas/odooa/{id?}', [ClientesFacturaLineaController::class, 'odooAgrupador'])->name('odooa.factclientes.lineas');
+    Route::post('/factclientes/cancelar', [ClientesFacturaController::class, 'cancelar'])->name('cancel.factclientes');
 
     //PRESUPUESTOS
     Route::get('/presupuestos', [PresupuestoController::class, 'index'])->name('presupuestos');
@@ -228,6 +229,8 @@ Route::middleware([
     Route::get('/presupuestos/matrizsaldos/{id?}', [PresupuestoController::class, 'matrizsaldos'])->name('presupuestos.matrizsaldos');
     Route::post('/presupuestos/posiciones', [PresupuestoController::class, 'positionUpdate'])->name('presupuestos.posiciones');
     Route::post('/presupuestos/lineas/closeup', [PresupuestoController::class, 'closeUp'])->name('closeup.presupuestos.lineas');
+    Route::get('/presupuestos/lineas/breakup/{id?}', [PresupuestoController::class, 'valInterruption'])->name('valinterruption.presupuestos.lineas');
+    Route::post('/presupuestos/lineas/interrumpir', [PresupuestoController::class, 'interruption'])->name('interruption.presupuestos.lineas');
 
     Route::get('/presupuestos/pdf/ordencompra/{id?}', [PdfController::class, 'ordencompra'])->name('pdf.presupuestos.ordencompra');
     
@@ -237,6 +240,7 @@ Route::middleware([
     Route::get('/factproveedores/previo/{id?}', [ProveedorFacturaLineaController::class, 'index'])->name('factproveedores.previo');
     Route::get('/factproveedores/lineas/{id?}', [ProveedorFacturaLineaController::class, 'lineas'])->name('factproveedores.lineas');
     Route::post('/factproveedores/lineas/store/{idp?}/{idc?}', [ProveedorFacturaLineaController::class, 'store'])->name('save.factproveedores.lineas');
+    Route::post('/factproveedores/cancelar', [ProveedorFacturaController::class, 'cancelar'])->name('cancel.factproveedores');
 
 });
 

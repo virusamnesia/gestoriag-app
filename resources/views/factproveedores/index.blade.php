@@ -74,9 +74,11 @@
                                     <div class="dropdown">
                                         <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
+                                            @if ($row->es_activo == 1)
                                             <li><button class="btn align-self-left" id="btndetalle" onclick="detalle({{$row->id}})"><i class="icon ion-md-create"></i>Detalle</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="odoo({{$row->id}})"><i class="icon ion-md-albums"></i>Odoo</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                            <li><button class="btn align-self-left" id="btnodoo" onclick="odoo({{$row->id}})"><i class="icon ion-md-albums"></i>Odoo</button></li>
+                                            <li><button class="btn align-self-left" id="btndelete" data-toggle="modal" data-target="#smcancel" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                            @endif
                                     </div>
                                 </span>
                             </td>
@@ -89,6 +91,32 @@
         </div>
     </div>
 
+    <!-- Button trigger modal para editar -->
+    <!-- Modal -->
+    <div class="modal fade" id="smcancel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cancelar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="form p-3" action="/factproveedores/cancelar" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <br>
+                        <h6>Confirmar canelar factura</h6>
+                        <br>
+                        <input type="hidden" name="id" id="id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"  id="procesar">Confirmar</button>
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('css')
@@ -152,6 +180,10 @@
             var base = "<?php echo '/fectproveedores/show/'?>";
             var url = base+id;
             location.href=url;
+        }
+
+        function cancelar(id){
+            $("#id").val(id);
         }
     </script>
 @stop

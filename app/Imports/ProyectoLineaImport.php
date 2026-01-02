@@ -146,7 +146,8 @@ class ProyectoLineaImport implements ToCollection, WithHeadingRow
                             'saldoproveedor' => 0,
                             'terminos_pago_cliente_id' => $producto->terminos,
                             'estatus_linea_cliente_id' => 1,
-                            'estatus_linea_proveedor_id' => 1,  
+                            'estatus_linea_proveedor_id' => 1,
+                            'secuencia' => 0,  
                         ]);
 
                         $subtotal_p += $subtotal_linea;

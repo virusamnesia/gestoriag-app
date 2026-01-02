@@ -1149,6 +1149,7 @@ class PresupuestoController extends Controller
                     $data = [
                         'proveedor_id' => $idv,
                         'presupuesto_id' => $id,
+                        'estatus_linea_proveedor_id' => 1,
                     ];
                     
                     $linea = DB::table('proyecto_lineas')
@@ -1205,22 +1206,45 @@ class PresupuestoController extends Controller
         else{
             $secuencia = $movimiento->secuencia;
         }
-        $next =DB::table('movimientos_pago_clientes')
-            ->join('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
-            ->select('movimientos_pago_clientes.*','estatus_linea_clientes.nombre')
-            ->where('movimientos_pago_clientes.secuencia','=',$secuencia + 1)
-            ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
-            ->first();
 
-        $inf = 'No existen más acciones que agregar...';
+        if($secuencia > $linea->secuencia){
+            
+            $next =DB::table('movimientos_pago_clientes')
+                ->join('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
+                ->select('movimientos_pago_clientes.*','estatus_linea_clientes.nombre')
+                ->where('movimientos_pago_clientes.secuencia','=',$linea->secuencia)
+                ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
+                ->first();
 
-        if($next == null){
-            session()->flash('Error',$inf);
-            return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
+            $inf = 'No existen más acciones que agregar...';
+
+            if($next == null){
+                session()->flash('Error',$inf);
+                return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
+            }
+            else{
+                return view('presupuesto.movimiento.create', ['idp' => $idp,'idl' => $idl,'presupuesto' => $presupuesto,'proveedor' => $proveedor,
+                'linea' => $linea,'next' => $next]);
+            }
         }
         else{
-            return view('presupuesto.movimiento.create', ['idp' => $idp,'idl' => $idl,'presupuesto' => $presupuesto,'proveedor' => $proveedor,
-            'linea' => $linea,'next' => $next]);
+            $next =DB::table('movimientos_pago_clientes')
+                ->join('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
+                ->select('movimientos_pago_clientes.*','estatus_linea_clientes.nombre')
+                ->where('movimientos_pago_clientes.secuencia','=',$secuencia + 1)
+                ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
+                ->first();
+
+            $inf = 'No existen más acciones que agregar...';
+
+            if($next == null){
+                session()->flash('Error',$inf);
+                return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
+            }
+            else{
+                return view('presupuesto.movimiento.create', ['idp' => $idp,'idl' => $idl,'presupuesto' => $presupuesto,'proveedor' => $proveedor,
+                'linea' => $linea,'next' => $next]);
+            }
         }
     }
 
@@ -1276,24 +1300,39 @@ class PresupuestoController extends Controller
                 $facturable = 1;
             }
             
+            if(ProyectoSucursalLinea::where('proyecto_linea_id',$idl)->where('secuencia',$movimiento->secuencia)->exist()){
+                
+                $data = [
+                    'es_facturable' => $facturable,
+                    'importe_proveedor' => $importep,
+                    'saldo_proveedor' => $saldop,
+                ];
 
-            $mov =  new ProyectoSucursalLinea();
+                $proy = DB::table('proyecto_sucursal_lineas')
+                    ->where('proyecto_linea_id','=',$idl)
+                    ->where('secuencia',$movimiento->secuencia)
+                    ->update($data);    
+            }
+            else{
+                $mov =  new ProyectoSucursalLinea();
 
-            $mov->proyecto_linea_id = $idl;
-            $mov->movimientos_pago_cliente_id = $request->movimiento;
-            $mov->tipos_proceso_id = 1;
-            $mov->es_facturable = $facturable;
-            $mov->fecha_mov = $request->fecha;
-            $mov->cliente_id = $linea->cliente_id;
-            $mov->proveedor_id = $linea->proveedor_id;
-            $mov->importe_cliente = $importec;
-            $mov->saldo_cliente = $saldoc;
-            $mov->importe_proveedor = $importep;
-            $mov->saldo_proveedor = $saldop;
-            $mov->observaciones = $request->observaciones;
-            $mov->url = $request->url;
+                $mov->proyecto_linea_id = $idl;
+                $mov->movimientos_pago_cliente_id = $request->movimiento;
+                $mov->tipos_proceso_id = 1;
+                $mov->es_facturable = $facturable;
+                $mov->fecha_mov = $request->fecha;
+                $mov->cliente_id = $linea->cliente_id;
+                $mov->proveedor_id = $linea->proveedor_id;
+                $mov->importe_cliente = $importec;
+                $mov->saldo_cliente = $saldoc;
+                $mov->importe_proveedor = $importep;
+                $mov->saldo_proveedor = $saldop;
+                $mov->observaciones = $request->observaciones;
+                $mov->url = $request->url;
+                $mov->secuencia = $movimiento->secuencia;
 
-            $mov->save();
+                $mov->save();
+            }
 
             $data = [
                 'saldocliente' => $linea->saldocliente - $importec,
@@ -1301,6 +1340,7 @@ class PresupuestoController extends Controller
                 'saldoproveedor' => $linea->saldoproveedor - $importep,
                 'cxp' => $linea->cxc + $importep,
                 'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
+                'secuencia' => $movimiento->secuencia,
             ];
 
             $proy = DB::table('proyecto_lineas')
@@ -1709,5 +1749,88 @@ class PresupuestoController extends Controller
             session()->flash('Error',$inf);
             return redirect()->route('proyectos.lineas', ['id' => $linea->proyecto_id])->with('message',$inf);
         }        
+    }
+
+    public function interruption(Request $request){
+        $linea = ProyectoLinea::where('id',$request->linea)->first();
+        $presupuesto = Presupuesto::where('id',$request->presupusto)->first();
+        $producto = Producto::where('id',$linea->producto_id)->first();
+        
+        $data = [
+            'subtotal' => $presupuesto->subtotal - $linea->subtotal_c,
+            'iva_t' => $presupuesto->iva_t - $linea->iva_t_c,
+            'isr_r' => $presupuesto->isr_r - $linea->isr_r_c,
+            'iva_r' => $presupuesto->iva_r - $linea->iva_r_c,
+            'imp_c' => $presupuesto->imp_c - $linea->imp_c_c,
+            'total' => $presupuesto->total - $linea->total_c,
+            'saldo' => $presupuesto->saldo - $linea->saldoproveedor,
+            'cxp' => $presupuesto->cxp - $linea->cxp,
+        ];
+        
+        $pre = DB::table('presupuestos')
+        ->where('id','=',$presupuesto->id)
+        ->update($data);
+
+        $data = [
+            'saldoproveedor' => 0,
+            'cxp' => 0,
+            'subtotal_c' => 0,
+            'iva_t_c' => 0,
+            'isr_r_c' => 0,
+            'iva_r_c' => 0,
+            'imp_c_c' => 0,
+            'total_c' => 0,
+            'proveedor_id' => NULL,
+            'presupuesto_id' => NULL,
+            'estatus_linea_proveedor_id' => 4,
+            'secuencia' => 1,
+        ];
+        
+        $prol = DB::table('proyecto_lineas')
+        ->where('id','=',$request->linea)
+        ->update($data);
+
+        $data = [
+            'saldo_proveedor' => 0,
+            'subtotal_proveedor' => 0,
+            'importe_proveedor' => 0,
+        ];
+        
+        $prol = DB::table('proyecto_sucursal_lineas')
+        ->where('proyecto_linea_id','=',$request->linea)
+        ->update($data);
+
+        $inf = 'La línea se interrumpió con éxito. Presupuesto '.$presupuesto->nombre.' actualizado...';
+        session()->flash('Exito',$inf);
+        return redirect()->route('presupuestos.lineas', ['id' => $presupuesto->id])->with('message',$inf);
+
+    }
+
+    public function valInterruption($id){
+        $linea =DB::table('proyecto_lineas')
+        ->join('proyectos', 'proyectos.id', '=', 'proyecto_lineas.proyecto_id')
+        ->join('sucursals', 'sucursals.id', '=', 'proyecto_lineas.sucursal_id')
+        ->leftjoin('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+        ->leftjoin('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+        ->leftjoin('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+        ->leftjoin('productos', 'productos.id', '=', 'proyecto_lineas.producto_id')
+        ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+        ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+        ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
+        ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.id as sucursal_id','sucursals.domicilio as domicilio','sucursals.superficie','sucursals.marca',
+        'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
+        'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus','proyecto_lineas.total_v','proyecto_lineas.saldocliente',
+        'tipos_productos.nombre as tipo','estatus_linea_proveedors.nombre as estatuslinea','estatus_linea_proveedors.id as estatuslinea_id')
+        ->where('proyecto_lineas.id','=',$id)
+        ->orderBy('sucursals.marca','asc')
+        ->orderBy('sucursals.id','asc')
+        ->orderBy('productos.nombre','asc')
+        ->first();
+
+        $presupuesto = Presupuesto::where('id','=',$linea->presupuesto_id)->first();
+
+        $proveedor = Proveedor::where('id','=',$presupuesto->proveedor_id)->first();
+
+        return view('presupuesto.linea.close', ['linea' => $linea,'proveedor' => $proveedor,'presupuesto' => $presupuesto]);
     }
 }

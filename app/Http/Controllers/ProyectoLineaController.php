@@ -763,12 +763,19 @@ class ProyectoLineaController extends Controller
     public function closeUp(Request $request){
 
         $aplicacion = $request->saldo;
-        $linea = ProyectoLinea::where('id',$request->linea)->first();
-        $proyecto = Proyecto::where('id',$request->proyecto)->first();
-        $posicion = FiscalPosition::where('id',$proyecto->fiscal_position_id)->first();
-        $producto = Producto::where('id',$linea->producto_id)->first();
-        $mov = ProyectoSucursalLinea::where('id',$linea->proyecto_linea_id)->select(DB::raw('SUM(subtotal_cliente) AS `subtotal`'))->first();
+        $linea = ProyectoLinea::find($request->linea);
+        $proyecto = Proyecto::find($request->proyecto);
+        $posicion = FiscalPosition::find($proyecto->fiscal_position_id);
+        $producto = Producto::find($linea->producto_id);
+        $mov = ProyectoSucursalLinea::where('proyecto_linea_id',$request->linea)->select(DB::raw('SUM(subtotal_cliente) AS `subtotal`'))->first();
         
+        /*foreach($mov as $row){
+            $subtotal=$row->subtotal;
+        }
+        $inf = 'La línea se cerró con éxito... Se abono un saldo a favor por $'.$proyecto->fiscal_position_id.'--';
+        session()->flash('Exito',$inf);
+        return redirect()->route('proyectos', )->with('message',$inf);*/
+
         $saldo = $linea->saldocliente;
         $cxc = $linea->cxc;
         if($mov->subtotal == NULL){

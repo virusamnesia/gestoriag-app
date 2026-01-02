@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Presupuesto;
+use App\Models\Proveedor;
+use App\Models\ProveedorFactura;
+use App\Models\ProyectoLinea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -110,6 +114,75 @@ class ProveedorFacturaController extends Controller
     public function destroy(top50 $top50)
     {
         //
+    }
+
+    public function cancelar(Request $request){
+
+        //lee las lineas de la factura
+        $lineas = DB::table('proveedor_facturas')
+            ->join('proveedor_factura_lineas','proveedor_facturas.id','=','proveedor_factura_lineas.proveedor_factura_id')
+            ->join('proyecto_sucursal_lineas','proyecto_sucursal_lineas.id','=','proveedor_factura_lineas.proyecto_sucursal_linea_id')
+            ->join('proyecto_lineas','proyecto_sucursal_lineas.proyecto_linea_id','=','proyecto_lineas.id')
+            ->join('presupuestos','presupuestos.id','=','proyecto_lineas.presupuesto_id')
+            ->join('proyectos','proyectos.id','=','proyecto_lineas.proyecto_id')
+            ->join('proveedors','proveedors.id','=','presupuestos.proveedor_id')
+            ->join('clientes','clientes.id','=','proyectos.cliente_id')
+            ->join('productos','proyecto_lineas.producto_id','=','productos.id')
+            ->join('sucursals','sucursals.id','=','proyecto_lineas.sucursal_id')
+            ->join('municipio_contactos', 'municipio_contactos.id', '=', 'sucursals.municipio_contacto_id')
+            ->join('estado_contactos', 'estado_contactos.id', '=', 'sucursals.estado_contacto_id')
+            ->join('pais_contactos', 'pais_contactos.id', '=', 'sucursals.pais_contacto_id')
+            ->leftJoin('terminos_pago_clientes', 'proyecto_lineas.terminos_pago_cliente_id', '=', 'terminos_pago_clientes.id')
+            ->leftJoin('agrupador_facturas', 'productos.agrupador_factura_id', '=', 'agrupador_facturas.id')
+            ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
+            ->leftJoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
+            ->leftJoin('movimientos_pago_clientes', 'movimientos_pago_clientes.id', '=', 'proyecto_sucursal_lineas.movimientos_pago_cliente_id')
+            ->select('proveedor_factura_lineas.*','proveedors.id as proveedor_id','proveedors.nombre as proveedor','proyecto_lineas.id as linea_id',
+            'presupuestos.id as presupuesto_id','presupuestos.nombre as presupuesto', 'productos.id as producto_id','estatus_linea_clientes.nombre as estatus','proyecto_sucursal_lineas.importe_cliente as cxc',
+            'proyecto_sucursal_lineas.id as mov_id','movimientos_pago_clientes.valor_cliente as porcentaje')
+            ->where('clientes_facturas.id', '=', $request->id)
+            ->get();
+
+        $factura = ProveedorFactura::where('id','=',$request->id)->first();
+
+        $presupuesto = Presupuesto::where('id','=',$factura->presupuesto_id)->first();
+
+        $proveedor = Proveedor::where('id','=',$factura->proveedor_id)->first();
+
+        //reactivar los cxc de las lineas del proyecto
+        foreach($lineas as $row){
+
+            $mov = DB::table('proyecto_sucursal_lineas')
+                ->where('id','=', $row->mov_id)
+                ->update([
+                'cliente_factura_id'=> NULL,
+            ]);
+
+            $line = ProyectoLinea::where('id',$row->linea_id)->first();
+
+            $mov = DB::table('proyecto_lineas')
+                ->where('id','=', $line->id)
+                ->update([
+                'cxp'=> $line->cxp + $row->total,
+            ]);
+
+            $mov = DB::table('presupuestos')
+                ->where('id','=', $presupuesto->id)
+                ->update([
+                'cxp'=> $presupuesto->cxp + $row->total,
+            ]);
+        }
+            
+        //actualziar el estatua de la factura
+        $mov = DB::table('proveedor_facturas')
+            ->where('id','=', $factura->id)
+            ->update([
+            'es_activo'=> 0,
+        ]);
+
+        $inf = 1;
+        session()->flash('Exito','La factura cancelada con éxito...');
+        return redirect()->route('factproveedores')->with('info',$inf);
     }
     
 }

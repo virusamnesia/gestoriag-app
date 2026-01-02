@@ -100,7 +100,7 @@
                                             @endif
                                         @endif
                                         @if($row->estatuslinea_id == 1)
-                                        <li><button class="btn align-self-left" id="btnclose"  onclick="breakup({{$presupuesto->id}},{{$row->id}})"><i class="icon ion-md-pint"></i>Interrumpir</button></li>
+                                        <li><button class="btn align-self-left" id="btnclose"  onclick="breakup({{$row->id}})"><i class="icon ion-md-pint"></i>Interrumpir</button></li>
                                         @endif
                                         @if($presupuesto->autorizar == 0)
                                         <li><button class="btn align-self-left" id="btnborrar" onclick="borrar({{$presupuesto->id}},{{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
@@ -266,9 +266,9 @@
             location.href=url;
         }
 
-        function breakup(idp,idl){
+        function breakup(idl){
             var base = "<?php echo '/presupuestos/lineas/breakup/'?>";
-            var url = base+idp+"/"+idl;
+            var url = base+idl;
             location.href=url;
         }
     </script>

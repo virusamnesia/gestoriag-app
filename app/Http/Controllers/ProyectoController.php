@@ -353,6 +353,7 @@ class ProyectoController extends Controller
                         $mov->saldo_proveedor = $saldo_proveedor;
                         $mov->observaciones = "Autorización";
                         $mov->url = "";
+                        $mov->secuencia = 1;
 
                         $mov->save();
 
@@ -363,6 +364,7 @@ class ProyectoController extends Controller
                             'saldoproveedor' => $linea->saldoproveedor - $importe_proveedor,
                             'cxp' => $linea->cxp + $importe_proveedor,
                             'proyecto_sucursal_linea_id' => $mov->id,
+                            'secuencia' => 1,
                         ];
 
                         $proy = DB::table('proyecto_lineas')

@@ -89,22 +89,31 @@ class ProyectoSucursalLineaController extends Controller
         else{
             $secuencia = $movimiento->secuencia;
         }
-        $next =DB::table('movimientos_pago_clientes')
-            ->join('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
-            ->select('movimientos_pago_clientes.*','estatus_linea_clientes.nombre')
-            ->where('movimientos_pago_clientes.secuencia','=',$secuencia + 1)
-            ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
-            ->first();
 
-        $inf = 'No existen más acciones que agregar...';
-
-        if($next == null){
+        if($secuencia > $linea->secuencia){
+            
+            $inf = 'Línea con proveedor reasignado, registrar avance desde presupuestos...';
             session()->flash('Error',$inf);
             return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
         }
         else{
-            return view('proyecto.movimiento.create', ['idp' => $idp,'idl' => $idl,'proyecto' => $proyecto,'cliente' => $cliente,
-            'linea' => $linea,'next' => $next])->with('info',$inf);
+            $next =DB::table('movimientos_pago_clientes')
+                ->join('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'movimientos_pago_clientes.estatus_linea_cliente_id')
+                ->select('movimientos_pago_clientes.*','estatus_linea_clientes.nombre')
+                ->where('movimientos_pago_clientes.secuencia','=',$secuencia + 1)
+                ->where('movimientos_pago_clientes.terminos_pago_cliente_id','=',$linea->terminos)
+                ->first();          
+
+            $inf = 'No existen más acciones que agregar...';
+
+            if($next == null){
+                session()->flash('Error',$inf);
+                return redirect()->route('proyectos.lineas', ['id' => $idp])->with('error',$inf);
+            }
+            else{
+                return view('proyecto.movimiento.create', ['idp' => $idp,'idl' => $idl,'proyecto' => $proyecto,'cliente' => $cliente,
+                'linea' => $linea,'next' => $next])->with('info',$inf);
+            }
         }
     }
 
@@ -246,6 +255,7 @@ class ProyectoSucursalLineaController extends Controller
             $mov->saldo_proveedor = $saldop;
             $mov->observaciones = $request->observaciones;
             $mov->url = $request->url;
+            $mov->secuencia = $movimiento->secuencia;
 
             $mov->save();
 
@@ -255,6 +265,7 @@ class ProyectoSucursalLineaController extends Controller
                 'saldoproveedor' => $saldop,
                 'cxp' => $linea->cxc + $total_r,
                 'estatus_linea_cliente_id' => $movimiento->estatus_linea_cliente_id,
+                'secuencia' => $movimiento->secuencia,
             ];
 
             $proy = DB::table('proyecto_lineas')

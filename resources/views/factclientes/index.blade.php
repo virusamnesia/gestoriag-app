@@ -67,17 +67,19 @@
                             <td>${{number_format($row->imp_c,2)}}</td>
                             <td>${{number_format($row->total,2)}}</td>
                             <td>{{$row->fecha}}</td>
-                            <td>{{$row->es_activo}}</td>
+                            <td> @php if($row->es_activo == 1){echo 'Vigente';} else{echo 'Cancelada';} @endphp</td>
                             <td>{{$row->factura_odoo}}</td>
                             <td>
                                 <span class="pull-right">
                                     <div class="dropdown">
                                         <button class="btn btn-grey dropdown-toggle" type="button" id="dropdownmenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Acciones<span class="caret"></span></button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownmenu1">
+                                            @if ($row->es_activo == 1)
                                             <li><button class="btn align-self-left" id="btndetalle" onclick="detalle({{$row->id}})"><i class="icon ion-md-create"></i>Detalle</button></li>
                                             <li><button class="btn align-self-left" id="btnodood" onclick="odood({{$row->id}})"><i class="icon ion-md-albums"></i>Odoo Detalle</button></li>
                                             <li><button class="btn align-self-left" id="btnodooa" onclick="odooa({{$row->id}})"><i class="icon ion-md-albums"></i>Odoo Agrupador</button></li>
-                                            <li><button class="btn align-self-left" id="btndelete" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                            <li><button class="btn align-self-left" id="btndelete" data-toggle="modal" data-target="#smcancel" onclick="cancelar({{$row->id}})"><i class="icon ion-md-albums"></i>Cancelar</button></li>
+                                            @endif
                                     </div>
                                 </span>
                             </td>
@@ -87,6 +89,33 @@
             <table>
         </div>
         <div class="col-md-2">
+        </div>
+    </div>
+
+    <!-- Button trigger modal para editar -->
+    <!-- Modal -->
+    <div class="modal fade" id="smcancel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cancelar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="form p-3" action="/factclientes/cancelar" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <br>
+                        <h6>Confirmar canelar factura</h6>
+                        <br>
+                        <input type="hidden" name="id" id="id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"  id="procesar">Confirmar</button>
+                    </div>
+                </form> 
+            </div>
         </div>
     </div>
 
@@ -165,6 +194,10 @@
             var base = "<?php echo '/fectclientes/show/'?>";
             var url = base+id;
             location.href=url;
+        }
+
+        function cancelar(id){
+            $("#id").val(id);
         }
     </script>
 @stop
