@@ -846,7 +846,7 @@ class ProyectoLineaController extends Controller
             'isr_r' => $proyecto->isr_r - $isr_r,
             'iva_r' => $proyecto->iva_r - $iva_r,
             'imp_c' => $proyecto->imp_c - $imp_c,
-            'importe' => $proyecto->total - $total,
+            'importe' => $proyecto->importe - $total,
 
         ];
         

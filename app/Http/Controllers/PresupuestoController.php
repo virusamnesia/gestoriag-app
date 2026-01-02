@@ -1732,7 +1732,7 @@ class PresupuestoController extends Controller
                 'isr_r' => $presupuesto->isr_r - $isr_r,
                 'iva_r' => $presupuesto->iva_r - $iva_r,
                 'imp_c' => $presupuesto->imp_c - $imp_c,
-                'importe' => $presupuesto->total - $total,
+                'importe' => $presupuesto->importe - $total,
 
             ];
             
@@ -1762,7 +1762,7 @@ class PresupuestoController extends Controller
             'isr_r' => $presupuesto->isr_r - $linea->isr_r_c,
             'iva_r' => $presupuesto->iva_r - $linea->iva_r_c,
             'imp_c' => $presupuesto->imp_c - $linea->imp_c_c,
-            'total' => $presupuesto->total - $linea->total_c,
+            'importe' => $presupuesto->importe - $linea->total_c,
             'saldo' => $presupuesto->saldo - $linea->saldoproveedor,
             'cxp' => $presupuesto->cxp - $linea->cxp,
         ];
