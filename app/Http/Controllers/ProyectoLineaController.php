@@ -42,7 +42,7 @@ class ProyectoLineaController extends Controller
         ->leftJoin('estatus_linea_clientes', 'estatus_linea_clientes.id', '=', 'proyecto_lineas.estatus_linea_cliente_id')
         ->leftjoin('tipos_productos', 'tipos_productos.id', '=', 'productos.tipos_producto_id')
         ->leftJoin('estatus_linea_proveedors', 'estatus_linea_proveedors.id', '=', 'proyecto_lineas.estatus_linea_proveedor_id')
-        ->join('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
+        ->leftjoin('presupuestos', 'presupuestos.id', '=', 'proyecto_lineas.presupuesto_id')
         ->select('proyecto_lineas.*','sucursals.nombre as sucursal','sucursals.domicilio as domicilio',
         'municipio_contactos.nombre as municipio', 'estado_contactos.alias as estado', 'pais_contactos.alias as pais','proyectos.id as proyecto_id',
         'productos.id as producto_id', 'productos.nombre as producto', 'terminos_pago_clientes.nombre as terminos','estatus_linea_clientes.nombre as estatus',
