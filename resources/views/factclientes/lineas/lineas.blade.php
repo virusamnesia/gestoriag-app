@@ -115,8 +115,6 @@
         $(document).ready(function() {
             $('#tablarow').DataTable({
                 dom: 'Bfrtip',
-                paging: false,
-                scrollY: 400,
                 select: true,
                 buttons: [
                     'copy', 'csv', 'excel', 
