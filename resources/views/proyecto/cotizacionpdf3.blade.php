@@ -269,6 +269,7 @@
             <thead>
                 <tr>
                     <th scope="col">Marca</th>
+                    <th scope="col">No. Sucursal</th>
                     <th scope="col">Sucursal</th>
                     <th scope="col">Producto</th>
                     <th scope="col">Cantidad</th>
@@ -281,6 +282,7 @@
                 @foreach ($lineas as $row) {{-- Add here extra stylesheets --}}
                     <tr>
                         <td>{{$row->marca}}</td>
+                        <td>{{$row->id_interno}}</td>
                         <td>{{$row->sucursal}}</td>
                         <td>{{$row->producto}}. {{$row->obs_v}}</td>
                         <td>{{$row->cantidad}}</td>
