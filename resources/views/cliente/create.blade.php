@@ -39,7 +39,7 @@
                     </x-adminlte-input>
                 </div>
                 <div class="row">
-                    <x-adminlte-input name="rfc" placeholder="RFC"label="RFC" size="15" maxlength="15" requiered
+                    <x-adminlte-input name="rfc" placeholder="RFC" label="RFC" size="15" maxlength="15" requiered
                         fgroup-class="col-md-4" disable-feedback/>
                 </div>
                 <div class="row">
