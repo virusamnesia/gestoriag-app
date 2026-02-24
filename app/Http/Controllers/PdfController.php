@@ -65,9 +65,10 @@ class PdfController extends Controller
         'productos.id as producto_id', 'productos.nombre as producto','estatus_linea_clientes.nombre as estatus',
         'tipos_productos.nombre as tipo')
         ->where('proyectos.id','=',$id)
-        ->orderBy('sucursals.marca','asc')
-        ->orderBy('sucursals.id','asc')
-        ->orderBy('productos.nombre','asc')
+        //->orderBy('sucursals.marca','asc')
+        //->orderBy('sucursals.id','asc')
+        //->orderBy('productos.nombre','asc')
+        ->orderBy('proyecto_lineas.id','asc')
         ->get();
 
         if($proyecto->estado == 'Cotización'){
@@ -123,7 +124,8 @@ class PdfController extends Controller
         'proveedors.id as proveedor_id','proveedors.nombre as proveedor','productos.id as producto_id', 'productos.nombre as producto','tipos_productos.nombre as tipo')
         ->where('proyecto_lineas.presupuesto_id','=',$id)
         ->where('proyecto_lineas.proveedor_id','=',$presupuesto->proveedor_id)
-        ->orderBy('sucursals.nombre')
+        //->orderBy('sucursals.nombre')
+        ->orderBy('proyecto_lineas.id')
         ->get();
 
         if($presupuesto->estado == 'Cotización'){
